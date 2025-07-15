@@ -110,8 +110,9 @@ th{background:#333}
   nav a{font-size:.9rem}
 button.dec,
 button.inc{
-  touch-action: manipulation;     /* blocca il double‑tap zoom */
-  -webkit-tap-highlight-color: transparent; /* niente flash blu */
+  touch-action: none;                 /* disabilita tutti i gesture‑zoom */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 </style>
 </head>
@@ -388,6 +389,13 @@ if(levelInput){
 	updatePointDisplay();
   });
 }
+/* — stop double‑tap zoom only on ± buttons (Chrome/Android) — */
+document.addEventListener('dblclick', function (e) {
+  if (e.target.closest('button.dec,button.inc')) {
+    e.preventDefault();                // blocca lo zoom
+  }
+}, { passive:false });
+
 
 /* prima esecuzione */
 updateResourceCaps();
