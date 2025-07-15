@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><title>Combat Rules – FEIM</title><meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<style>
+:root{
+  --amber:#ffb84d;
+  --bg:#1a1a1a;
+  --fg:#f5f3ef;
+  --panel:#2a2a2a;
+  --border:#444;
+}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--fg);max-width:720px;margin:auto;padding:1rem;
+}
+h1,h2{
+  color:var(--amber);
+  border-bottom:1px solid #555;
+  padding-bottom:.2rem;
+  margin-top:1.5rem;
+}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;padding:.4rem .7rem;border-radius:4px;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+@media (max-width:480px){
+  body{padding:.6rem}
+  nav a{font-size:.9rem}
+  table{font-size:.8rem}
+}
+</style>
+
+</head>
+<body>
+
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
+</nav>
+
+
+<h1>Combat Rules</h1>
+
+<h2>Round Structure</h2>
+<ul>
+<li>Each round represents exactly <strong>3 seconds</strong> of in‑world time.</li>
+<li>Every character gains <strong>3 seconds of TIME</strong> to spend on actions.</li>
+<li><strong>Actions cost TIME</strong> and usually Stamina or Mana.</li>
+<li>After you perform <em>one</em> action, control passes immediately to the combatant with the <strong>highest TIME remaining</strong>. Repeat until all participants have 0 s left.</li>
+</ul>
+
+<h2>Typical Time Costs</h2>
+<table>
+<thead><tr><th>Action</th><th>TIME&nbsp;Cost</th><th>Resource Cost</th></tr></thead>
+<tbody>
+<tr><td>Basic attack</td><td>1.5 s</td><td>—</td></tr>
+<tr><td>Move 1 tile (walk)</td><td>0.5 s</td><td>—</td></tr>
+<tr><td>Move 1 tile (run)</td><td>0.5 s</td><td>1 STA</td></tr>
+<tr><td>Skill use</td><td>1‑2 s</td><td>var.</td></tr>
+<tr><td>Cast spell</td><td>1.5‑2.5 s</td><td>Mana</td></tr>
+<tr><td>Dodge / Block</td><td>0.5‑1 s</td><td>Stamina</td></tr>
+<tr><td>Use item</td><td>1 s</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h2>Defense Is Active</h2>
+<p>No passive AC. To avoid or mitigate damage you must spend TIME and Stamina/Mana on a defensive skill (Block, Parry, Dodge, etc.). Failing to act means you take the hit.</p>
+
+<h2>Initiative Tie‑Break</h2>
+<ol>
+<li>Compare <strong>DEX + action TIME</strong> (lower total acts first).</li>
+<li>If still tied, roll 1d6.</li>
+</ol>
+
+<footer style="text-align:center;margin-top:2rem;color:#777;font-size:.8rem">© 2025 JitaDesWadyas</footer>
+</body></html>

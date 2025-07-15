@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><title>Progression – FEIM</title><meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<style>
+:root{
+  --amber:#ffb84d;
+  --bg:#1a1a1a;
+  --fg:#f5f3ef;
+  --panel:#2a2a2a;
+  --border:#444;
+}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--fg);max-width:720px;margin:auto;padding:1rem;
+}
+h1,h2{
+  color:var(--amber);
+  border-bottom:1px solid #555;
+  padding-bottom:.2rem;
+  margin-top:1.5rem;
+}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;padding:.4rem .7rem;border-radius:4px;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+@media (max-width:480px){
+  body{padding:.6rem}
+  nav a{font-size:.9rem}
+  table{font-size:.8rem}
+}
+</style>
+
+</head>
+<body>
+
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
+</nav>
+
+
+<h1>Character Progression</h1>
+
+<h2>Stat Allocation</h2>
+<p>You start at <strong>Level 1</strong> with <strong>14 stat points</strong>.  
+No single stat may exceed <strong>7</strong> at creation.  
+Each new level grants <strong>+3 points</strong>.  
+The single‑stat cap rises by <strong>+1 every two levels</strong>  
+(Lv 1–2 → 7, Lv 3–4 → 8, Lv 5–6 → 9, Lv 7+ → 10).</p>
+ in any stat at creation. Max stat value is <strong>10</strong>. Each level thereafter grants +1 point.</p>
+
+<table>
+<thead><tr><th>Stat</th><th>Effect per Point</th></tr></thead>
+<tbody>
+<tr><td>STR</td><td>+1 physical damage</td></tr>
+<tr><td>DEX</td><td>+5&nbsp;% evasion OR +1 on DEX tests</td></tr>
+<tr><td>MAG</td><td>+1 magical damage</td></tr>
+<tr><td>CON</td><td>+5&nbsp;Max&nbsp;HP (HP never auto‑regens)</td></tr>
+<tr><td>END</td><td>+2&nbsp;Max&nbsp;Stamina &amp; +1&nbsp;STA regen each round</td></tr>
+<tr><td>WIS</td><td>+1&nbsp;Max&nbsp;Mana &amp; +0.5&nbsp;MP regen each round</td></tr>
+</tbody>
+</table>
+
+<h2>Resource Formulae</h2>
+<ul>
+<li><strong>Max HP</strong> = CON × 5</li>
+<li><strong>Max Stamina</strong> = 6 + END</li>
+<li><strong>Max Mana</strong> = 6 + WIS</li>
+<li><strong>Stamina Regen</strong> = END per round</li>
+<li><strong>Mana Regen</strong> = 0.5 × WIS per round</li>
+</ul>
+
+<table>
+<thead><tr><th>Level</th><th>Total Stat Pts</th><th>Typical Toolkit</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>14</td><td>1–2 skills, 1 spell, basic gear</td></tr>
+<tr><td>2</td><td>17</td><td>3–4 skills, 2 spells, specialty gear</td></tr>
+<tr><td>3</td><td>20</td><td>5+ skills, 3–4 spells, elite foes appear</td></tr>
+<tr><td>4</td><td>23</td><td>Rare gear, first epic quest arcs</td></tr>
+<tr><td>5</td><td>26</td><td>Cap 9 unlocked, advanced combos</td></tr>
+<tr><td>6</td><td>29</td><td>Master‑tier enemies, relic items</td></tr>
+<tr><td>7</td><td>32</td><td>Cap 10 unlocked, signature moves</td></tr>
+<tr><td>8</td><td>35</td><td>World‑tier challenges</td></tr>
+<tr><td>9</td><td>38</td><td>Legendary gear, near‑max stats</td></tr>
+<tr><td>10</td><td>41</td><td>End‑game threats, mythic feats</td></tr>
+</tbody>
+</table>
+
+
+<footer style="text-align:center;margin-top:2rem;color:#777;font-size:.8rem">© 2025 JitaDesWadyas</footer>
+</body></html>

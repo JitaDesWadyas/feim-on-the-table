@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"/><title>Lists – FEIM</title><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+:root{
+  --amber:#ffb84d;
+  --bg:#1a1a1a;
+  --fg:#f5f3ef;
+  --panel:#2a2a2a;
+  --border:#444;
+}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--fg);max-width:720px;margin:auto;padding:1rem;
+}
+h1,h2{
+  color:var(--amber);
+  border-bottom:1px solid #555;
+  padding-bottom:.2rem;
+  margin-top:1.5rem;
+}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;padding:.4rem .7rem;border-radius:4px;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+@media (max-width:480px){
+  body{padding:.6rem}
+  nav a{font-size:.9rem}
+  table{font-size:.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
+</nav>
+
+<h1>Reference Lists</h1>
+
+<h2>Skills</h2>
+<table><thead><tr><th>Name</th><th>Type</th><th>Cost</th><th>Effect</th></tr></thead><tbody><tr><td>Power Strike</td><td>Melee</td><td>2 STA</td><td>1.5x STR dmg</td></tr><tr><td>Dash</td><td>Movement</td><td>1 STA</td><td>Move before enemy acts</td></tr><tr><td>Parry</td><td>Defense</td><td>1 STA</td><td>+2 DEF vs next melee</td></tr><tr><td>Quick Shot</td><td>Ranged</td><td>2 STA</td><td>Deal normal ranged damage</td></tr><tr><td>Ambush</td><td>Stealth</td><td>3 STA</td><td>2x damage if undetected</td></tr><tr><td>Guard Break</td><td>Melee</td><td>3 STA</td><td>Normal dmg + reduce enemy DEF by 2</td></tr><tr><td>Whirlwind</td><td>Melee</td><td>4 STA</td><td>Hit all adjacent enemies for 1d6</td></tr><tr><td>Backstep</td><td>Movement</td><td>1 STA</td><td>Evade melee attack and reposition</td></tr><tr><td>Shield Bash</td><td>Defense</td><td>2 STA</td><td>1d4 + STR and stun on 15+</td></tr><tr><td>Aim Shot</td><td>Ranged</td><td>3 STA</td><td>+2 to hit, 1d8 damage</td></tr><tr><td>Poison Blade</td><td>Melee</td><td>3 STA</td><td>1d4 + poison (2 dmg/turn)</td></tr><tr><td>Counter</td><td>Defense</td><td>2 STA</td><td>Strike back after block</td></tr></tbody></table>
+
+<h2>Spells</h2>
+<table><thead><tr><th>Name</th><th>Cost</th><th>Effect</th></tr></thead><tbody><tr><td>Firebolt</td><td>2 MANA</td><td>1d6 + MAG fire dmg</td></tr><tr><td>Heal</td><td>3 MANA</td><td>Restore 1d8 HP</td></tr><tr><td>Frost Shard</td><td>2 MANA</td><td>1d4 + MAG and slow enemy</td></tr><tr><td>Shock</td><td>2 MANA</td><td>1d4 + MAG and stun (1 turn) on 15+</td></tr><tr><td>Arcane Missile</td><td>2 MANA</td><td>2x 1d4 + MAG</td></tr><tr><td>Earth Shield</td><td>3 MANA</td><td>+3 DEF for 2 rounds</td></tr><tr><td>Dark Touch</td><td>2 MANA</td><td>1d6 and heal caster half damage</td></tr><tr><td>Light Beam</td><td>3 MANA</td><td>1d8 holy damage, blind on 16+</td></tr><tr><td>Summon Imp</td><td>5 MANA</td><td>Weak ally joins for 3 rounds</td></tr></tbody></table>
+
+<h2>Weapons</h2>
+<table><thead><tr><th>Name</th><th>Type</th><th>Damage</th><th>Mod</th><th>Notes</th></tr></thead><tbody><tr><td>Rusty Sword</td><td>Melee</td><td>1d6</td><td>+STR</td><td>-</td></tr><tr><td>Hunting Bow</td><td>Ranged</td><td>1d4</td><td>+DEX</td><td>-</td></tr><tr><td>Staff</td><td>Melee</td><td>1d4</td><td>+MAG</td><td>-</td></tr><tr><td>Dagger</td><td>Melee</td><td>1d4</td><td>+DEX</td><td>Can attack twice</td></tr><tr><td>Greatsword</td><td>Melee</td><td>2d6</td><td>+STR</td><td>Two-handed</td></tr><tr><td>Crossbow</td><td>Ranged</td><td>1d8</td><td>+DEX</td><td>Reload every turn</td></tr><tr><td>Magic Tome</td><td>Magic</td><td>1d6</td><td>+MAG</td><td>Bonus to spell range</td></tr><tr><td>Spear</td><td>Melee</td><td>1d8</td><td>+STR</td><td>Attack from 2 tiles</td></tr><tr><td>Throwing Knives</td><td>Ranged</td><td>1d4</td><td>+DEX</td><td>Attack twice</td></tr><tr><td>Battle Axe</td><td>Melee</td><td>1d10</td><td>+STR</td><td>Bonus vs armored</td></tr></tbody></table>
+
+<h2>Armors</h2>
+<table><thead><tr><th>Name</th><th>Defense</th><th>Penalty</th></tr></thead><tbody><tr><td>Cloth Armor</td><td>+1 DEF</td><td>-</td></tr><tr><td>Leather Armor</td><td>+2 DEF</td><td>-1 STA regen</td></tr><tr><td>Rusty Plate</td><td>+3 DEF</td><td>-1 MANA regen</td></tr><tr><td>Chainmail</td><td>+3 DEF</td><td>-1 STA regen</td></tr><tr><td>Mage Robes</td><td>+1 DEF</td><td>+1 MANA regen</td></tr><tr><td>Bone Armor</td><td>+2 DEF</td><td>Weak to blunt</td></tr><tr><td>Shadow Cloak</td><td>+2 DEF</td><td>+1 stealth</td></tr><tr><td>Iron Plate</td><td>+4 DEF</td><td>-1 to move</td></tr><tr><td>Worn Gambeson</td><td>+1 DEF</td><td>No penalty</td></tr></tbody></table>
+
+<h2>Monsters</h2>
+<table><thead><tr><th>Name</th><th>HP</th><th>Attack</th><th>Traits</th></tr></thead><tbody><tr><td>Corrupted Rat</td><td>5 HP</td><td>1d4 dmg</td><td>Fast, low defense</td></tr><tr><td>Lost Soul</td><td>8 HP</td><td>1d6 magic</td><td>Immune to poison</td></tr><tr><td>Undead Guard</td><td>12 HP</td><td>1d6 + STR</td><td>+2 DEF, slow</td></tr><tr><td>Wild Boar</td><td>10 HP</td><td>1d8 charge</td><td>Stuns on charge</td></tr><tr><td>Bandit</td><td>9 HP</td><td>1d6 + STR</td><td>Steals on crit</td></tr><tr><td>Fire Sprite</td><td>6 HP</td><td>1d8 fire</td><td>Explodes on death</td></tr><tr><td>Ghoul</td><td>10 HP</td><td>1d6</td><td>Poisons on hit</td></tr><tr><td>Stone Golem</td><td>20 HP</td><td>1d10</td><td>+4 DEF, slow</td></tr><tr><td>Plague Crow</td><td>7 HP</td><td>1d4</td><td>Inflicts disease</td></tr><tr><td>Blood Hound</td><td>11 HP</td><td>2d4</td><td>Fast, tracks target</td></tr><tr><td>Specter</td><td>8 HP</td><td>1d6 psychic</td><td>Ignores armor</td></tr><tr><td>Cultist</td><td>10 HP</td><td>1d4 + dark spell</td><td>Summons minions</td></tr><tr><td>Dire Wolf</td><td>12 HP</td><td>1d8</td><td>Bleeds on crit</td></tr><tr><td>Skeleton Archer</td><td>8 HP</td><td>1d6 ranged</td><td>Bonus in formations</td></tr></tbody></table>
+
+<footer style="text-align:center;margin-top:2rem;color:#888;font-size:.8rem">© 2025 JitaDesWadyas</footer>
+</body></html>
