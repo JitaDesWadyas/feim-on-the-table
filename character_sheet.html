@@ -108,7 +108,11 @@ th{background:#333}
 @media (max-width:480px){
   body{padding:.6rem}
   nav a{font-size:.9rem}
-  ta
+button.dec,
+button.inc{
+  touch-action: manipulation;     /* blocca il double‑tap zoom */
+  -webkit-tap-highlight-color: transparent; /* niente flash blu */
+}
 </style>
 </head>
 <body>
