@@ -176,7 +176,7 @@ function openPicker(target){
 function addRow(tableSel,obj){
  const sel=tableSel.startsWith('#')?tableSel:'#'+tableSel;
  const tb=q(sel+' tbody');if(!tb)return;
- const html=`<tr class=row1><td>${obj.name}</td><td class=cost>${costString(obj)}</td><td><button class="slot-btn rem">🗑</button></td></tr>
+ const html=`<tr class=row1><td>${obj.name}</td><td class=cost>${costString(obj)}</td><td><button class="slot-btn rem" data-id="${obj.id}" data-cat="${obj.category}">🗑</button></td></tr>
              <tr class=row2><td colspan=3 class=descr>${desc(obj)}</td></tr>`;
  tb.insertAdjacentHTML('beforeend',html);
 const btn = tb.lastElementChild.previousElementSibling.querySelector('.rem');
@@ -247,8 +247,9 @@ function setVal(sl,v){sl.value=v;sl.dispatchEvent(new Event('input'));}
 function sliderButtons(){qq('.dec,.inc').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();const sl=q(`input[data-key="${btn.dataset.slider}"]`);const step=+sl.dataset.step||1;setVal(sl,Math.max(sl.min,Math.min(sl.max,+sl.value+(btn.classList.contains('inc')?step:-step))));},{passive:false}));}
 
 /* ---------- end round ---------- */
-q('#endRound').onclick=_=>{setVal(q('[data-key="time"]'),3);setVal(q('[data-key="stamina"]'),Math.min(+q('[data-key="stamina"]').max,+q('[data-key="stamina"]').value+getStat('end')));setVal(q('[data-key="mana"]'),Math.min(+q('[data-key="mana"]').max,+q('[data-key="mana"]').value+Math.floor(getStat('wis')*0.5)));};
-
+const mpInc = getStat('wis') * 0.5; // +0.5 MP per punto WIS, anche a livello 1
+setVal(q('[data-key="mana"]'), Math.min(+q('[data-key="mana"]').max, +q('[data-key="mana"]').value + mpInc));
+ 
 /* ---------- export/import ---------- */
 q('#exportBtn').onclick=_=>{const o={};Object.keys(localStorage).forEach(k=>k.startsWith('feim_')&&(o[k]=localStorage[k]));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));a.download='feim_sheet.json';a.click();};
 q('#importBtn').onclick=_=>q('#importFile').click();
@@ -256,6 +257,27 @@ q('#importFile').onchange=e=>{const r=new FileReader();r.onload=o=>{try{const d=
 
 /* ---------- misc ---------- */
 document.addEventListener('dblclick',e=>{if(e.target.closest('button'))e.preventDefault();},{passive:false});
+
+ /* delega unica per la rimozione righe */
+document.addEventListener('click', e=>{
+  if(!e.target.classList.contains('rem')) return;
+  const btn = e.target;
+  const tr  = btn.closest('tr');
+  const nxt = tr.nextElementSibling;
+  if(nxt) nxt.remove();
+  tr.remove();
+
+  const id  = btn.dataset.id;
+  const cat = btn.dataset.cat;
+  if(cat==='skill')   mySkills = mySkills.filter(o=>o.id!==id);
+  else if(cat==='spell') mySpells = mySpells.filter(o=>o.id!==id);
+  else                  myInv    = myInv.filter(o=>o.id!==id);
+
+  saveArrays();
+  rebuildActions();
+  refreshEquipSelects();
+});
+
 
 /* ---------- init ---------- */
 function initPage(){
