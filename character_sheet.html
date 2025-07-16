@@ -127,7 +127,7 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 <script>
 /* -------- JSON LOAD -------- */
 let FEIM={};
-fetch('game_data_feim_v3.json').then(r=>r.json()).then(j=>{FEIM=j;initPage();});
+fetch('gamedata.json').then(r=>r.json()).then(j=>{FEIM=j;initPage();});
 
 /* -------- helpers -------- */
 const q=s=>document.querySelector(s), qq=s=>document.querySelectorAll(s);
