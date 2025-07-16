@@ -164,7 +164,32 @@
     { "id": "shadow-trousers",  "name": "Shadow Trousers",  "category": "armor", "slot": "legs", "def": 2, "penalty": "+1 stealth" }
   ],
 
-  "items": [ … ] ,               // (identico a v2)
 
-  "monsters": [ … ]              // (identico a v2)
+  "items": [
+    { "id": "health-potion",   "name": "Health Potion",   "category": "item", "type": "potion",  "effect": { "kind": "heal",   "dice": "1d8" } },
+    { "id": "mana-potion",     "name": "Mana Potion",     "category": "item", "type": "potion",  "effect": { "kind": "restore","resource": "mana", "amount": 5 } },
+    { "id": "antidote",        "name": "Antidote",        "category": "item", "type": "potion",  "effect": { "kind": "cure",   "status": "poison" } },
+    { "id": "torch",           "name": "Torch",           "category": "item", "type": "tool",    "effect": { "kind": "utility","duration": "1 hour", "note": "Light source" } },
+    { "id": "gold-coin",       "name": "Gold Coin",       "category": "item", "type": "currency","value": 1 },
+    { "id": "silver-coin",     "name": "Silver Coin",     "category": "item", "type": "currency","value": 0.1 },
+    { "id": "scroll-of-fire",  "name": "Scroll of Fire",  "category": "item", "type": "scroll",  "effect": { "kind": "damage", "dice": "2d6", "element": "fire" } },
+    { "id": "emerald-ring",    "name": "Emerald Ring",    "category": "item", "type": "artifact","effect": { "kind": "buff",   "value": "+1 WIS while worn" } }
+  ],
+
+  "monsters": [
+    { "id": "corrupted-rat",    "name": "Corrupted Rat",    "category": "monster", "hp": 5,  "attack": "1d4",            "traits": "Fast, low defense" },
+    { "id": "lost-soul",        "name": "Lost Soul",        "category": "monster", "hp": 8,  "attack": "1d6 magic",      "traits": "Immune to poison" },
+    { "id": "undead-guard",     "name": "Undead Guard",     "category": "monster", "hp": 12, "attack": "1d6 + STR",      "traits": "+2 DEF, slow" },
+    { "id": "wild-boar",        "name": "Wild Boar",        "category": "monster", "hp": 10, "attack": "1d8 charge",     "traits": "Stuns on charge" },
+    { "id": "bandit",           "name": "Bandit",           "category": "monster", "hp": 9,  "attack": "1d6 + STR",      "traits": "Steals on crit" },
+    { "id": "fire-sprite",      "name": "Fire Sprite",      "category": "monster", "hp": 6,  "attack": "1d8 fire",       "traits": "Explodes on death" },
+    { "id": "ghoul",            "name": "Ghoul",            "category": "monster", "hp": 10, "attack": "1d6",            "traits": "Poisons on hit" },
+    { "id": "stone-golem",      "name": "Stone Golem",      "category": "monster", "hp": 20, "attack": "1d10",           "traits": "+4 DEF, slow" },
+    { "id": "plague-crow",      "name": "Plague Crow",      "category": "monster", "hp": 7,  "attack": "1d4",            "traits": "Inflicts disease" },
+    { "id": "blood-hound",      "name": "Blood Hound",      "category": "monster", "hp": 11, "attack": "2d4",            "traits": "Fast, tracks target" },
+    { "id": "specter",          "name": "Specter",          "category": "monster", "hp": 8,  "attack": "1d6 psychic",    "traits": "Ignores armor" },
+    { "id": "cultist",          "name": "Cultist",          "category": "monster", "hp": 10, "attack": "1d4 + dark spell","traits": "Summons minions" },
+    { "id": "dire-wolf",        "name": "Dire Wolf",        "category": "monster", "hp": 12, "attack": "1d8",            "traits": "Bleeds on crit" },
+    { "id": "skeleton-archer",  "name": "Skeleton Archer",  "category": "monster", "hp": 8,  "attack": "1d6 ranged",     "traits": "Bonus in formations" }
+  ]
 }
