@@ -187,20 +187,42 @@ function desc(o){
  if(o.effect) return o.effect.kind=='weapon-damage'?'Weapon dmg×'+o.effect.multiplier:o.effect.kind;
  return o.notes||o.penalty||'';
 }
-function addRow(tableSel,obj){
- const tb=q(tableSel+' tbody');
- const html=`<tr class=row1><td>${obj.name}</td><td class=cost>${costString(obj)}</td><td><button class="slot-btn rem">🗑</button></td></tr>
-             <tr class=row2><td colspan=3 class=descr>${desc(obj)}</td></tr>`;
- tb.insertAdjacentHTML('beforeend',html);
- tb.querySelector('.rem:last-of-type').onclick=function(){
-   const tr=this.closest('tr');const next=tr.nextElementSibling;next.remove();tr.remove();
-   if(obj.category=='skill')mySkills=mySkills.filter(x=>x.id!==obj.id);
-   else if(obj.category=='spell')mySpells=mySpells.filter(x=>x.id!==obj.id);
-   rebuildActions();
- };
- if(obj.category=='skill'){if(!mySkills.find(x=>x.id===obj.id))mySkills.push(obj);}
- else if(obj.category=='spell'){if(!mySpells.find(x=>x.id===obj.id))mySpells.push(obj);}
- rebuildActions();
+/* ---------- inserisce riga in tabella (skill / spell / item) ---------- */
+function addRow(tableSel, obj){
+  /* accetta 'tbl_skills' oppure '#tbl_skills' indistintamente */
+  const sel = tableSel.startsWith('#') ? tableSel : '#'+tableSel;
+  const tb  = q(sel + ' tbody');
+  if(!tb){ console.error('Table not found:', sel); return; }
+
+  const html = `<tr class=row1>
+                  <td>${obj.name}</td>
+                  <td class=cost>${costString(obj)}</td>
+                  <td><button class="slot-btn rem">🗑</button></td>
+                </tr>
+                <tr class=row2>
+                  <td colspan=3 class=descr>${desc(obj)}</td>
+                </tr>`;
+
+  tb.insertAdjacentHTML('beforeend', html);
+
+  /* pulsante rimozione (elimina entrambe le righe) */
+  tb.querySelector('.rem:last-of-type').onclick = function(){
+    const tr = this.closest('tr');
+    const nxt = tr.nextElementSibling;
+    if(nxt) nxt.remove();
+    tr.remove();
+
+    if(obj.category === 'skill')  mySkills = mySkills.filter(x => x.id !== obj.id);
+    if(obj.category === 'spell')  mySpells = mySpells.filter(x => x.id !== obj.id);
+
+    rebuildActions();
+  };
+
+  /* inserisci negli array player */
+  if(obj.category === 'skill'  && !mySkills.find(x=>x.id===obj.id))  mySkills.push(obj);
+  if(obj.category === 'spell'  && !mySpells.find(x=>x.id===obj.id)) mySpells.push(obj);
+
+  rebuildActions();
 }
 
 /* ---------- equipment ---------- */
