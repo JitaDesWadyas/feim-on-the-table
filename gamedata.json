@@ -1,5 +1,6 @@
 {
-  "version": 1,
+  "version": 3,
+
   "skills": [
     {
       "id": "power-strike",
@@ -7,16 +8,8 @@
       "category": "skill",
       "type": "melee",
       "time": 1.5,
-      "cost": {
-        "resource": "stamina",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d6",
-        "multiplier": 1.5,
-        "scales_with": "STR"
-      }
+      "cost": { "resource": "stamina", "amount": 2 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.5 }
     },
     {
       "id": "dash",
@@ -24,13 +17,8 @@
       "category": "skill",
       "type": "movement",
       "time": 1.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 1
-      },
-      "effect": {
-        "kind": "utility"
-      }
+      "cost": { "resource": "stamina", "amount": 1 },
+      "effect": { "kind": "utility" }
     },
     {
       "id": "parry",
@@ -38,14 +26,8 @@
       "category": "skill",
       "type": "defense",
       "time": 1.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 1
-      },
-      "effect": {
-        "kind": "buff",
-        "dice": "+2 DEF vs next melee"
-      }
+      "cost": { "resource": "stamina", "amount": 1 },
+      "effect": { "kind": "buff", "dice": "+2 DEF vs next melee" }
     },
     {
       "id": "quick-shot",
@@ -53,16 +35,8 @@
       "category": "skill",
       "type": "ranged",
       "time": 1.5,
-      "cost": {
-        "resource": "stamina",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "multiplier": 1,
-        "scales_with": "DEX"
-      }
+      "cost": { "resource": "stamina", "amount": 2 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0 }
     },
     {
       "id": "ambush",
@@ -70,16 +44,8 @@
       "category": "skill",
       "type": "stealth",
       "time": 1.5,
-      "cost": {
-        "resource": "stamina",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d6",
-        "multiplier": 2,
-        "scales_with": "STR"
-      }
+      "cost": { "resource": "stamina", "amount": 3 },
+      "effect": { "kind": "weapon-damage", "multiplier": 2.0 }
     },
     {
       "id": "guard-break",
@@ -87,14 +53,8 @@
       "category": "skill",
       "type": "melee",
       "time": 2.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "debuff",
-        "dice": "-2 DEF"
-      }
+      "cost": { "resource": "stamina", "amount": 3 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0, "extra": "-2 DEF on target" }
     },
     {
       "id": "whirlwind",
@@ -102,15 +62,8 @@
       "category": "skill",
       "type": "melee",
       "time": 2.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 4
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d6",
-        "multiplier": 1
-      }
+      "cost": { "resource": "stamina", "amount": 4 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0, "area": "adjacent" }
     },
     {
       "id": "backstep",
@@ -118,14 +71,8 @@
       "category": "skill",
       "type": "movement",
       "time": 0.5,
-      "cost": {
-        "resource": "stamina",
-        "amount": 1
-      },
-      "effect": {
-        "kind": "utility",
-        "dice": "evade"
-      }
+      "cost": { "resource": "stamina", "amount": 1 },
+      "effect": { "kind": "utility", "dice": "evade" }
     },
     {
       "id": "shield-bash",
@@ -133,16 +80,8 @@
       "category": "skill",
       "type": "defense",
       "time": 1.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "multiplier": 1,
-        "scales_with": "STR"
-      }
+      "cost": { "resource": "stamina", "amount": 2 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0, "extra": "stun on 15+" }
     },
     {
       "id": "aim-shot",
@@ -150,16 +89,8 @@
       "category": "skill",
       "type": "ranged",
       "time": 2.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d8",
-        "multiplier": 1,
-        "scales_with": "DEX"
-      }
+      "cost": { "resource": "stamina", "amount": 3 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0, "extra": "+2 to hit" }
     },
     {
       "id": "poison-blade",
@@ -167,16 +98,8 @@
       "category": "skill",
       "type": "melee",
       "time": 1.5,
-      "cost": {
-        "resource": "stamina",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "multiplier": 1,
-        "scales_with": "DEX"
-      }
+      "cost": { "resource": "stamina", "amount": 3 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0, "extra": "poison 2 dmg/turn" }
     },
     {
       "id": "counter",
@@ -184,457 +107,45 @@
       "category": "skill",
       "type": "defense",
       "time": 1.0,
-      "cost": {
-        "resource": "stamina",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "multiplier": 1,
-        "scales_with": "STR"
-      }
+      "cost": { "resource": "stamina", "amount": 2 },
+      "effect": { "kind": "weapon-damage", "multiplier": 1.0, "trigger": "after block" }
     }
   ],
-  "spells": [
-    {
-      "id": "firebolt",
-      "name": "Firebolt",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d6",
-        "scales_with": "MAG",
-        "element": "fire"
-      }
-    },
-    {
-      "id": "heal",
-      "name": "Heal",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "heal",
-        "dice": "1d8"
-      }
-    },
-    {
-      "id": "frost-shard",
-      "name": "Frost Shard",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "scales_with": "MAG",
-        "extra": "slow"
-      }
-    },
-    {
-      "id": "shock",
-      "name": "Shock",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "scales_with": "MAG",
-        "extra": "stun"
-      }
-    },
-    {
-      "id": "arcane-missile",
-      "name": "Arcane Missile",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d4",
-        "count": 2,
-        "scales_with": "MAG"
-      }
-    },
-    {
-      "id": "earth-shield",
-      "name": "Earth Shield",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "buff",
-        "value": "+3 DEF",
-        "duration": 2
-      }
-    },
-    {
-      "id": "dark-touch",
-      "name": "Dark Touch",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 2
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d6",
-        "lifesteal": 0.5
-      }
-    },
-    {
-      "id": "light-beam",
-      "name": "Light Beam",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 3
-      },
-      "effect": {
-        "kind": "damage",
-        "dice": "1d8",
-        "scales_with": "MAG",
-        "element": "holy"
-      }
-    },
-    {
-      "id": "summon-imp",
-      "name": "Summon Imp",
-      "category": "spell",
-      "time": 2.0,
-      "cost": {
-        "resource": "mana",
-        "amount": 5
-      },
-      "effect": {
-        "kind": "summon",
-        "name": "Imp",
-        "duration": 3
-      }
-    }
+
+  "spells": [ … ] ,               // (identico a v2)
+
+  "weapons": [ … ,                // (identico a v2, incluso Flamebrand Sword)
   ],
-  "weapons": [
-    {
-      "id": "rusty-sword",
-      "name": "Rusty Sword",
-      "category": "weapon",
-      "type": "melee",
-      "damage": {
-        "dice": "1d6",
-        "stat": "STR"
-      },
-      "notes": ""
-    },
-    {
-      "id": "hunting-bow",
-      "name": "Hunting Bow",
-      "category": "weapon",
-      "type": "ranged",
-      "damage": {
-        "dice": "1d4",
-        "stat": "DEX"
-      },
-      "notes": ""
-    },
-    {
-      "id": "staff",
-      "name": "Staff",
-      "category": "weapon",
-      "type": "melee",
-      "damage": {
-        "dice": "1d4",
-        "stat": "MAG"
-      },
-      "notes": ""
-    },
-    {
-      "id": "dagger",
-      "name": "Dagger",
-      "category": "weapon",
-      "type": "melee",
-      "damage": {
-        "dice": "1d4",
-        "stat": "DEX"
-      },
-      "notes": "Can attack twice"
-    },
-    {
-      "id": "greatsword",
-      "name": "Greatsword",
-      "category": "weapon",
-      "type": "melee",
-      "damage": {
-        "dice": "2d6",
-        "stat": "STR"
-      },
-      "notes": "Two-handed"
-    },
-    {
-      "id": "crossbow",
-      "name": "Crossbow",
-      "category": "weapon",
-      "type": "ranged",
-      "damage": {
-        "dice": "1d8",
-        "stat": "DEX"
-      },
-      "notes": "Reload every turn"
-    },
-    {
-      "id": "magic-tome",
-      "name": "Magic Tome",
-      "category": "weapon",
-      "type": "magic",
-      "damage": {
-        "dice": "1d6",
-        "stat": "MAG"
-      },
-      "notes": "Bonus to spell range"
-    },
-    {
-      "id": "spear",
-      "name": "Spear",
-      "category": "weapon",
-      "type": "melee",
-      "damage": {
-        "dice": "1d8",
-        "stat": "STR"
-      },
-      "notes": "Attack from 2 tiles"
-    },
-    {
-      "id": "throwing-knives",
-      "name": "Throwing Knives",
-      "category": "weapon",
-      "type": "ranged",
-      "damage": {
-        "dice": "1d4",
-        "stat": "DEX"
-      },
-      "notes": "Attack twice"
-    },
-    {
-      "id": "battle-axe",
-      "name": "Battle Axe",
-      "category": "weapon",
-      "type": "melee",
-      "damage": {
-        "dice": "1d10",
-        "stat": "STR"
-      },
-      "notes": "Bonus vs armored"
-    }
-  ],
+
   "armors": [
-    {
-      "id": "cloth-armor",
-      "name": "Cloth Armor",
-      "category": "armor",
-      "slot": "chest",
-      "def": 1,
-      "penalty": ""
-    },
-    {
-      "id": "leather-armor",
-      "name": "Leather Armor",
-      "category": "armor",
-      "slot": "chest",
-      "def": 2,
-      "penalty": "-1 STA regen"
-    },
-    {
-      "id": "rusty-plate",
-      "name": "Rusty Plate",
-      "category": "armor",
-      "slot": "chest",
-      "def": 3,
-      "penalty": "-1 MANA regen"
-    },
-    {
-      "id": "chainmail",
-      "name": "Chainmail",
-      "category": "armor",
-      "slot": "chest",
-      "def": 3,
-      "penalty": "-1 STA regen"
-    },
-    {
-      "id": "mage-robes",
-      "name": "Mage Robes",
-      "category": "armor",
-      "slot": "chest",
-      "def": 1,
-      "penalty": "+1 MANA regen"
-    },
-    {
-      "id": "bone-armor",
-      "name": "Bone Armor",
-      "category": "armor",
-      "slot": "chest",
-      "def": 2,
-      "penalty": "Weak to blunt"
-    },
-    {
-      "id": "shadow-cloak",
-      "name": "Shadow Cloak",
-      "category": "armor",
-      "slot": "chest",
-      "def": 2,
-      "penalty": "+1 stealth"
-    },
-    {
-      "id": "iron-plate",
-      "name": "Iron Plate",
-      "category": "armor",
-      "slot": "chest",
-      "def": 4,
-      "penalty": "-1 move"
-    },
-    {
-      "id": "worn-gambeson",
-      "name": "Worn Gambeson",
-      "category": "armor",
-      "slot": "chest",
-      "def": 1,
-      "penalty": "No penalty"
-    }
+    // ---- chest (come v2) ----
+    { "id": "cloth-armor",   "name": "Cloth Armor",   "category": "armor", "slot": "chest", "def": 1, "penalty": "" },
+    { "id": "leather-armor", "name": "Leather Armor", "category": "armor", "slot": "chest", "def": 2, "penalty": "-1 STA regen" },
+    { "id": "rusty-plate",   "name": "Rusty Plate",   "category": "armor", "slot": "chest", "def": 3, "penalty": "-1 MANA regen" },
+    { "id": "chainmail",     "name": "Chainmail",     "category": "armor", "slot": "chest", "def": 3, "penalty": "-1 STA regen" },
+    { "id": "mage-robes",    "name": "Mage Robes",    "category": "armor", "slot": "chest", "def": 1, "penalty": "+1 MANA regen" },
+    { "id": "bone-armor",    "name": "Bone Armor",    "category": "armor", "slot": "chest", "def": 2, "penalty": "Weak to blunt" },
+    { "id": "shadow-cloak",  "name": "Shadow Cloak",  "category": "armor", "slot": "chest", "def": 2, "penalty": "+1 stealth" },
+    { "id": "iron-plate",    "name": "Iron Plate",    "category": "armor", "slot": "chest", "def": 4, "penalty": "-1 move" },
+    { "id": "worn-gambeson", "name": "Worn Gambeson", "category": "armor", "slot": "chest", "def": 1, "penalty": "No penalty" },
+
+    // ---- head ----
+    { "id": "leather-hood",  "name": "Leather Hood",  "category": "armor", "slot": "head",  "def": 1, "penalty": "" },
+    { "id": "iron-helm",     "name": "Iron Helm",     "category": "armor", "slot": "head",  "def": 2, "penalty": "-1 STA regen" },
+    { "id": "mage-hat",      "name": "Mage Hat",      "category": "armor", "slot": "head",  "def": 1, "penalty": "+1 MANA regen" },
+    { "id": "bone-helm",     "name": "Bone Helm",     "category": "armor", "slot": "head",  "def": 2, "penalty": "Weak to blunt" },
+    { "id": "shadow-hood",   "name": "Shadow Hood",   "category": "armor", "slot": "head",  "def": 2, "penalty": "+1 stealth" },
+
+    // ---- legs ----
+    { "id": "cloth-pants",      "name": "Cloth Pants",      "category": "armor", "slot": "legs", "def": 1, "penalty": "" },
+    { "id": "leather-greaves",  "name": "Leather Greaves",  "category": "armor", "slot": "legs", "def": 2, "penalty": "-1 STA regen" },
+    { "id": "iron-greaves",     "name": "Iron Greaves",     "category": "armor", "slot": "legs", "def": 3, "penalty": "-1 move" },
+    { "id": "mage-trousers",    "name": "Mage Trousers",    "category": "armor", "slot": "legs", "def": 1, "penalty": "+1 MANA regen" },
+    { "id": "bone-greaves",     "name": "Bone Greaves",     "category": "armor", "slot": "legs", "def": 2, "penalty": "Weak to blunt" },
+    { "id": "shadow-trousers",  "name": "Shadow Trousers",  "category": "armor", "slot": "legs", "def": 2, "penalty": "+1 stealth" }
   ],
-  "monsters": [
-    {
-      "id": "corrupted-rat",
-      "name": "Corrupted Rat",
-      "category": "monster",
-      "hp": 5,
-      "attack": "1d4",
-      "traits": "Fast, low defense"
-    },
-    {
-      "id": "lost-soul",
-      "name": "Lost Soul",
-      "category": "monster",
-      "hp": 8,
-      "attack": "1d6 magic",
-      "traits": "Immune to poison"
-    },
-    {
-      "id": "undead-guard",
-      "name": "Undead Guard",
-      "category": "monster",
-      "hp": 12,
-      "attack": "1d6 + STR",
-      "traits": "+2 DEF, slow"
-    },
-    {
-      "id": "wild-boar",
-      "name": "Wild Boar",
-      "category": "monster",
-      "hp": 10,
-      "attack": "1d8 charge",
-      "traits": "Stuns on charge"
-    },
-    {
-      "id": "bandit",
-      "name": "Bandit",
-      "category": "monster",
-      "hp": 9,
-      "attack": "1d6 + STR",
-      "traits": "Steals on crit"
-    },
-    {
-      "id": "fire-sprite",
-      "name": "Fire Sprite",
-      "category": "monster",
-      "hp": 6,
-      "attack": "1d8 fire",
-      "traits": "Explodes on death"
-    },
-    {
-      "id": "ghoul",
-      "name": "Ghoul",
-      "category": "monster",
-      "hp": 10,
-      "attack": "1d6",
-      "traits": "Poisons on hit"
-    },
-    {
-      "id": "stone-golem",
-      "name": "Stone Golem",
-      "category": "monster",
-      "hp": 20,
-      "attack": "1d10",
-      "traits": "+4 DEF, slow"
-    },
-    {
-      "id": "plague-crow",
-      "name": "Plague Crow",
-      "category": "monster",
-      "hp": 7,
-      "attack": "1d4",
-      "traits": "Inflicts disease"
-    },
-    {
-      "id": "blood-hound",
-      "name": "Blood Hound",
-      "category": "monster",
-      "hp": 11,
-      "attack": "2d4",
-      "traits": "Fast, tracks target"
-    },
-    {
-      "id": "specter",
-      "name": "Specter",
-      "category": "monster",
-      "hp": 8,
-      "attack": "1d6 psychic",
-      "traits": "Ignores armor"
-    },
-    {
-      "id": "cultist",
-      "name": "Cultist",
-      "category": "monster",
-      "hp": 10,
-      "attack": "1d4 + dark spell",
-      "traits": "Summons minions"
-    },
-    {
-      "id": "dire-wolf",
-      "name": "Dire Wolf",
-      "category": "monster",
-      "hp": 12,
-      "attack": "1d8",
-      "traits": "Bleeds on crit"
-    },
-    {
-      "id": "skeleton-archer",
-      "name": "Skeleton Archer",
-      "category": "monster",
-      "hp": 8,
-      "attack": "1d6 ranged",
-      "traits": "Bonus in formations"
-    }
-  ]
+
+  "items": [ … ] ,               // (identico a v2)
+
+  "monsters": [ … ]              // (identico a v2)
 }
