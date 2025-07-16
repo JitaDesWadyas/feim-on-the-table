@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dungeon Master – FEIM</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="progression.html">Progression</a>
+    <a href="combat_rules.html">Combat</a>
+    <a href="general_rules.html">Rules</a>
+    <a href="lists.html">Lists</a>
+    <a href="character_sheet.html">Sheet</a>
+    <a href="dungeon_master.html">Dungeon Master</a>
+  </nav>
+
+  <h1>Dungeon Master</h1>
+
+  <details id="gamedata-editor">
+    <summary>Game Data Editor</summary>
+    <label for="typeSel">Type</label>
+    <select id="typeSel">
+      <option value="skill">skill</option>
+      <option value="item">item</option>
+      <option value="monster">monster</option>
+    </select>
+    <label for="name">Name</label>
+    <input id="name" type="text">
+    <label for="desc">Description</label>
+    <textarea id="desc" rows="2"></textarea>
+
+    <div id="skillFields" class="type-fields">
+      <label for="gd_damage">Damage</label>
+      <input id="gd_damage" type="text">
+      <label for="gd_cooldown">Cooldown</label>
+      <input id="gd_cooldown" type="text">
+      <label for="gd_element">Element</label>
+      <input id="gd_element" type="text">
+    </div>
+
+    <div id="itemFields" class="type-fields" style="display:none">
+      <label for="gd_rarity">Rarity</label>
+      <input id="gd_rarity" type="text">
+      <label for="gd_effect">Effect</label>
+      <input id="gd_effect" type="text">
+      <label for="gd_stack">Stack</label>
+      <input id="gd_stack" type="number" min="1" value="1">
+    </div>
+
+    <div id="monsterFields" class="type-fields" style="display:none">
+      <label for="gd_hp">HP</label>
+      <input id="gd_hp" type="number" min="1" value="1">
+      <label for="gd_stamina">Stamina</label>
+      <input id="gd_stamina" type="number" min="0" value="0">
+      <label for="gd_mana">Mana</label>
+      <input id="gd_mana" type="number" min="0" value="0">
+      <label for="gd_baseAtk">Base Atk</label>
+      <input id="gd_baseAtk" type="text">
+      <label for="gd_loot">Loot</label>
+      <input id="gd_loot" type="text">
+    </div>
+
+    <button id="saveBtn" class="btn">💾 Salva</button>
+    <input id="filterInput" placeholder="Filter list" type="text" style="margin-top:1rem">
+    <ul id="gamedataList"></ul>
+  </details>
+
+  <details id="encounter-manager">
+    <summary>Encounter Manager</summary>
+    <select id="monsterSelect"></select>
+    <button id="addMonster" class="btn">Add monster</button>
+    <div id="encounterArea"></div>
+  </details>
+
+  <details id="turn-tracker">
+    <summary>Turn Tracker</summary>
+    <button id="nextTurn" class="btn">➡️ Prossimo Turno</button>
+    <ul id="log" aria-live="polite"></ul>
+  </details>
+
+  <script type="module" src="js/dungeon_master.js"></script>
+</body>
+</html>
