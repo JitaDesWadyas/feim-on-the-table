@@ -40,6 +40,11 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 #picker ul{max-height:60vh;overflow:auto;width:100%;max-width:360px;padding:0;margin:0;list-style:none}
 #picker li{padding:.4rem .6rem;border:1px solid var(--border);margin-bottom:.4rem;cursor:pointer}
 @media(max-width:480px){body{padding:.6rem}table{font-size:.8rem}}
+.lvl-row label{flex:1 1 32%;min-width:90px}
+@media(max-width:480px){
+  .lvl-row{flex-wrap:wrap}
+  .lvl-row label{flex:1 1 100%}   /* ciascuno va a capo, stessa larghezza */
+}
 </style>
 </head>
 <body>
@@ -62,7 +67,7 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 <label>Name</label><input data-key="name" class="persist" type="text">
 <label>Title</label><input data-key="title" class="persist" type="text">
 
-<div style="display:flex;gap:8px">
+<div class="lvl-row" style="display:flex;gap:8px">
  <label style="flex:1">Level <span id="pts_left" style="font-size:.9rem"></span><input data-key="level" class="persist" type="number" min="1" max="10" value="1"></label>
  <label style="flex:1">XP<input data-key="xp" class="persist" type="number" min="0" value="0"></label>
  <label style="flex:1">Coins<input data-key="coins" class="persist" type="number" min="0" value="0"></label>
