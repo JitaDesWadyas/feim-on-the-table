@@ -1,81 +1,345 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Dungeon Master – FEIM</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Dungeon Master – FEIM</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<!-- ---------- STILE ---------- -->
+<style>
+:root{
+  --amber:#ffb84d;
+  --bg:#1a1a1a;
+  --fg:#f5f3ef;
+  --panel:#2a2a2a;
+  --border:#444;
+}
+body{font-family:sans-serif;background:var(--bg);color:var(--fg);max-width:680px;margin:auto;padding:1rem}
+h1,h2{color:var(--amber);border-bottom:1px solid #555;padding-bottom:.2rem;margin-top:1.5rem}
+label{font-weight:bold;margin-top:1rem;display:block}
+input,textarea,select{background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.6rem}
+input[type=text],input[type=number],textarea{width:100%;box-sizing:border-box;margin-top:.3rem}
+input[type=number]{max-width:90px}
+.slider-wrap{display:flex;align-items:center;gap:.5rem;margin-top:1rem}
+button{background:#333;border:1px solid var(--border);color:var(--amber);touch-action:none}
+button.btn{padding:.45rem .7rem;border-radius:4px;margin-top:.4rem;font-size:.9rem}
+.slider-wrap button{width:38px;height:38px;font-size:1.2rem}
+.slider-wrap span{min-width:48px;text-align:right}
+input[type=range]{flex:1;height:34px;appearance:none;background:transparent}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:30px;height:30px;background:var(--amber);border-radius:50%;border:none}
+input[type=range]::-webkit-slider-runnable-track{height:8px;background:#555;border-radius:4px}
+input[type=range]::-moz-range-thumb{width:30px;height:30px;background:var(--amber);border:none;border-radius:50%}
+input[type=range]::-moz-range-track{height:8px;background:#555;border-radius:4px}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem}
+nav a{background:#333;padding:.4rem .7rem;border-radius:4px}
+ul{padding:0;list-style:none}
+li{margin:.3rem 0}
+.monster-card{background:var(--panel);padding:.5rem;margin:.5rem 0;border:1px solid var(--border)}
+.monster-card strong{display:block;margin-bottom:.3rem}
+.del-entry,.del,.finish,.act{margin-left:.4rem}
+.type-fields{margin-top:.6rem}
+@media (max-width:480px){
+  body{padding:.6rem}
+  nav a{font-size:.9rem}
+}
+</style>
 </head>
+
 <body>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="progression.html">Progression</a>
-    <a href="combat_rules.html">Combat</a>
-    <a href="general_rules.html">Rules</a>
-    <a href="lists.html">Lists</a>
-    <a href="character_sheet.html">Sheet</a>
-    <a href="dungeon_master.html">Dungeon Master</a>
-  </nav>
 
-  <h1>Dungeon Master</h1>
+<!-- ---------- NAV ---------- -->
+<nav>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
+  <a href="dungeon_master.html">Dungeon Master</a>
+</nav>
 
-  <details id="gamedata-editor">
-    <summary>Game Data Editor</summary>
-    <label for="typeSel">Type</label>
+<h1>Dungeon Master</h1>
+
+<!-- ---------- GAME‑DATA EDITOR ---------- -->
+<details id="gamedata-editor" open>
+  <summary>Game Data Editor</summary>
+
+  <label>Type
     <select id="typeSel">
       <option value="skill">skill</option>
       <option value="item">item</option>
       <option value="monster">monster</option>
     </select>
-    <label for="name">Name</label>
-    <input id="name" type="text">
-    <label for="desc">Description</label>
-    <textarea id="desc" rows="2"></textarea>
+  </label>
 
-    <div id="skillFields" class="type-fields">
-      <label for="gd_damage">Damage</label>
-      <input id="gd_damage" type="text">
-      <label for="gd_cooldown">Cooldown</label>
-      <input id="gd_cooldown" type="text">
-      <label for="gd_element">Element</label>
-      <input id="gd_element" type="text">
-    </div>
+  <label>Name <input id="name" type="text"></label>
+  <label>Description <textarea id="desc" rows="2"></textarea></label>
 
-    <div id="itemFields" class="type-fields" style="display:none">
-      <label for="gd_rarity">Rarity</label>
-      <input id="gd_rarity" type="text">
-      <label for="gd_effect">Effect</label>
-      <input id="gd_effect" type="text">
-      <label for="gd_stack">Stack</label>
-      <input id="gd_stack" type="number" min="1" value="1">
-    </div>
+  <!-- skill -->
+  <div id="skillFields" class="type-fields">
+    <label>Damage <input id="gd_damage" type="text"></label>
+    <label>Cooldown <input id="gd_cooldown" type="text"></label>
+    <label>Element <input id="gd_element" type="text"></label>
+  </div>
 
-    <div id="monsterFields" class="type-fields" style="display:none">
-      <label for="gd_hp">HP</label>
-      <input id="gd_hp" type="number" min="1" value="1">
-      <label for="gd_stamina">Stamina</label>
-      <input id="gd_stamina" type="number" min="0" value="0">
-      <label for="gd_mana">Mana</label>
-      <input id="gd_mana" type="number" min="0" value="0">
-      <label for="gd_baseAtk">Base Atk</label>
-      <input id="gd_baseAtk" type="text">
-      <label for="gd_loot">Loot</label>
-      <input id="gd_loot" type="text">
-    </div>
+  <!-- item -->
+  <div id="itemFields" class="type-fields" style="display:none">
+    <label>Rarity <input id="gd_rarity" type="text"></label>
+    <label>Effect <input id="gd_effect" type="text"></label>
+    <label>Stack <input id="gd_stack" type="number" min="1" value="1"></label>
+  </div>
 
-    <button id="saveBtn" class="btn">💾 Salva</button>
-    <button id="delBtn" class="btn" style="display:none">🗑 Delete</button>
-    <input id="filterInput" placeholder="Filter list" type="text" style="margin-top:1rem">
-    <ul id="gamedataList"></ul>
-  </details>
+  <!-- monster -->
+  <div id="monsterFields" class="type-fields" style="display:none">
+    <label>HP <input id="gd_hp" type="number" min="1" value="1"></label>
+    <label>Stamina <input id="gd_stamina" type="number" min="0" value="0"></label>
+    <label>Mana <input id="gd_mana" type="number" min="0" value="0"></label>
+    <label>Base Atk <input id="gd_baseAtk" type="text"></label>
+    <label>Loot <input id="gd_loot" type="text"></label>
+  </div>
 
-  <details id="encounter-manager">
-    <summary>Encounter Manager</summary>
-    <select id="monsterSelect"></select>
-    <button id="addMonster" class="btn">Add monster</button>
-    <div id="encounterArea"></div>
-  </details>
+  <button id="saveBtn" class="btn">💾 Salva / Aggiorna</button>
+  <button id="delBtn" class="btn" style="display:none">🗑 Elimina</button>
 
-  <script type="module" src="js/dungeon_master.js"></script>
+  <input id="filterInput" placeholder="filtra elenco" type="text" style="margin-top:1rem">
+  <ul id="gamedataList"></ul>
+</details>
+
+<!-- ---------- ENCOUNTER MANAGER ---------- -->
+<details id="encounter-manager" open>
+  <summary>Encounter Manager</summary>
+  <select id="monsterSelect"></select>
+  <button id="addMonster" class="btn">+ Mostro</button>
+
+  <div id="encounterArea"></div>
+</details>
+
+<footer style="text-align:center;margin-top:2rem;color:#777;font-size:.8rem">
+© 2025 JitaDesWadyas
+</footer>
+
+<!-- ---------- LOGICA ---------- -->
+<script>
+/* utils basilari ----------------------------------------------------------- */
+const q = s => document.querySelector(s);
+const qq = s => document.querySelectorAll(s);
+function setVal(el,val){el.value=val;el.dispatchEvent(new Event('input'));}
+
+/* stato -------------------------------------------------------------------- */
+let gameData = {};      // skills, items, monsters…
+let currentObj = null;  // entry in editing
+let encounter  = { monsters: [] };
+
+/* caricamento iniziale ------------------------------------------------------ */
+(async function init(){
+  await loadGameData();
+  loadEncounter();
+  hookUI();
+})();
+
+/* -------------------- GAME DATA (creazione / CRUD) ------------------------ */
+async function loadGameData(){
+  const ls = localStorage.getItem('gamedata');
+  if(ls){
+    gameData = JSON.parse(ls);
+  }else{
+    gameData = await fetch('gamedata.json').then(r=>r.json());
+    localStorage.setItem('gamedata', JSON.stringify(gameData));
+  }
+  renderGameDataList();
+  fillMonsterSelect();
+}
+
+function saveGameData(obj){
+  const key = obj.category + 's';
+  gameData[key] = gameData[key] || [];
+  const idx = gameData[key].findIndex(o=>o.id===obj.id);
+  idx > -1 ? gameData[key][idx] = obj : gameData[key].push(obj);
+  localStorage.setItem('gamedata', JSON.stringify(gameData));
+  renderGameDataList();
+  fillMonsterSelect();
+}
+
+function deleteGameData(cat,id){
+  const key = cat + 's';
+  gameData[key] = (gameData[key]||[]).filter(o=>o.id!==id);
+  localStorage.setItem('gamedata', JSON.stringify(gameData));
+  renderGameDataList();
+  fillMonsterSelect();
+}
+
+/* -------------------- EDITOR RENDERING ------------------------------------ */
+function renderGameDataList(){
+  const f = q('#filterInput').value.toLowerCase();
+  const lists = [...(gameData.skills||[]),...(gameData.items||[]),...(gameData.monsters||[])];
+  q('#gamedataList').innerHTML = lists
+    .filter(o=>o.name.toLowerCase().includes(f))
+    .map(o=>`<li data-id="${o.id}" data-cat="${o.category}">
+               ${o.name}
+               <button class="del-entry" data-id="${o.id}" data-cat="${o.category}">×</button>
+             </li>`).join('');
+}
+
+function loadEntry(cat,id){
+  const obj = (gameData[cat+'s']||[]).find(o=>o.id===id);
+  if(!obj) return;
+  currentObj = obj;
+
+  // UI
+  q('#typeSel').value = cat;
+  q('#typeSel').dispatchEvent(new Event('change'));
+
+  q('#name').value       = obj.name||'';
+  q('#desc').value       = obj.description||'';
+  q('#gd_damage').value  = obj.damage||'';
+  q('#gd_cooldown').value= obj.cooldown||'';
+  q('#gd_element').value = obj.element||'';
+  q('#gd_rarity').value  = obj.rarity||'';
+  q('#gd_effect').value  = obj.effect||'';
+  q('#gd_stack').value   = obj.stack||1;
+  q('#gd_hp').value      = obj.hp||0;
+  q('#gd_stamina').value = obj.stamina||0;
+  q('#gd_mana').value    = obj.mana||0;
+  q('#gd_baseAtk').value = obj.baseAtk||'';
+  q('#gd_loot').value    = obj.loot||'';
+
+  q('#delBtn').style.display='inline-block';
+}
+
+function clearFields(){
+  currentObj = null;
+  ['name','desc','gd_damage','gd_cooldown','gd_element','gd_rarity','gd_effect','gd_stack','gd_hp','gd_stamina','gd_mana','gd_baseAtk','gd_loot']
+    .forEach(id=>{const el=q('#'+id);el.value = el.type==='number' ? 0 : '';});
+  q('#delBtn').style.display='none';
+}
+
+/* -------------------- ENCOUNTER (battle board) ---------------------------- */
+function fillMonsterSelect(){
+  q('#monsterSelect').innerHTML = (gameData.monsters||[])
+    .map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+}
+
+function spawnMonster(id){
+  const src = (gameData.monsters||[]).find(m=>m.id===id);
+  if(!src) return;
+  const m = JSON.parse(JSON.stringify(src)); // deep clone
+  m.maxHp      = m.hp;
+  m.maxStamina = m.stamina||0;
+  m.maxMana    = m.mana||0;
+  m.stamina    = m.maxStamina;
+  m.mana       = m.maxMana;
+  m.time       = 3;
+  m.maxTime    = 3;
+  encounter.monsters.push(m);
+  renderEncounter();
+  persistEncounter();
+}
+
+function renderEncounter(){
+  q('#encounterArea').innerHTML = encounter.monsters.map((m,i)=>`
+    <div class="monster-card">
+      <strong>${m.name}</strong>
+      <button class="del" data-i="${i}">×</button>
+
+      <div class="slider-wrap">HP
+        <input type="range" class="bar" data-i="${i}" data-k="hp" min="0" max="${m.maxHp}" value="${m.hp}">
+        <span>${m.hp}</span>
+      </div>
+
+      <div class="slider-wrap">ST
+        <input type="range" class="bar" data-i="${i}" data-k="stamina" min="0" max="${m.maxStamina}" value="${m.stamina}">
+        <span>${m.stamina}</span>
+      </div>
+
+      <div class="slider-wrap">MP
+        <input type="range" class="bar" data-i="${i}" data-k="mana" min="0" max="${m.maxMana}" value="${m.mana}">
+        <span>${m.mana}</span>
+      </div>
+
+      <div class="slider-wrap">TIME
+        <input type="range" class="bar" data-i="${i}" data-k="time" min="0" max="${m.maxTime}" value="${m.time}">
+        <span>${m.time}</span>
+      </div>
+
+      <button class="finish" data-i="${i}">End Turn</button><br>
+
+      ${(m.skills||[]).map(s=>`<button class="act" data-s="${s}" data-i="${i}">${s}</button>`).join(' ')}
+    </div>`).join('');
+
+  // handlers
+  qq('.del').forEach(b=>b.onclick = ()=>{encounter.monsters.splice(+b.dataset.i,1);renderEncounter();persistEncounter();});
+  qq('.bar').forEach(sl=>sl.oninput = ()=>{const i=+sl.dataset.i;const k=sl.dataset.k;encounter.monsters[i][k]=+sl.value;sl.nextElementSibling.textContent=sl.value;persistEncounter();});
+  qq('.finish').forEach(b=>b.onclick = ()=>finishTurn(+b.dataset.i));
+}
+
+function finishTurn(i){
+  const m = encounter.monsters[i]; if(!m) return;
+  m.time = m.maxTime;
+  if(m.maxStamina>0) m.stamina = Math.min(m.maxStamina, m.stamina+1);
+  if(m.maxMana>0)    m.mana    = Math.min(m.maxMana,    m.mana+1);
+  renderEncounter();
+  persistEncounter();
+}
+
+/* persistence encounter in sessionStorage */
+function persistEncounter(){ sessionStorage.setItem('encounter', JSON.stringify(encounter)); }
+function loadEncounter(){ const ls=sessionStorage.getItem('encounter'); if(ls) encounter=JSON.parse(ls); }
+
+/* -------------------- UI WIRING ------------------------------------------ */
+function hookUI(){
+  /* editor */
+  q('#saveBtn').onclick = () => {
+    const type = q('#typeSel').value;
+    const obj = currentObj || {};
+    obj.id          = q('#name').value.trim().toLowerCase().replace(/\s+/g,'-');
+    obj.name        = q('#name').value.trim();
+    obj.description = q('#desc').value.trim();
+    obj.category    = type;
+
+    if(type==='skill'){
+      obj.damage   = q('#gd_damage').value;
+      obj.cooldown = q('#gd_cooldown').value;
+      obj.element  = q('#gd_element').value;
+    }else if(type==='item'){
+      obj.rarity = q('#gd_rarity').value;
+      obj.effect = q('#gd_effect').value;
+      obj.stack  = +q('#gd_stack').value || 1;
+    }else{ // monster
+      obj.hp       = +q('#gd_hp').value||0;
+      obj.stamina  = +q('#gd_stamina').value||0;
+      obj.mana     = +q('#gd_mana').value||0;
+      obj.baseAtk  = q('#gd_baseAtk').value;
+      obj.loot     = q('#gd_loot').value;
+    }
+
+    saveGameData(obj);
+    clearFields();
+  };
+
+  q('#delBtn').onclick = () => { if(currentObj){ deleteGameData(currentObj.category,currentObj.id); clearFields(); } };
+
+  q('#typeSel').onchange = () => {
+    qq('.type-fields').forEach(div=>div.style.display='none');
+    q('#'+q('#typeSel').value+'Fields').style.display='block';
+  };
+
+  q('#filterInput').oninput = renderGameDataList;
+  q('#gamedataList').onclick = e => {
+    const del = e.target.closest('.del-entry');
+    if(del){
+      deleteGameData(del.dataset.cat, del.dataset.id);
+      if(currentObj && currentObj.id===del.dataset.id) clearFields();
+      return;
+    }
+    const li = e.target.closest('li[data-id]');
+    if(li) loadEntry(li.dataset.cat, li.dataset.id);
+  };
+
+  /* encounter */
+  q('#addMonster').onclick = () => spawnMonster(q('#monsterSelect').value);
+}
+</script>
 </body>
 </html>
