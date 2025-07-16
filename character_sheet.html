@@ -105,11 +105,19 @@ nav a{
 table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
 th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
 th{background:#333}
+/* new ui */
+.btn{background:#333;border:1px solid var(--border);color:var(--amber);padding:.5rem .8rem;font-size:.9rem;border-radius:4px}
+.row1{font-weight:600}
+.cost{width:38%;text-align:right}
+.descr{font-size:.85rem;color:#ccc}
+.actionBtn{font-size:1rem;width:32px;height:32px;padding:0;margin-right:4px}
 @media (max-width:480px){
   body{padding:.6rem}
   nav a{font-size:.9rem}
 button.dec,
-button.inc{
+button.inc,
+.actionBtn,
+.btn{
   touch-action: none;                 /* disabilita tutti i gesture‑zoom */
   -webkit-tap-highlight-color: transparent;
   user-select: none;
@@ -163,16 +171,18 @@ button.inc{
 <!-- Skills -->
 <h2>Skills</h2>
 <table>
-<thead><tr><th>Name</th><th class="time">Time</th><th class="cost">Cost</th><th class="effect">Effect</th></tr></thead>
+<thead><tr><th></th><th>Name</th><th class="time">Time</th><th class="cost">Cost</th><th class="effect">Effect</th></tr></thead>
 <tbody id="skills_tbody"></tbody>
 </table>
+<button class="btn add-skill">+ Skill</button>
 
 <!-- Magic -->
 <h2>Magic</h2>
 <table>
-<thead><tr><th>Name</th><th class="time">Time</th><th class="cost">Cost</th><th class="effect">Effect</th></tr></thead>
+<thead><tr><th></th><th>Name</th><th class="time">Time</th><th class="cost">Cost</th><th class="effect">Effect</th></tr></thead>
 <tbody id="magic_tbody"></tbody>
 </table>
+<button class="btn add-spell">+ Spell</button>
 
 <!-- Inventory -->
 <h2>Inventory</h2>
@@ -180,6 +190,7 @@ button.inc{
 <thead><tr><th>Name</th><th style="width:22%">Type</th><th class="effect">Description</th></tr></thead>
 <tbody id="inv_tbody"></tbody>
 </table>
+<button class="btn add-item">+ Item</button>
 
 <!-- Diary -->
 <h2>Diary</h2>
@@ -207,6 +218,7 @@ button.inc{
   Time <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span>
   <button data-slider="time" class="inc">+</button>
 </div>
+<button id="endRound" class="btn">End Round</button>
 
 <footer>© 2025 JitaDesWadyas</footer>
 
@@ -229,6 +241,13 @@ function genRows(tbodyId,prefix,count){
   const tb=document.getElementById(tbodyId);
   for(let i=0;i<count;i++){
     const tr=tb.insertRow();
+    const act=tr.insertCell();
+    const btn=document.createElement('button');
+    btn.textContent='▶';
+    btn.className='actionBtn';
+    btn.dataset.prefix=prefix;
+    btn.dataset.row=i;
+    act.appendChild(btn);
     ["name","time","cost","eff"].forEach((field,idx)=>{
       const td=tr.insertCell();
       if(idx===3) td.className="effect";
@@ -249,6 +268,67 @@ function genInvRows(){
   }
 }
 
+function selectDialog(arr){
+  return new Promise(res=>{
+    const ov=document.createElement('div');
+    ov.style.position='fixed';
+    ov.style.inset='0';
+    ov.style.background='rgba(0,0,0,0.7)';
+    ov.style.display='flex';
+    ov.style.alignItems='center';
+    ov.style.justifyContent='center';
+    const box=document.createElement('div');
+    box.style.background='var(--panel)';
+    box.style.padding='1rem';
+    const sel=document.createElement('select');
+    arr.forEach(o=>{const op=document.createElement('option');op.value=o.id;op.textContent=o.name;sel.appendChild(op);});
+    const ok=document.createElement('button');
+    ok.textContent='OK';
+    ok.className='btn';
+    box.appendChild(sel);box.appendChild(ok);ov.appendChild(box);document.body.appendChild(ov);
+    ok.addEventListener('click',()=>{const v=sel.value;ov.remove();res(v);});
+  });
+}
+
+function addButtons(){
+  document.querySelector('.add-skill').addEventListener('click',async()=>{
+    const id=await selectDialog(window.FEIM_DATA.skills);
+    fillRow('skill',id);
+  });
+  document.querySelector('.add-spell').addEventListener('click',async()=>{
+    const id=await selectDialog(window.FEIM_DATA.spells);
+    fillRow('magic',id);
+  });
+  document.querySelector('.add-item').addEventListener('click',async()=>{
+    const list=(window.FEIM_DATA.weapons||[]).concat(window.FEIM_DATA.armors||[]);
+    const id=await selectDialog(list);
+    fillRow('inv',id);
+  });
+}
+
+function fillRow(prefix,id){
+  const data=[].concat(window.FEIM_DATA.skills,window.FEIM_DATA.spells,window.FEIM_DATA.weapons,window.FEIM_DATA.armors).find(x=>x.id===id);
+  if(!data) return;
+  const tbId=prefix==='skill'? 'skills_tbody' : prefix==='magic'? 'magic_tbody':'inv_tbody';
+  const row=[...document.querySelectorAll(`#${tbId} tr`)].find(tr=>{
+    const inp=tr.querySelector(`input[data-key^="${prefix}"][data-key$="_name"]`);
+    return inp && !inp.value;
+  });
+  if(!row) return;
+  const idx=row.querySelector('button.actionBtn')?row.querySelector('button.actionBtn').dataset.row:0;
+  row.querySelector(`input[data-key="${prefix}_${idx}_name"]`).value=data.name;
+  if(prefix!=='inv'){
+    row.querySelector(`input[data-key="${prefix}_${idx}_time"]`).value=data.time;
+    row.querySelector(`input[data-key="${prefix}_${idx}_cost"]`).value=`${data.cost.amount} ${data.cost.resource.slice(0,3).toUpperCase()}`;
+    row.querySelector(`input[data-key="${prefix}_${idx}_eff"]`).value=formatDescr(data);
+    row.querySelector('button.actionBtn').dataset.item=id;
+  }else{
+    row.querySelector(`input[data-key="inv_${idx}_type"]`).value=data.type||'';
+    row.querySelector(`input[data-key="inv_${idx}_desc"]`).value=data.notes||data.penalty||'';
+  }
+  row.querySelectorAll('input').forEach(el=>el.dispatchEvent(new Event('input')));
+}
+
 
 // ---------- slider buttons ----------
 function sliderButtons(){
@@ -260,6 +340,36 @@ function sliderButtons(){
       slider.value=parseFloat(slider.value)+(btn.classList.contains("inc")?step:-step);
       slider.dispatchEvent(new Event("input"));
     });
+  });
+}
+function endRound(){
+  const timeSl=document.querySelector('[data-key="time"]');
+  sliderUpdate('time',parseFloat(timeSl.max));
+  sliderUpdate('stamina',Math.min(parseFloat(document.querySelector('[data-key="stamina"]').max),parseFloat(document.querySelector('[data-key="stamina"]').value)+getStat('end')));
+  sliderUpdate('mana',Math.min(parseFloat(document.querySelector('[data-key="mana"]').max),parseFloat(document.querySelector('[data-key="mana"]').value)+Math.floor(getStat('wis')*0.5)));
+}
+function sliderUpdate(key,val){
+  const sl=document.querySelector(`input[data-key="${key}"]`);
+  if(!sl) return;
+  const num=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min||0),val));
+  sl.value=num;
+  sl.dispatchEvent(new Event('input'));
+}
+function actionButtons(){
+  document.querySelectorAll('.actionBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.item;
+      if(!id) return;
+      const data=(window.FEIM_DATA.skills||[]).concat(window.FEIM_DATA.spells||[]).find(x=>x.id===id);
+      if(!data) return;
+      const t=parseFloat(data.time)||0;
+      const res=data.cost?data.cost.resource:null;
+      const amt=data.cost?data.cost.amount:0;
+      if(parseFloat(document.querySelector('[data-key="time"]').value)<t){alert('Not enough TIME');return;}
+      if(res && parseFloat(document.querySelector(`[data-key="${res}"]`).value)<amt){alert('Not enough '+res);return;}
+      sliderUpdate('time',parseFloat(document.querySelector('[data-key="time"]').value)-t);
+      if(res) sliderUpdate(res,parseFloat(document.querySelector(`[data-key="${res}"]`).value)-amt);
+   });
   });
 }
 function getStat(key){
@@ -390,11 +500,12 @@ if(levelInput){
   });
 }
 /* — stop double‑tap zoom only on ± buttons (Chrome/Android) — */
-document.addEventListener('dblclick', function (e) {
-  if (e.target.closest('button.dec,button.inc')) {
-    e.preventDefault();                // blocca lo zoom
-  }
-}, { passive:false });
+document.addEventListener('dblclick',function(e){
+  if(e.target.closest('button.dec,button.inc,.actionBtn,.btn')) e.preventDefault();
+},{passive:false});
+document.addEventListener('touchstart',function(e){
+  if(e.target.closest('button.dec,button.inc,.actionBtn,.btn')) e.preventDefault();
+},{passive:false});
 
 
 /* prima esecuzione */
@@ -403,13 +514,17 @@ updateMods();
 
 /* ----------------------------------------------------- */
 
-
-// ---------- init ----------
-genRows("skills_tbody","skill",10);
-genRows("magic_tbody","magic",10);
-genInvRows();
-persistInit();
-sliderButtons();
+(async function(){
+  window.FEIM_DATA = await fetch('game_data_feim_v1.json').then(r=>r.json());
+  genRows("skills_tbody","skill",10);
+  genRows("magic_tbody","magic",10);
+  genInvRows();
+  persistInit();
+  sliderButtons();
+  addButtons();
+  actionButtons();
+  document.getElementById('endRound').addEventListener('click',endRound);
+})();
 </script>
 </body>
 </html>
