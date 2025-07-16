@@ -30,9 +30,23 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:30px;height:30px;b
 input[type=range]::-webkit-slider-runnable-track{height:8px;background:#555;border-radius:4px}
 input[type=range]::-moz-range-thumb{width:30px;height:30px;background:var(--amber);border:none;border-radius:50%}
 input[type=range]::-moz-range-track{height:8px;background:#555;border-radius:4px}
-nav{margin-bottom:1rem}
-nav a{margin-right:.7rem;color:var(--amber);text-decoration:none;font-weight:bold}
-nav a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;padding:.4rem .7rem;border-radius:4px;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+@media (max-width:480px){
+  body{padding:.6rem}
+  nav a{font-size:.9rem}
+  table{font-size:.8rem}
+}
 .btn{padding:.45rem .7rem;border-radius:4px;margin-top:.4rem;font-size:.9rem}
 footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 #picker{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;flex-direction:column;align-items:center;padding:1rem;z-index:1000}
@@ -50,11 +64,12 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 <body>
 
 <nav>
- <a href="index.html">Home</a>
- <a href="progression.html">Progression</a>
- <a href="combat_rules.html">Combat</a>
- <a href="general_rules.html">Rules</a>
- <a href="lists.html">Lists</a>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
 </nav>
 
 <h1>FEIM Character Sheet</h1>
