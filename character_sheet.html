@@ -111,6 +111,8 @@ th{background:#333}
 .cost{width:38%;text-align:right}
 .descr{font-size:.85rem;color:#ccc}
 .actionBtn{font-size:1rem;width:32px;height:32px;padding:0;margin-right:4px}
+.removeBtn{font-size:1rem;width:32px;height:32px;padding:0;margin-left:4px}
+.effectbox{width:100%;min-height:2.4em;background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.5rem;overflow-wrap:break-word;resize:vertical}
 @media (max-width:480px){
   body{padding:.6rem}
   nav a{font-size:.9rem}
@@ -136,6 +138,11 @@ button.inc,
 </nav>
 
 <h1>FEIM: On the Table</h1>
+<p style="text-align:right;">
+  <button id="exportBtn">Export JSON</button>
+  <input id="importFile" type="file" accept=".json" style="display:none">
+  <button id="importBtn">Import JSON</button>
+</p>
 
 <!-- Identity -->
 <label>Name</label>
@@ -218,6 +225,11 @@ button.inc,
   Time <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span>
   <button data-slider="time" class="inc">+</button>
 </div>
+<h3>Actions</h3>
+<div id="actions">
+  <div><button id="prevSkill" class="btn">&#9664;</button> <span id="skillSlots"></span> <button id="nextSkill" class="btn">&#9654;</button></div>
+  <div style="margin-top:.5rem"><button id="prevSpell" class="btn">&#9664;</button> <span id="spellSlots"></span> <button id="nextSpell" class="btn">&#9654;</button></div>
+</div>
 <button id="endRound" class="btn">End Round</button>
 
 <footer>© 2025 JitaDesWadyas</footer>
@@ -225,6 +237,38 @@ button.inc,
 <script>
 // ---------- helpers ----------
 function makeInput(key, cls="persist", type="text"){const i=document.createElement("input");i.type=type;i.dataset.key=key;i.className=cls;return i;}
+function makeArea(key){const t=document.createElement('textarea');t.dataset.key=key;t.className='persist effectbox';t.rows=2;return t;}
+function formatCost(it){
+  let txt='';
+  if(it.time) txt+=it.time+' s';
+  if(it.cost) txt+=(txt?' / ':'')+it.cost.amount+' '+it.cost.resource.toUpperCase().replace('STAMINA','STA').replace('MANA','MP');
+  return txt;
+}
+function formatDescr(it){
+  if(it.damage) return `${it.damage.dice} +${it.damage.stat}`+(it.notes?` (${it.notes})`:'');
+  if(it.def) return `+${it.def} DEF`+(it.penalty?`, ${it.penalty}`:'');
+  if(it.hp) return `${it.hp} HP, ${it.attack} – ${it.traits}`;
+  const e=it.effect||{};
+  if(e.kind==='damage'){let d=(e.count?e.count+'× ':'')+e.dice; if(e.multiplier&&e.multiplier!==1)d+=' ×'+e.multiplier; if(e.scales_with)d+=` (+${e.scales_with})`; return d+' damage';}
+  if(e.kind==='heal') return `heal ${e.dice}`;
+  if(e.kind==='buff'||e.kind==='debuff') return (e.dice||e.value)||'';
+  if(e.kind==='summon') return `Summon ${e.name} for ${e.duration} rounds`;
+  return e.dice||'';
+}
+function exportJSON(){
+  const out={};
+  Object.keys(localStorage).forEach(k=>{if(k.startsWith('feim_')) out[k]=localStorage[k];});
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='feim_sheet.json';a.click();
+}
+function importJSON(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{const obj=JSON.parse(r.result);Object.keys(obj).forEach(k=>localStorage[k]=obj[k]);location.reload();}catch(e){alert('Invalid file');}
+  };
+  r.readAsText(file);
+}
 function persistInit(){
   document.querySelectorAll(".persist").forEach(el=>{
     const k="feim_"+el.dataset.key;
@@ -248,12 +292,17 @@ function genRows(tbodyId,prefix,count){
     btn.dataset.prefix=prefix;
     btn.dataset.row=i;
     act.appendChild(btn);
+    const rm=document.createElement('button');
+    rm.textContent='✖';
+    rm.className='removeBtn';
+    rm.dataset.row=i;
+    act.appendChild(rm);
     ["name","time","cost","eff"].forEach((field,idx)=>{
       const td=tr.insertCell();
       if(idx===3) td.className="effect";
       else if(field==="time") td.className="time";
       else if(field==="cost") td.className="cost";
-      td.appendChild(makeInput(`${prefix}_${i}_${field}`));
+      td.appendChild(idx===3?makeArea(`${prefix}_${i}_${field}`):makeInput(`${prefix}_${i}_${field}`));
     });
   }
 }
@@ -264,7 +313,7 @@ function genInvRows(){
     tr.insertCell().appendChild(makeInput(`inv_${i}_name`));
     tr.insertCell().appendChild(makeInput(`inv_${i}_type`));
     const tdDesc=tr.insertCell();tdDesc.className="effect";
-    tdDesc.appendChild(makeInput(`inv_${i}_desc`));
+    tdDesc.appendChild(makeArea(`inv_${i}_desc`));
   }
 }
 
@@ -327,6 +376,7 @@ function fillRow(prefix,id){
     row.querySelector(`input[data-key="inv_${idx}_desc"]`).value=data.notes||data.penalty||'';
   }
   row.querySelectorAll('input').forEach(el=>el.dispatchEvent(new Event('input')));
+  updateActionSlots();
 }
 
 
@@ -355,6 +405,27 @@ function sliderUpdate(key,val){
   sl.value=num;
   sl.dispatchEvent(new Event('input'));
 }
+let skillOffset=0, spellOffset=0;
+function getIds(prefix){
+  return [...document.querySelectorAll(`#${prefix}_tbody tr`)].map(tr=>tr.querySelector('.actionBtn').dataset.item).filter(Boolean);
+}
+function updateActionSlots(){
+  const sIds=getIds('skills');
+  const mIds=getIds('magic');
+  const sSpan=document.getElementById('skillSlots');
+  const mSpan=document.getElementById('spellSlots');
+  sSpan.innerHTML='';
+  mSpan.innerHTML='';
+  for(let i=0;i<4;i++){
+    const sid=sIds[(skillOffset+i)%sIds.length];
+    if(sid){const b=document.createElement('button');b.className='actionBtn';b.dataset.item=sid;b.textContent=(window.FEIM_DATA.skills.find(x=>x.id===sid)||{}).name||sid;sSpan.appendChild(b);} 
+  }
+  for(let i=0;i<4;i++){
+    const mid=mIds[(spellOffset+i)%mIds.length];
+    if(mid){const b=document.createElement('button');b.className='actionBtn';b.dataset.item=mid;b.textContent=(window.FEIM_DATA.spells.find(x=>x.id===mid)||{}).name||mid;mSpan.appendChild(b);} 
+  }
+  actionButtons();
+}
 function actionButtons(){
   document.querySelectorAll('.actionBtn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -370,6 +441,14 @@ function actionButtons(){
       sliderUpdate('time',parseFloat(document.querySelector('[data-key="time"]').value)-t);
       if(res) sliderUpdate(res,parseFloat(document.querySelector(`[data-key="${res}"]`).value)-amt);
    });
+  });
+  document.querySelectorAll('.removeBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const row=btn.closest('tr');
+      row.querySelectorAll('input,textarea').forEach(el=>{el.value='';el.dispatchEvent(new Event('input'));});
+      btn.previousElementSibling.dataset.item='';
+      updateActionSlots();
+    });
   });
 }
 function getStat(key){
@@ -520,9 +599,19 @@ updateMods();
   genRows("magic_tbody","magic",10);
   genInvRows();
   persistInit();
+  updateResourceCaps();
+  updateMods();
+  document.getElementById('exportBtn').addEventListener('click',exportJSON);
+  document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+  document.getElementById('importFile').addEventListener('change',e=>{if(e.target.files[0]) importJSON(e.target.files[0]);});
   sliderButtons();
   addButtons();
   actionButtons();
+  updateActionSlots();
+  document.getElementById('prevSkill').addEventListener('click',()=>{skillOffset=(skillOffset-4+getIds('skills').length)%getIds('skills').length;updateActionSlots();});
+  document.getElementById('nextSkill').addEventListener('click',()=>{skillOffset=(skillOffset+4)%getIds('skills').length;updateActionSlots();});
+  document.getElementById('prevSpell').addEventListener('click',()=>{spellOffset=(spellOffset-4+getIds('magic').length)%getIds('magic').length;updateActionSlots();});
+  document.getElementById('nextSpell').addEventListener('click',()=>{spellOffset=(spellOffset+4)%getIds('magic').length;updateActionSlots();});
   document.getElementById('endRound').addEventListener('click',endRound);
 })();
 </script>
