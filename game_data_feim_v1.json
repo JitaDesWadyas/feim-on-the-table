@@ -194,6 +194,199 @@
         "multiplier": 1,
         "scales_with": "STR"
       }
+    },
+    {
+      "id": "move",
+      "name": "Move",
+      "category": "skill",
+      "type": "movement",
+      "time": 1.0,
+      "cost": {
+        "resource": "stamina",
+        "amount": 1
+      },
+      "effect": {
+        "kind": "utility",
+        "extra": "move 1 tile"
+      }
+    },
+    {
+      "id": "jump",
+      "name": "Jump",
+      "category": "skill",
+      "type": "movement",
+      "time": 1.0,
+      "cost": {
+        "resource": "stamina",
+        "amount": 2
+      },
+      "effect": {
+        "kind": "utility",
+        "extra": "clear obstacle"
+      }
+    },
+    {
+      "id": "basic-strike",
+      "name": "Basic Strike",
+      "category": "skill",
+      "type": "melee",
+      "time": 1.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 1
+      },
+      "effect": {
+        "kind": "damage",
+        "dice": "1d6",
+        "multiplier": 1,
+        "scales_with": "STR"
+      }
+    },
+    {
+      "id": "basic-shot",
+      "name": "Basic Shot",
+      "category": "skill",
+      "type": "ranged",
+      "time": 1.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 1
+      },
+      "effect": {
+        "kind": "damage",
+        "dice": "1d4",
+        "multiplier": 1,
+        "scales_with": "DEX"
+      }
+    },
+    {
+      "id": "shove",
+      "name": "Shove",
+      "category": "skill",
+      "type": "melee",
+      "time": 1.0,
+      "cost": {
+        "resource": "stamina",
+        "amount": 1
+      },
+      "effect": {
+        "kind": "utility",
+        "extra": "push target"
+      }
+    },
+    {
+      "id": "grapple",
+      "name": "Grapple",
+      "category": "skill",
+      "type": "melee",
+      "time": 1.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 2
+      },
+      "effect": {
+        "kind": "utility",
+        "extra": "hold target"
+      }
+    },
+    {
+      "id": "dodge",
+      "name": "Dodge",
+      "category": "skill",
+      "type": "movement",
+      "time": 0.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 1
+      },
+      "effect": {
+        "kind": "utility",
+        "dice": "evade"
+      }
+    },
+    {
+      "id": "lunge",
+      "name": "Lunge",
+      "category": "skill",
+      "type": "melee",
+      "time": 1.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 2
+      },
+      "effect": {
+        "kind": "damage",
+        "dice": "1d6",
+        "multiplier": 1.2,
+        "scales_with": "STR",
+        "extra": "move 1 tile"
+      }
+    },
+    {
+      "id": "focused-shot",
+      "name": "Focused Shot",
+      "category": "skill",
+      "type": "ranged",
+      "time": 2.0,
+      "cost": {
+        "resource": "stamina",
+        "amount": 2
+      },
+      "effect": {
+        "kind": "damage",
+        "dice": "1d4",
+        "multiplier": 1,
+        "scales_with": "DEX",
+        "extra": "+1 to hit"
+      }
+    },
+    {
+      "id": "long-jump",
+      "name": "Long Jump",
+      "category": "skill",
+      "type": "movement",
+      "time": 1.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 2
+      },
+      "effect": {
+        "kind": "utility",
+        "extra": "jump far"
+      }
+    },
+    {
+      "id": "slam",
+      "name": "Slam",
+      "category": "skill",
+      "type": "melee",
+      "time": 2.0,
+      "cost": {
+        "resource": "stamina",
+        "amount": 3
+      },
+      "effect": {
+        "kind": "damage",
+        "dice": "1d8",
+        "multiplier": 1.5,
+        "scales_with": "STR",
+        "extra": "knockdown"
+      }
+    },
+    {
+      "id": "pin",
+      "name": "Pin",
+      "category": "skill",
+      "type": "melee",
+      "time": 1.5,
+      "cost": {
+        "resource": "stamina",
+        "amount": 2
+      },
+      "effect": {
+        "kind": "utility",
+        "extra": "immobilize"
+      }
     }
   ],
   "spells": [
