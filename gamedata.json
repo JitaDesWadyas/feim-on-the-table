@@ -148,7 +148,7 @@
     { "id": "bone-armor",    "name": "Bone Armor",    "category": "armor", "slot": "chest", "def": 2, "penalty": "Weak to blunt" },
     { "id": "shadow-cloak",  "name": "Shadow Cloak",  "category": "armor", "slot": "chest", "def": 2, "penalty": "+1 stealth" },
     { "id": "iron-plate",    "name": "Iron Plate",    "category": "armor", "slot": "chest", "def": 4, "penalty": "-1 move" },
-    { "id": "worn-gambeson", "name": "Worn Gambeson", "category": "armor", "slot": "chest", "def": 1, "penalty": "No penalty" }
+    { "id": "worn-gambeson", "name": "Worn Gambeson", "category": "armor", "slot": "chest", "def": 1, "penalty": "No penalty" },
 
     { "id": "leather-hood",  "name": "Leather Hood",  "category": "armor", "slot": "head",  "def": 1, "penalty": "" },
     { "id": "iron-helm",     "name": "Iron Helm",     "category": "armor", "slot": "head",  "def": 2, "penalty": "-1 STA regen" },
