@@ -135,19 +135,47 @@ function persistInit(){
 }
 
 /* ---------- picker overlay ---------- */
+/* ---------- picker overlay ---------- */
 function openPicker(target){
- const box=q('#picker'),list=q('#pickerList'),search=q('#pickerSearch');
- const data=target=='tbl_skills'?FEIM.skills:target=='tbl_spells'?FEIM.spells:FEIM.items;
- box.style.display='flex';render('');
- function render(f){list.innerHTML=data.filter(o=>o.name.toLowerCase().includes(f.toLowerCase()))
-   .map(o=>`<li data-id="${o.id}">${o.name}</li>`).join('');
-  qq('#pickerList li').forEach(li=>li.onclick=_=>{
-     const obj=data.find(x=>x.id===li.dataset.id);addRow(target,obj);close();
-  });
- }
- search.oninput=e=>render(e.target.value);
- q('#pickerCancel').onclick=close;
- function close(){box.style.display='none';search.value='';}
+  const box   = q('#picker');
+  const list  = q('#pickerList');
+  const input = q('#pickerSearch');
+
+  const data  = target==='tbl_skills' ? FEIM.skills
+              : target==='tbl_spells' ? FEIM.spells
+              :                           FEIM.items;   // inventory
+
+  box.style.display = 'flex';
+  input.value = '';
+
+  render('');
+
+  /* ----- live filter ----- */
+  input.oninput = e => render(e.target.value.toLowerCase());
+
+  /* ----- click handler (delegation) ----- */
+  list.onclick = e =>{
+    const li = e.target.closest('li');
+    if(!li) return;                // click fuori
+    const obj = data.find(x=>x.id===li.dataset.id);
+    if(obj){ addRow(target,obj); close(); }
+  };
+
+  /* ----- cancel / esc ----- */
+  q('#pickerCancel').onclick = close;
+  document.onkeydown = ev => { if(ev.key==='Escape') close(); };
+
+  /* ----- helpers ----- */
+  function render(filter){
+    list.innerHTML = data
+      .filter(o=>o.name.toLowerCase().includes(filter))
+      .map(o=>`<li data-id="${o.id}">${o.name}</li>`)
+      .join('');
+  }
+  function close(){
+    box.style.display='none';
+    input.oninput = list.onclick = q('#pickerCancel').onclick = document.onkeydown = null;
+  }
 }
 function costString(o){
  if(o.category=='skill'||o.category=='spell')return(o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
