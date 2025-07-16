@@ -247,8 +247,20 @@ function setVal(sl,v){sl.value=v;sl.dispatchEvent(new Event('input'));}
 function sliderButtons(){qq('.dec,.inc').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();const sl=q(`input[data-key="${btn.dataset.slider}"]`);const step=+sl.dataset.step||1;setVal(sl,Math.max(sl.min,Math.min(sl.max,+sl.value+(btn.classList.contains('inc')?step:-step))));},{passive:false}));}
 
 /* ---------- end round ---------- */
-const mpInc = getStat('wis') * 0.5; // +0.5 MP per punto WIS, anche a livello 1
-setVal(q('[data-key="mana"]'), Math.min(+q('[data-key="mana"]').max, +q('[data-key="mana"]').value + mpInc));
+q('#endRound').onclick = _ => {
+  // ripristina TIME al massimo (3 s)
+  setVal(q('[data-key="time"]'), 3);
+
+  // recupero Stamina: +END
+  const sta = q('[data-key="stamina"]');
+  setVal(sta, Math.min(+sta.max, +sta.value + getStat('end')));
+
+  // recupero Mana: +0.5 per punto WIS (anche con WIS=1)
+  const mpInc = getStat('wis') * 0.5;
+  const mp = q('[data-key="mana"]');
+  setVal(mp, Math.min(+mp.max, +mp.value + mpInc));
+};
+
  
 /* ---------- export/import ---------- */
 q('#exportBtn').onclick=_=>{const o={};Object.keys(localStorage).forEach(k=>k.startsWith('feim_')&&(o[k]=localStorage[k]));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));a.download='feim_sheet.json';a.click();};
