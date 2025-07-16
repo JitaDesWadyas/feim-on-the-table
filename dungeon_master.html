@@ -24,6 +24,7 @@
     <label for="typeSel">Type</label>
     <select id="typeSel">
       <option value="skill">skill</option>
+      <option value="spell">spell</option>
       <option value="item">item</option>
       <option value="monster">monster</option>
     </select>
@@ -64,6 +65,7 @@
     </div>
 
     <button id="saveBtn" class="btn">💾 Salva</button>
+    <button id="delBtn" class="btn" style="display:none">🗑 Delete</button>
     <input id="filterInput" placeholder="Filter list" type="text" style="margin-top:1rem">
     <ul id="gamedataList"></ul>
   </details>
@@ -73,12 +75,6 @@
     <select id="monsterSelect"></select>
     <button id="addMonster" class="btn">Add monster</button>
     <div id="encounterArea"></div>
-  </details>
-
-  <details id="turn-tracker">
-    <summary>Turn Tracker</summary>
-    <button id="nextTurn" class="btn">➡️ Prossimo Turno</button>
-    <ul id="log" aria-live="polite"></ul>
   </details>
 
   <script type="module" src="js/dungeon_master.js"></script>
