@@ -2,27 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>FEIM – Character Sheet</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>FEIM – Character Sheet</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <style>
 :root{--amber:#ffcc66;--bg:#1a1a1a;--fg:#f0e6d2;--panel:#2a2a2a;--border:#444;}
-body{font-family:sans-serif;background:var(--bg);color:var(--fg);max-width:640px;margin:auto;padding:1rem}
+body{font-family:sans-serif;background:var(--bg);color:var(--fg);max-width:680px;margin:auto;padding:1rem}
 h1,h2{color:var(--amber);border-bottom:1px solid #555;padding-bottom:.2rem;margin-top:1.5rem}
 label{font-weight:bold;margin-top:1rem;display:block}
 input,textarea,select{background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.6rem}
 input[type=text],input[type=number],textarea{width:100%;box-sizing:border-box;margin-top:.3rem}
 input[type=number]{max-width:90px}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .mod{font-weight:normal;font-size:.85rem;margin-left:4px;color:#aaa}
 table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.9rem}
 th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
 th{background:#333}
 .row1{font-weight:600}
-.cost{text-align:right;width:35%}
+.cost{text-align:right;width:34%}
 .descr{font-size:.85rem;color:#ccc}
 .slider-wrap{display:flex;align-items:center;gap:.5rem;margin-top:1rem}
-.slider-wrap button{background:var(--panel);color:var(--amber);border:1px solid var(--border);font-size:1.2rem;width:38px;height:38px;cursor:pointer;touch-action:none}
-.slider-wrap span{min-width:50px;text-align:right}
+.slider-wrap button,.btn,.slot-btn{background:#333;border:1px solid var(--border);color:var(--amber);font-size:.9rem;touch-action:none}
+.slider-wrap button{width:38px;height:38px;font-size:1.2rem}
+.slot-btn{width:32px;height:32px;margin-right:.4rem;font-size:1rem}
+.slider-wrap span{min-width:48px;text-align:right}
 input[type=range]{flex:1;height:34px;appearance:none;background:transparent}
 input[type=range]::-webkit-slider-thumb{appearance:none;width:30px;height:30px;background:var(--amber);border-radius:50%;border:none}
 input[type=range]::-webkit-slider-runnable-track{height:8px;background:#555;border-radius:4px}
@@ -31,24 +33,27 @@ input[type=range]::-moz-range-track{height:8px;background:#555;border-radius:4px
 nav{margin-bottom:1rem}
 nav a{margin-right:.7rem;color:var(--amber);text-decoration:none;font-weight:bold}
 nav a:hover{text-decoration:underline}
-.btn{background:#333;border:1px solid var(--border);color:var(--amber);padding:.4rem .7rem;border-radius:4px;font-size:.9rem;touch-action:none}
-.action-slot{display:flex;align-items:center;margin:.2rem 0}
-.action-slot button{width:32px;height:32px;margin-right:.4rem;font-size:1rem}
+.btn{padding:.45rem .7rem;border-radius:4px;margin-top:.4rem}
 footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
+/* search overlay */
+#picker{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;flex-direction:column;align-items:center;padding:1rem;z-index:1000}
+#picker input{width:100%;max-width:360px;margin-bottom:.6rem}
+#picker ul{max-height:60vh;overflow:auto;width:100%;max-width:360px;padding:0;margin:0;list-style:none}
+#picker li{padding:.4rem .6rem;border:1px solid var(--border);margin-bottom:.4rem;cursor:pointer}
 @media(max-width:480px){body{padding:.6rem}table{font-size:.8rem}}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html">Home</a>
-  <a href="progression.html">Progression</a>
-  <a href="combat_rules.html">Combat</a>
-  <a href="general_rules.html">Rules</a>
-  <a href="lists.html">Lists</a>
+ <a href="index.html">Home</a>
+ <a href="progression.html">Progression</a>
+ <a href="combat_rules.html">Combat</a>
+ <a href="general_rules.html">Rules</a>
+ <a href="lists.html">Lists</a>
 </nav>
 
-<h1>FEIM: Character Sheet</h1>
+<h1>FEIM Character Sheet</h1>
 <p style="text-align:right">
   <button id="exportBtn" class="btn">Export JSON</button>
   <input id="importFile" type="file" accept=".json" style="display:none">
@@ -57,11 +62,11 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 
 <label>Name</label><input data-key="name" class="persist" type="text">
 <label>Title</label><input data-key="title" class="persist" type="text">
-<label>Level <span id="pts_left" style="font-weight:normal;font-size:.9rem"></span></label>
+<label>Level <span id="pts_left" style="font-size:.9rem"></span></label>
 <input data-key="level" class="persist" type="number" min="1" max="10" value="1">
 
 <h2>Statistics</h2>
-<div class="stats-grid">
+<div class="stats">
   <label>STR <span id="mod_str" class="mod">(0)</span><input data-key="str" class="persist" type="number" min="1" max="10" value="1"></label>
   <label>DEX <span id="mod_dex" class="mod">(0)</span><input data-key="dex" class="persist" type="number" min="1" max="10" value="1"></label>
   <label>MAG <span id="mod_mag" class="mod">(0)</span><input data-key="mag" class="persist" type="number" min="1" max="10" value="1"></label>
@@ -76,206 +81,185 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 <select id="equip_chest"  class="btn"></select>
 <select id="equip_legs"   class="btn"></select>
 
-<h2>Skills</h2><table id="tbl_skills"><tbody></tbody></table>
-<button id="addSkill" class="btn">+ Skill</button>
+<h2>Skills</h2>
+<table id="tbl_skills"><tbody></tbody></table>
+<button id="addSkill" class="btn">+ Skill</button>
 
-<h2>Spells</h2><table id="tbl_spells"><tbody></tbody></table>
-<button id="addSpell" class="btn">+ Spell</button>
+<h2>Spells</h2>
+<table id="tbl_spells"><tbody></tbody></table>
+<button id="addSpell" class="btn">+ Spell</button>
 
-<h2>Inventory</h2><table id="tbl_inv"><tbody></tbody></table>
-<button id="addItem" class="btn">+ Item</button>
+<h2>Inventory</h2>
+<table id="tbl_inv"><tbody></tbody></table>
+<button id="addItem" class="btn">+ Item</button>
 
-<h2>Diary</h2><textarea data-key="diary" class="persist" rows="5"></textarea>
+<h2>Diary</h2>
+<textarea data-key="diary" class="persist" rows="5"></textarea>
 
 <h2>In‑Game</h2>
 <div class="slider-wrap"><button data-slider="hp" class="dec">−</button> HP
-  <input data-key="hp" data-step="0.5" class="persist slider" type="range" min="0" max="50" step="0.5"><span id="hp_val"></span>
-  <button data-slider="hp" class="inc">+</button></div>
+ <input data-key="hp" data-step="0.5" class="persist slider" type="range" min="0" max="50" step="0.5"><span id="hp_val"></span>
+ <button data-slider="hp" class="inc">+</button></div>
 <div class="slider-wrap"><button data-slider="stamina" class="dec">−</button> ST
-  <input data-key="stamina" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="stamina_val"></span>
-  <button data-slider="stamina" class="inc">+</button></div>
+ <input data-key="stamina" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="stamina_val"></span>
+ <button data-slider="stamina" class="inc">+</button></div>
 <div class="slider-wrap"><button data-slider="mana" class="dec">−</button> MP
-  <input data-key="mana" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="mana_val"></span>
-  <button data-slider="mana" class="inc">+</button></div>
+ <input data-key="mana" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="mana_val"></span>
+ <button data-slider="mana" class="inc">+</button></div>
 <div class="slider-wrap"><button data-slider="time" class="dec">−</button> TIME
-  <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span>
-  <button data-slider="time" class="inc">+</button></div>
+ <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span>
+ <button data-slider="time" class="inc">+</button></div>
 <button id="endRound" class="btn">End Round</button>
 
 <h2>Actions</h2>
 <div id="actionSkills"></div>
-<div id="actionSpells"></div>
+<div id="actionSpells" style="margin-top:.6rem"></div>
 
 <footer>© 2025 JitaDesWadyas</footer>
 
+<!-- picker overlay -->
+<div id="picker">
+  <input id="pickerSearch" placeholder="Type to filter">
+  <ul id="pickerList"></ul>
+  <button id="pickerCancel" class="btn">Cancel</button>
+</div>
+
 <script>
-/* --------- JSON LOAD --------- */
+/* -------- JSON LOAD -------- */
 let FEIM={};
-fetch('game_data_feim_v1.json').then(r=>r.json()).then(j=>{
-  FEIM=j;
-  initSelects();
-  rebuildTables();
-  buildActionSlots();
-});
+fetch('game_data_feim_v3.json').then(r=>r.json()).then(j=>{FEIM=j;initPage();});
 
-/* --------- PERSIST --------- */
-function q(sel){return document.querySelector(sel)}
-function qq(sel){return document.querySelectorAll(sel)}
-function persistInit(){
-  qq('.persist').forEach(el=>{
-    const k='feim_'+el.dataset.key;
-    if(localStorage[k]!=null) el.value=localStorage[k];
-    if(el.type==='range') q('#'+el.dataset.key+'_val').textContent=el.value;
-    el.addEventListener('input',()=>{
-      localStorage[k]=el.value;
-      if(el.type==='range') q('#'+el.dataset.key+'_val').textContent=el.value;
-    });
-  });
-}
-function sliderButtons(){
-  qq('button.dec,button.inc').forEach(btn=>{
-    btn.addEventListener('click',(e)=>{
-      e.preventDefault();
-      const id=btn.dataset.slider;
-      const sl=q('input[data-key="'+id+'"]');
-      const step=parseFloat(sl.dataset.step||1);
-      sl.value = Math.max(sl.min, Math.min(sl.max,parseFloat(sl.value)+(btn.classList.contains('inc')?step:-step)));
-      sl.dispatchEvent(new Event('input'));
-    },{passive:false});
-  });
-}
-document.addEventListener('dblclick',e=>{
-  if(e.target.closest('button.dec,button.inc')) e.preventDefault();
-},{passive:false});
+/* -------- helpers -------- */
+const q=s=>document.querySelector(s), qq=s=>document.querySelectorAll(s);
+function setVal(sl,val){sl.value=val;sl.dispatchEvent(new Event('input'));}
 
-/* --------- STATS & CAPS --------- */
-const statKeys=['str','dex','mag','con','end','wis'];
-function getStat(k){const el=q(`[data-key="${k}"]`);return el?parseFloat(el.value)||0:0;}
-function statSum(){return statKeys.reduce((s,k)=>s+getStat(k),0);}
-function maxStatPoints(){return 13+getStat('level')*3;}
-function maxSingleStat(){const lv=getStat('level');return 7+Math.floor((lv-1)/2);}
-function statToMod(v){if(v<=1)return -3;if(v==2)return -2;if(v==3)return -1;if(v<=5)return 0;if(v==6)return 1;if(v==7)return 2;if(v==8)return 3;if(v==9)return 4;return 5;}
-function updateMods(){statKeys.forEach(k=>q('#mod_'+k).textContent=`(${statToMod(getStat(k))>=0?'+':''}${statToMod(getStat(k))})`);}
-function updatePointDisplay(){const l=maxStatPoints()-statSum();q('#pts_left').textContent=`(${l} pts left)`;}
-function setCap(key,max){
-  const sl=q(`input[data-key="${key}"]`);
-  const lab=q('#'+key+'_val');sl.max=max;
-  if(parseFloat(sl.value)===0||parseFloat(sl.value)>max){sl.value=max;localStorage['feim_'+key]=max;}
-  lab.textContent=sl.value;
-}
-function updateCaps(){
-  setCap('hp',getStat('con')*5);
-  setCap('stamina',6+getStat('end'));
-  setCap('mana',6+getStat('wis'));
-}
-statKeys.forEach(k=>{
-  const el=q(`[data-key="${k}"]`);
-  el.addEventListener('input',()=>{
-    if(statSum()>maxStatPoints()||parseFloat(el.value)>maxSingleStat())el.value=el.dataset.prev||1;
-    el.dataset.prev=el.value;updatePointDisplay();updateMods();updateCaps();
-  });
-  el.dataset.prev=el.value;
-});
-q('[data-key="level"]').addEventListener('input',()=>{updatePointDisplay();updateCaps();updateMods();});
+/* -------- initial blank tables -------- */
+function blankTable(btnId,tbodyId){q(btnId).onclick=_=>openPicker(tbodyId);}
+['#tbl_skills','#tbl_spells','#tbl_inv'].forEach(sel=>q(sel+' tbody').innerHTML='');
 
-/* --------- TABLE BUILD (2 rows) --------- */
-function makeRow(obj){
-  const t=`<tr class=row1><td>${obj.name}</td><td class=cost>${obj.time?s(obj.time)+' / '+obj.cost.amount+' '+(obj.cost.resource=='stamina'?'STA':'MP'):obj.def?obj.def+' DEF':obj.damage?obj.damage.dice:'-'}</td></tr>
-           <tr class=row2><td colspan=2 class=descr>${obj.effect?eff(obj.effect):obj.notes||obj.traits||''}</td></tr>`;
-  return t;
+/* -------- picker overlay -------- */
+function openPicker(target){
+ const box=q('#picker');box.style.display='flex';const list=q('#pickerList');const search=q('#pickerSearch');
+ const data=(target=='tbl_skills')?FEIM.skills:target=='tbl_spells'?FEIM.spells:FEIM.items;
+ renderList('');
+ function renderList(filter){
+   list.innerHTML=data.filter(o=>o.name.toLowerCase().includes(filter.toLowerCase()))
+     .map(o=>`<li data-id="${o.id}">${o.name}</li>`).join('');
+   qq('#pickerList li').forEach(li=>li.onclick=_=>{
+     addRow(target,data.find(x=>x.id===li.dataset.id));closePicker();
+   });
+ }
+ search.oninput=e=>renderList(e.target.value);
+ q('#pickerCancel').onclick=closePicker;
+ function closePicker(){box.style.display='none';search.value='';}
 }
-function s(n){return n.toFixed(1)+'s';}
-function eff(e){if(e.kind=='damage')return e.dice+' dmg'+(e.multiplier?'×'+e.multiplier:'');if(e.kind=='heal')return 'Heal '+e.dice;if(e.kind=='buff')return e.value+' for '+e.duration+'R';return e.kind;}
-function rebuildTables(){
-  q('#tbl_skills tbody').innerHTML=FEIM.skills.map(makeRow).join('');
-  q('#tbl_spells tbody').innerHTML=FEIM.spells.map(makeRow).join('');
-  q('#tbl_inv tbody').innerHTML=FEIM.weapons.concat(FEIM.armors).map(makeRow).join('');
+function addRow(tableSel,obj){
+ const tb=q(tableSel+' tbody');
+ const html=`<tr class=row1><td>${obj.name}</td><td class=cost>${costString(obj)}</td><td><button class="slot-btn rem">🗑</button></td></tr>
+             <tr class=row2><td colspan=3 class=descr>${desc(obj)}</td></tr>`;
+ tb.insertAdjacentHTML('beforeend',html);
+ tb.querySelectorAll('.rem').forEach(btn=>btn.onclick=()=>btn.closest('tr').nextElementSibling.remove(),btn.closest('tr').remove());
+ rebuildActions();
+}
+function costString(o){
+ if(o.category=='skill' || o.category=='spell') return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
+ if(o.def) return o.def+' DEF';
+ if(o.damage) return o.damage.dice;
+ return '-';
+}
+function desc(o){
+ if(o.effect) return (o.effect.kind=='weapon-damage'?'Weapon dmg×'+o.effect.multiplier:o.effect.kind);
+ return o.notes||o.penalty||o.effect?.dice||'';
 }
 
-/* --------- SELECTS equip / add ---------- */
-function option(o){return `<option value="${o.id}">${o.name}</option>`;}
-function initSelects(){
-  q('#equip_weapon').innerHTML='<option>- Weapon -</option>'+FEIM.weapons.map(option).join('');
-  q('#equip_head').innerHTML  ='<option>- Head -</option>'  +FEIM.armors.filter(a=>a.slot=='head').map(option).join('');
-  q('#equip_chest').innerHTML ='<option>- Chest -</option>' +FEIM.armors.filter(a=>a.slot=='chest').map(option).join('');
-  q('#equip_legs').innerHTML  ='<option>- Legs -</option>'  +FEIM.armors.filter(a=>a.slot=='legs').map(option).join('');
+/* -------- equipment selects -------- */
+function initEquip(){
+ q('#equip_weapon').innerHTML='<option value="">Weapon</option>'+FEIM.weapons.map(w=>`<option value="${w.id}" title="${w.damage.dice}">${w.name}</option>`).join('');
+ q('#equip_head').innerHTML  ='<option value="">Head</option>'+FEIM.armors.filter(a=>a.slot=='head').map(a=>`<option value="${a.id}" title="${a.def+' DEF'}">${a.name}</option>`).join('');
+ q('#equip_chest').innerHTML ='<option value="">Chest</option>'+FEIM.armors.filter(a=>a.slot=='chest').map(a=>`<option value="${a.id}" title="${a.def+' DEF'}">${a.name}</option>`).join('');
+ q('#equip_legs').innerHTML  ='<option value="">Legs</option>'+FEIM.armors.filter(a=>a.slot=='legs').map(a=>`<option value="${a.id}" title="${a.def+' DEF'}">${a.name}</option>`).join('');
 }
-function addRow(target,array){
-  const sel=prompt('Type id to add:\n'+array.map(x=>x.id).join(', '));
-  const obj=array.find(x=>x.id===sel);if(!obj)return;
-  q(target).querySelector('tbody').insertAdjacentHTML('beforeend',makeRow(obj));
-}
-q('#addSkill').onclick=_=>addRow('#tbl_skills',FEIM.skills);
-q('#addSpell').onclick=_=>addRow('#tbl_spells',FEIM.spells);
-q('#addItem').onclick=_=>addRow('#tbl_inv',FEIM.weapons.concat(FEIM.armors));
 
-/* --------- ACTION QUICK SLOTS ---------- */
+/* -------- actions quick slots -------- */
 let skillIdx=0,spellIdx=0;
-function slotHTML(o,i,cat){return `<div class="action-slot"><button data-cat="${cat}" data-idx="${i}">▶︎</button>${o.name}</div>`;}
-function buildActionSlots(){
-  renderSlots();
-  q('#actionSkills').insertAdjacentHTML('beforebegin','<button id="prevSkill" class="btn">◀</button> <button id="nextSkill" class="btn">▶</button>');
-  q('#actionSpells').insertAdjacentHTML('beforebegin','<button id="prevSpell" class="btn">◀</button> <button id="nextSpell" class="btn">▶</button>');
-  q('#prevSkill').onclick=_=>{skillIdx=(skillIdx-4+FEIM.skills.length)%FEIM.skills.length;renderSlots();}
-  q('#nextSkill').onclick=_=>{skillIdx=(skillIdx+4)%FEIM.skills.length;renderSlots();}
-  q('#prevSpell').onclick=_=>{spellIdx=(spellIdx-4+FEIM.spells.length)%FEIM.spells.length;renderSlots();}
-  q('#nextSpell').onclick=_=>{spellIdx=(spellIdx+4)%FEIM.spells.length;renderSlots();}
+function slotHTML(o,i,cat){
+ const cost=(o.time||2)+'s / '+o.cost.amount+(o.cost.resource=='stamina'?' STA':' MP');
+ return `<div class="action-slot"><button class="slot-btn" data-cat="${cat}" data-idx="${i}">▶︎</button>${o.name}<span style="flex:1"></span><small>${cost}</small></div>`;
 }
 function renderSlots(){
-  q('#actionSkills').innerHTML=FEIM.skills.slice(skillIdx,skillIdx+4).map((o,i)=>slotHTML(o,i,'skill')).join('');
-  q('#actionSpells').innerHTML=FEIM.spells.slice(spellIdx,spellIdx+4).map((o,i)=>slotHTML(o,i,'spell')).join('');
-  qq('.action-slot button').forEach(btn=>btn.onclick=useAction);
+ q('#actionSkills').innerHTML=FEIM.skills.slice(skillIdx,skillIdx+4).map((o,i)=>slotHTML(o,i,'skill')).join('');
+ q('#actionSpells').innerHTML=FEIM.spells.slice(spellIdx,spellIdx+4).map((o,i)=>slotHTML(o,i,'spell')).join('');
+ qq('.slot-btn').forEach(btn=>btn.onclick=useAction);
 }
+function rebuildActions(){renderSlots();}
 function useAction(e){
-  const cat=e.target.dataset.cat;
-  const baseIdx=(cat=='skill'?skillIdx:spellIdx);
-  const list=(cat=='skill'?FEIM.skills:FEIM.spells);
-  const obj=list[baseIdx+parseInt(e.target.dataset.idx)];
-  const time=obj.time||2;
-  const res=obj.cost.resource;
-  const amt=obj.cost.amount;
-  const slTime=q('input[data-key="time"]');
-  if(parseFloat(slTime.value)<time){alert('Not enough TIME');return;}
-  const slRes=q('input[data-key="'+(res=='stamina'?'stamina':'mana')+'"]');
-  if(parseFloat(slRes.value)<amt){alert('Not enough '+res.toUpperCase());return;}
-  slTime.value=parseFloat(slTime.value)-time;
-  slRes.value=parseFloat(slRes.value)-amt;
-  slTime.dispatchEvent(new Event('input'));
-  slRes.dispatchEvent(new Event('input'));
+ const cat=e.target.dataset.cat;
+ const baseIdx=(cat=='skill'?skillIdx:spellIdx);
+ const obj=(cat=='skill'?FEIM.skills:FEIM.spells)[baseIdx+parseInt(e.target.dataset.idx)];
+ const res=obj.cost.resource=='stamina'?'stamina':'mana';
+ const slRes=q(`input[data-key="${res}"]`);
+ const slTime=q('input[data-key="time"]');
+ if(slTime.value<obj.time){alert('No TIME');return;}
+ if(slRes.value<obj.cost.amount){alert('No '+res.toUpperCase());return;}
+ setVal(slTime,slTime.value-obj.time);
+ setVal(slRes,slRes.value-obj.cost.amount);
 }
+function navSkill(delta){skillIdx=(skillIdx+delta+FEIM.skills.length)%FEIM.skills.length;renderSlots();}
+function navSpell(delta){spellIdx=(spellIdx+delta+FEIM.spells.length)%FEIM.spells.length;renderSlots();}
 
-/* --------- END ROUND ---------- */
+/* -------- core stat logic (unchanged) -------- */
+const statKeys=['str','dex','mag','con','end','wis'];
+function getStat(k){const el=q(`[data-key="${k}"]`);return el?+el.value||0:0;}
+function statSum(){return statKeys.reduce((s,k)=>s+getStat(k),0);}
+function maxStatPoints(){return 13+getStat('level')*3;}
+function maxSingleStat(){return 7+Math.floor((getStat('level')-1)/2);}
+function statToMod(v){if(v<=1)return-3;if(v==2)return-2;if(v==3)return-1;if(v<=5)return 0;if(v==6)return 1;if(v==7)return 2;if(v==8)return 3;if(v==9)return 4;return 5;}
+function updateMods(){statKeys.forEach(k=>q('#mod_'+k).textContent=`(${statToMod(getStat(k))>=0?'+':''}${statToMod(getStat(k))})`);}
+function updateDisplay(){q('#pts_left').textContent=`(${maxStatPoints()-statSum()} pts left)`;}
+function capSlider(id,max){const sl=q(`input[data-key="${id}"]`);if(sl){sl.max=max;if(+sl.value>max||+sl.value===0)setVal(sl,max);}}
+function updateCaps(){capSlider('hp',getStat('con')*5);capSlider('stamina',6+getStat('end'));capSlider('mana',6+getStat('wis'));}
+statKeys.forEach(k=>{const el=q(`[data-key="${k}"]`);el.addEventListener('input',()=>{
+ if(statSum()>maxStatPoints()||+el.value>maxSingleStat())el.value=el.dataset.prev;
+ el.dataset.prev=el.value;updateDisplay();updateMods();updateCaps();
+});el.dataset.prev=el.value;});
+q('[data-key="level"]').addEventListener('input',()=>{updateDisplay();updateCaps();updateMods();});
+
+/* -------- sliders & buttons -------- */
+function sliderButtons(){
+ qq('.dec,.inc').forEach(btn=>btn.addEventListener('click',e=>{
+  e.preventDefault();const sl=q(`input[data-key="${btn.dataset.slider}"]`);
+  const step=+sl.dataset.step||1;setVal(sl,Math.max(sl.min,Math.min(sl.max,+sl.value+(btn.classList.contains('inc')?step:-step))));
+ },{passive:false}));
+}
 q('#endRound').onclick=_=>{
-  const slTime=q('input[data-key="time"]'); slTime.value=slTime.max;
-  const slSTA=q('input[data-key="stamina"]');slSTA.value=Math.min(slSTA.max,parseFloat(slSTA.value)+getStat('end'));
-  const slMP=q('input[data-key="mana"]');slMP.value=Math.min(slMP.max,parseFloat(slMP.value)+Math.floor(getStat('wis')*0.5));
-  [slTime,slSTA,slMP].forEach(sl=>sl.dispatchEvent(new Event('input')));
+ const slTime=q('input[data-key="time"]');setVal(slTime,slTime.max);
+ const slSTA=q('input[data-key="stamina"]');setVal(slSTA,Math.min(slSTA.max,+slSTA.value+getStat('end')));
+ const slMP=q('input[data-key="mana"]');setVal(slMP,Math.min(slMP.max,+slMP.value+Math.floor(getStat('wis')*0.5)));
 };
 
-/* --------- EXPORT / IMPORT --------- */
-function exportJSON(){
-  const obj={};
-  Object.keys(localStorage).forEach(k=>{if(k.startsWith('feim_'))obj[k]=localStorage[k];});
-  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='feim_sheet.json';a.click();
-}
-function importJSON(file){
-  const r=new FileReader();
-  r.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      Object.entries(data).forEach(([k,v])=>{if(k.startsWith('feim_'))localStorage[k]=v;});
-      location.reload();
-    }catch(err){alert('Invalid JSON');}
-  };
-  r.readAsText(file);
-}
-q('#exportBtn').onclick=exportJSON;
+/* -------- export / import -------- */
+q('#exportBtn').onclick=_=>{
+ const obj={};Object.keys(localStorage).forEach(k=>{if(k.startsWith('feim_'))obj[k]=localStorage[k];});
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));
+ a.download='feim_sheet.json';a.click();};
 q('#importBtn').onclick=_=>q('#importFile').click();
-q('#importFile').onchange=e=>importJSON(e.target.files[0]);
+q('#importFile').onchange=e=>{
+ const r=new FileReader();r.onload=o=>{try{const d=JSON.parse(o.target.result);
+ Object.entries(d).forEach(([k,v])=>k.startsWith('feim_')&&(localStorage[k]=v));location.reload();}catch(err){alert('Bad JSON');}};r.readAsText(e.target.files[0]);};
 
-/* --------- FIRST LAUNCH SETUP --------- */
-persistInit();updateCaps();updatePointDisplay();updateMods();sliderButtons();
+/* -------- picker close dblclick fix -------- */
+document.addEventListener('dblclick',e=>{if(e.target.closest('button'))e.preventDefault();},{passive:false});
+
+/* -------- INIT after JSON load -------- */
+function initPage(){
+ initEquip();
+ blankTable('#addSkill','#tbl_skills');blankTable('#addSpell','#tbl_spells');blankTable('#addItem','#tbl_inv');
+ persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();
+ renderSlots();
+ /* nav buttons for slots */
+ q('#actionSkills').insertAdjacentHTML('beforebegin','<button class="btn" onclick="navSkill(-4)">◀</button> <button class="btn" onclick="navSkill(4)">▶</button>');
+ q('#actionSpells').insertAdjacentHTML('beforebegin','<button class="btn" onclick="navSpell(-4)">◀</button> <button class="btn" onclick="navSpell(4)">▶</button>');
+}
 </script>
 </body>
 </html>
