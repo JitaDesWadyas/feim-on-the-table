@@ -1,129 +1,41 @@
 <!DOCTYPE html>
-
-<!--
-// Copilot: Aggiorna il file feim-sheet.html con queste modifiche:
-// 1. CSS: th.effect / td.effect width 70%; textarea.effectbox stilato come:
-//    width:100%; min-height:2.4em; background:var(--panel); color:var(--fg);
-//    border:1px solid var(--border); padding:.5rem; overflow-wrap:break-word; resize:vertical.
-// 2. Skills & Magic table: sostituisci in ogni riga la cella "effect" (4ª colonna) da <input type="text"> 
-//    a <textarea class="persist effectbox" rows="2">. Stesso per Inventory colonna Description.
-// 3. Aggiungi subito dopo <h1>:
-//       <p style="text-align:right;">
-//         <button id="exportBtn">Export JSON</button>
-//         <input id="importFile" type="file" accept=".json" style="display:none">
-//         <button id="importBtn">Import JSON</button>
-//       </p>
-// 4. In <script>: prima dell’avvio del sistema di persistenza, incolla funzioni exportJSON/importJSON:
-//       function exportJSON(){/* raccogli localStorage feim_* in blob, download feim_sheet.json */}
-//       function importJSON(file){/* parse JSON, ripopola localStorage, location.reload() */}
-//       Aggancia gli handler a #exportBtn, #importBtn e #importFile.
-// 5. Generatori di righe JS (genRows, genInvRows): per le colonne “effect/description” usa <textarea> con
-//    class="persist effectbox" invece di input, mantenendo dataset.key coerente (skill_i_eff, magic_i_eff, inv_i_desc).
-// 6. Non toccare altro: slider, ± buttons, copyright ecc. devono restare invariati.
-//
-// Rispettare indentazione e naming esistente, nessun break di funzionalità attuale.
-// Restituisci solo il diff o il blocco di codice finale pronto da incollare.
--->
-
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<title>FEIM: On the Table – Character Sheet</title>
+<meta charset="UTF-8">
+<title>FEIM – Character Sheet</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <style>
-:root{
-  --amber:#ffcc66;
-  --bg:#1a1a1a;
-  --fg:#f0e6d2;
-  --panel:#2a2a2a;
-  --border:#444;
-}
-/* layout */
+:root{--amber:#ffcc66;--bg:#1a1a1a;--fg:#f0e6d2;--panel:#2a2a2a;--border:#444;}
 body{font-family:sans-serif;background:var(--bg);color:var(--fg);max-width:640px;margin:auto;padding:1rem}
 h1,h2{color:var(--amber);border-bottom:1px solid #555;padding-bottom:.2rem;margin-top:1.5rem}
 label{font-weight:bold;margin-top:1rem;display:block}
-input[type="text"],input[type="number"],textarea{
-  width:100%;background:var(--panel);color:var(--fg);
-  border:1px solid var(--border);padding:.6rem;box-sizing:border-box;margin-top:.3rem
-}
-input[type="number"]{max-width:90px}
-table{width:100%;border-collapse:collapse;margin-top:.5rem}
+input,textarea,select{background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.6rem}
+input[type=text],input[type=number],textarea{width:100%;box-sizing:border-box;margin-top:.3rem}
+input[type=number]{max-width:90px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mod{font-weight:normal;font-size:.85rem;margin-left:4px;color:#aaa}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.9rem}
 th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
 th{background:#333}
-th.effect,td.effect{width:48%}          /* Effetto larghissimo */
-th.time,td.time{width:60px}
-th.cost,td.cost{width:70px}
-/* slider XL */
+.row1{font-weight:600}
+.cost{text-align:right;width:35%}
+.descr{font-size:.85rem;color:#ccc}
 .slider-wrap{display:flex;align-items:center;gap:.5rem;margin-top:1rem}
-.slider-wrap button{background:var(--panel);color:var(--amber);border:1px solid var(--border);font-size:1.2rem;width:38px;height:38px;cursor:pointer}
-.slider-wrap span{min-width:50px;text-align:right;pointer-events:none}
+.slider-wrap button{background:var(--panel);color:var(--amber);border:1px solid var(--border);font-size:1.2rem;width:38px;height:38px;cursor:pointer;touch-action:none}
+.slider-wrap span{min-width:50px;text-align:right}
 input[type=range]{flex:1;height:34px;appearance:none;background:transparent}
 input[type=range]::-webkit-slider-thumb{appearance:none;width:30px;height:30px;background:var(--amber);border-radius:50%;border:none}
 input[type=range]::-webkit-slider-runnable-track{height:8px;background:#555;border-radius:4px}
 input[type=range]::-moz-range-thumb{width:30px;height:30px;background:var(--amber);border:none;border-radius:50%}
 input[type=range]::-moz-range-track{height:8px;background:#555;border-radius:4px}
+nav{margin-bottom:1rem}
+nav a{margin-right:.7rem;color:var(--amber);text-decoration:none;font-weight:bold}
+nav a:hover{text-decoration:underline}
+.btn{background:#333;border:1px solid var(--border);color:var(--amber);padding:.4rem .7rem;border-radius:4px;font-size:.9rem;touch-action:none}
+.action-slot{display:flex;align-items:center;margin:.2rem 0}
+.action-slot button{width:32px;height:32px;margin-right:.4rem;font-size:1rem}
 footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
-nav{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.8rem;
-  margin-bottom:1rem;
-}
-nav a{
-  background:#333;padding:.4rem .7rem;border-radius:4px;
-}
-a{color:var(--amber);text-decoration:none;font-weight:600}
-a:hover{text-decoration:underline}
-:root{
-  --amber:#ffb84d;
-  --bg:#1a1a1a;
-  --fg:#f5f3ef;
-  --panel:#2a2a2a;
-  --border:#444;
-}
-body{
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  background:var(--bg);color:var(--fg);max-width:720px;margin:auto;padding:1rem;
-}
-h1,h2{
-  color:var(--amber);
-  border-bottom:1px solid #555;
-  padding-bottom:.2rem;
-  margin-top:1.5rem;
-}
-a{color:var(--amber);text-decoration:none;font-weight:600}
-a:hover{text-decoration:underline}
-nav{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.8rem;
-  margin-bottom:1rem;
-}
-nav a{
-  background:#333;padding:.4rem .7rem;border-radius:4px;
-}
-table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
-th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
-th{background:#333}
-/* new ui */
-.btn{background:#333;border:1px solid var(--border);color:var(--amber);padding:.5rem .8rem;font-size:.9rem;border-radius:4px}
-.row1{font-weight:600}
-.cost{width:38%;text-align:right}
-.descr{font-size:.85rem;color:#ccc}
-.actionBtn{font-size:1rem;width:32px;height:32px;padding:0;margin-right:4px}
-.removeBtn{font-size:1rem;width:32px;height:32px;padding:0;margin-left:4px}
-.effectbox{width:100%;min-height:2.4em;background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.5rem;overflow-wrap:break-word;resize:vertical}
-@media (max-width:480px){
-  body{padding:.6rem}
-  nav a{font-size:.9rem}
-button.dec,
-button.inc,
-.actionBtn,
-.btn{
-  touch-action: none;                 /* disabilita tutti i gesture‑zoom */
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
+@media(max-width:480px){body{padding:.6rem}table{font-size:.8rem}}
 </style>
 </head>
 <body>
@@ -134,486 +46,236 @@ button.inc,
   <a href="combat_rules.html">Combat</a>
   <a href="general_rules.html">Rules</a>
   <a href="lists.html">Lists</a>
-  <a href="character_sheet.html">Sheet</a>
 </nav>
 
-<h1>FEIM: On the Table</h1>
-<p style="text-align:right;">
-  <button id="exportBtn">Export JSON</button>
+<h1>FEIM: Character Sheet</h1>
+<p style="text-align:right">
+  <button id="exportBtn" class="btn">Export JSON</button>
   <input id="importFile" type="file" accept=".json" style="display:none">
-  <button id="importBtn">Import JSON</button>
+  <button id="importBtn" class="btn">Import JSON</button>
 </p>
 
-<!-- Identity -->
-<label>Name</label>
-<input data-key="name" class="persist" type="text" placeholder="Character Name">
-<label>Title</label>
-<input data-key="title" class="persist" type="text" placeholder="e.g. Wanderer">
-<label>Level <span id="pts_left" style="font-weight:normal;font-size:.9rem;"></span></label>
+<label>Name</label><input data-key="name" class="persist" type="text">
+<label>Title</label><input data-key="title" class="persist" type="text">
+<label>Level <span id="pts_left" style="font-weight:normal;font-size:.9rem"></span></label>
 <input data-key="level" class="persist" type="number" min="1" max="10" value="1">
 
-
-<!-- Stats -->
 <h2>Statistics</h2>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
+<div class="stats-grid">
   <label>STR <span id="mod_str" class="mod">(0)</span><input data-key="str" class="persist" type="number" min="1" max="10" value="1"></label>
   <label>DEX <span id="mod_dex" class="mod">(0)</span><input data-key="dex" class="persist" type="number" min="1" max="10" value="1"></label>
-  <label>INT <span id="mod_mag" class="mod">(0)</span><input data-key="mag" class="persist" type="number" min="1" max="10" value="1"></label>
-</div>
-  <div style="display:flex;flex-wrap:wrap;gap:8px">
+  <label>MAG <span id="mod_mag" class="mod">(0)</span><input data-key="mag" class="persist" type="number" min="1" max="10" value="1"></label>
   <label>CON <span id="mod_con" class="mod">(0)</span><input data-key="con" class="persist" type="number" min="1" max="10" value="1"></label>
   <label>END <span id="mod_end" class="mod">(0)</span><input data-key="end" class="persist" type="number" min="1" max="10" value="1"></label>
   <label>WIS <span id="mod_wis" class="mod">(0)</span><input data-key="wis" class="persist" type="number" min="1" max="10" value="1"></label>
 </div>
 
-
-
-<!-- Equipment -->
 <h2>Equipment</h2>
-<label>Weapon</label><input data-key="eq_weapon" class="persist" type="text">
-<label>Head</label><input data-key="eq_head" class="persist" type="text">
-<label>Chest</label><input data-key="eq_chest" class="persist" type="text">
-<label>Legs</label><input data-key="eq_legs" class="persist" type="text">
+<select id="equip_weapon" class="btn"></select>
+<select id="equip_head"   class="btn"></select>
+<select id="equip_chest"  class="btn"></select>
+<select id="equip_legs"   class="btn"></select>
 
-<!-- Skills -->
-<h2>Skills</h2>
-<table>
-<thead><tr><th></th><th>Name</th><th class="time">Time</th><th class="cost">Cost</th><th class="effect">Effect</th></tr></thead>
-<tbody id="skills_tbody"></tbody>
-</table>
-<button class="btn add-skill">+ Skill</button>
+<h2>Skills</h2><table id="tbl_skills"><tbody></tbody></table>
+<button id="addSkill" class="btn">+ Skill</button>
 
-<!-- Magic -->
-<h2>Magic</h2>
-<table>
-<thead><tr><th></th><th>Name</th><th class="time">Time</th><th class="cost">Cost</th><th class="effect">Effect</th></tr></thead>
-<tbody id="magic_tbody"></tbody>
-</table>
-<button class="btn add-spell">+ Spell</button>
+<h2>Spells</h2><table id="tbl_spells"><tbody></tbody></table>
+<button id="addSpell" class="btn">+ Spell</button>
 
-<!-- Inventory -->
-<h2>Inventory</h2>
-<table>
-<thead><tr><th>Name</th><th style="width:22%">Type</th><th class="effect">Description</th></tr></thead>
-<tbody id="inv_tbody"></tbody>
-</table>
-<button class="btn add-item">+ Item</button>
+<h2>Inventory</h2><table id="tbl_inv"><tbody></tbody></table>
+<button id="addItem" class="btn">+ Item</button>
 
-<!-- Diary -->
-<h2>Diary</h2>
-<textarea data-key="diary" class="persist" rows="6" placeholder="Session notes…"></textarea>
+<h2>Diary</h2><textarea data-key="diary" class="persist" rows="5"></textarea>
 
-<!-- In-Game -->
-<h2>In-Game</h2>
-<div class="slider-wrap">
-  <button data-slider="hp" class="dec">–</button>
-  HP <input data-key="hp" data-step="0.5" class="persist slider" type="range" min="0" max="50" step="0.5"><span id="hp_val"></span>
-  <button data-slider="hp" class="inc">+</button>
-</div>
-<div class="slider-wrap">
-  <button data-slider="stamina" class="dec">–</button>
-  Stamina <input data-key="stamina" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="stamina_val"></span>
-  <button data-slider="stamina" class="inc">+</button>
-</div>
-<div class="slider-wrap">
-  <button data-slider="mana" class="dec">–</button>
-  Mana <input data-key="mana" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="mana_val"></span>
-  <button data-slider="mana" class="inc">+</button>
-</div>
-<div class="slider-wrap">
-  <button data-slider="time" class="dec">–</button>
-  Time <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span>
-  <button data-slider="time" class="inc">+</button>
-</div>
-<h3>Actions</h3>
-<div id="actions">
-  <div><button id="prevSkill" class="btn">&#9664;</button> <span id="skillSlots"></span> <button id="nextSkill" class="btn">&#9654;</button></div>
-  <div style="margin-top:.5rem"><button id="prevSpell" class="btn">&#9664;</button> <span id="spellSlots"></span> <button id="nextSpell" class="btn">&#9654;</button></div>
-</div>
+<h2>In‑Game</h2>
+<div class="slider-wrap"><button data-slider="hp" class="dec">−</button> HP
+  <input data-key="hp" data-step="0.5" class="persist slider" type="range" min="0" max="50" step="0.5"><span id="hp_val"></span>
+  <button data-slider="hp" class="inc">+</button></div>
+<div class="slider-wrap"><button data-slider="stamina" class="dec">−</button> ST
+  <input data-key="stamina" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="stamina_val"></span>
+  <button data-slider="stamina" class="inc">+</button></div>
+<div class="slider-wrap"><button data-slider="mana" class="dec">−</button> MP
+  <input data-key="mana" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="mana_val"></span>
+  <button data-slider="mana" class="inc">+</button></div>
+<div class="slider-wrap"><button data-slider="time" class="dec">−</button> TIME
+  <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span>
+  <button data-slider="time" class="inc">+</button></div>
 <button id="endRound" class="btn">End Round</button>
 
-<footer>© 2025 JitaDesWadyas</footer>
+<h2>Actions</h2>
+<div id="actionSkills"></div>
+<div id="actionSpells"></div>
+
+<footer>© 2025 JitaDesWadyas</footer>
 
 <script>
-// ---------- helpers ----------
-function makeInput(key, cls="persist", type="text"){const i=document.createElement("input");i.type=type;i.dataset.key=key;i.className=cls;return i;}
-function makeArea(key){const t=document.createElement('textarea');t.dataset.key=key;t.className='persist effectbox';t.rows=2;return t;}
-function formatCost(it){
-  let txt='';
-  if(it.time) txt+=it.time+' s';
-  if(it.cost) txt+=(txt?' / ':'')+it.cost.amount+' '+it.cost.resource.toUpperCase().replace('STAMINA','STA').replace('MANA','MP');
-  return txt;
+/* --------- JSON LOAD --------- */
+let FEIM={};
+fetch('game_data_feim_v1.json').then(r=>r.json()).then(j=>{
+  FEIM=j;
+  initSelects();
+  rebuildTables();
+  buildActionSlots();
+});
+
+/* --------- PERSIST --------- */
+function q(sel){return document.querySelector(sel)}
+function qq(sel){return document.querySelectorAll(sel)}
+function persistInit(){
+  qq('.persist').forEach(el=>{
+    const k='feim_'+el.dataset.key;
+    if(localStorage[k]!=null) el.value=localStorage[k];
+    if(el.type==='range') q('#'+el.dataset.key+'_val').textContent=el.value;
+    el.addEventListener('input',()=>{
+      localStorage[k]=el.value;
+      if(el.type==='range') q('#'+el.dataset.key+'_val').textContent=el.value;
+    });
+  });
 }
-function formatDescr(it){
-  if(it.damage) return `${it.damage.dice} +${it.damage.stat}`+(it.notes?` (${it.notes})`:'');
-  if(it.def) return `+${it.def} DEF`+(it.penalty?`, ${it.penalty}`:'');
-  if(it.hp) return `${it.hp} HP, ${it.attack} – ${it.traits}`;
-  const e=it.effect||{};
-  if(e.kind==='damage'){let d=(e.count?e.count+'× ':'')+e.dice; if(e.multiplier&&e.multiplier!==1)d+=' ×'+e.multiplier; if(e.scales_with)d+=` (+${e.scales_with})`; return d+' damage';}
-  if(e.kind==='heal') return `heal ${e.dice}`;
-  if(e.kind==='buff'||e.kind==='debuff') return (e.dice||e.value)||'';
-  if(e.kind==='summon') return `Summon ${e.name} for ${e.duration} rounds`;
-  return e.dice||'';
+function sliderButtons(){
+  qq('button.dec,button.inc').forEach(btn=>{
+    btn.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const id=btn.dataset.slider;
+      const sl=q('input[data-key="'+id+'"]');
+      const step=parseFloat(sl.dataset.step||1);
+      sl.value = Math.max(sl.min, Math.min(sl.max,parseFloat(sl.value)+(btn.classList.contains('inc')?step:-step)));
+      sl.dispatchEvent(new Event('input'));
+    },{passive:false});
+  });
 }
+document.addEventListener('dblclick',e=>{
+  if(e.target.closest('button.dec,button.inc')) e.preventDefault();
+},{passive:false});
+
+/* --------- STATS & CAPS --------- */
+const statKeys=['str','dex','mag','con','end','wis'];
+function getStat(k){const el=q(`[data-key="${k}"]`);return el?parseFloat(el.value)||0:0;}
+function statSum(){return statKeys.reduce((s,k)=>s+getStat(k),0);}
+function maxStatPoints(){return 13+getStat('level')*3;}
+function maxSingleStat(){const lv=getStat('level');return 7+Math.floor((lv-1)/2);}
+function statToMod(v){if(v<=1)return -3;if(v==2)return -2;if(v==3)return -1;if(v<=5)return 0;if(v==6)return 1;if(v==7)return 2;if(v==8)return 3;if(v==9)return 4;return 5;}
+function updateMods(){statKeys.forEach(k=>q('#mod_'+k).textContent=`(${statToMod(getStat(k))>=0?'+':''}${statToMod(getStat(k))})`);}
+function updatePointDisplay(){const l=maxStatPoints()-statSum();q('#pts_left').textContent=`(${l} pts left)`;}
+function setCap(key,max){
+  const sl=q(`input[data-key="${key}"]`);
+  const lab=q('#'+key+'_val');sl.max=max;
+  if(parseFloat(sl.value)===0||parseFloat(sl.value)>max){sl.value=max;localStorage['feim_'+key]=max;}
+  lab.textContent=sl.value;
+}
+function updateCaps(){
+  setCap('hp',getStat('con')*5);
+  setCap('stamina',6+getStat('end'));
+  setCap('mana',6+getStat('wis'));
+}
+statKeys.forEach(k=>{
+  const el=q(`[data-key="${k}"]`);
+  el.addEventListener('input',()=>{
+    if(statSum()>maxStatPoints()||parseFloat(el.value)>maxSingleStat())el.value=el.dataset.prev||1;
+    el.dataset.prev=el.value;updatePointDisplay();updateMods();updateCaps();
+  });
+  el.dataset.prev=el.value;
+});
+q('[data-key="level"]').addEventListener('input',()=>{updatePointDisplay();updateCaps();updateMods();});
+
+/* --------- TABLE BUILD (2 rows) --------- */
+function makeRow(obj){
+  const t=`<tr class=row1><td>${obj.name}</td><td class=cost>${obj.time?s(obj.time)+' / '+obj.cost.amount+' '+(obj.cost.resource=='stamina'?'STA':'MP'):obj.def?obj.def+' DEF':obj.damage?obj.damage.dice:'-'}</td></tr>
+           <tr class=row2><td colspan=2 class=descr>${obj.effect?eff(obj.effect):obj.notes||obj.traits||''}</td></tr>`;
+  return t;
+}
+function s(n){return n.toFixed(1)+'s';}
+function eff(e){if(e.kind=='damage')return e.dice+' dmg'+(e.multiplier?'×'+e.multiplier:'');if(e.kind=='heal')return 'Heal '+e.dice;if(e.kind=='buff')return e.value+' for '+e.duration+'R';return e.kind;}
+function rebuildTables(){
+  q('#tbl_skills tbody').innerHTML=FEIM.skills.map(makeRow).join('');
+  q('#tbl_spells tbody').innerHTML=FEIM.spells.map(makeRow).join('');
+  q('#tbl_inv tbody').innerHTML=FEIM.weapons.concat(FEIM.armors).map(makeRow).join('');
+}
+
+/* --------- SELECTS equip / add ---------- */
+function option(o){return `<option value="${o.id}">${o.name}</option>`;}
+function initSelects(){
+  q('#equip_weapon').innerHTML='<option>- Weapon -</option>'+FEIM.weapons.map(option).join('');
+  q('#equip_head').innerHTML  ='<option>- Head -</option>'  +FEIM.armors.filter(a=>a.slot=='head').map(option).join('');
+  q('#equip_chest').innerHTML ='<option>- Chest -</option>' +FEIM.armors.filter(a=>a.slot=='chest').map(option).join('');
+  q('#equip_legs').innerHTML  ='<option>- Legs -</option>'  +FEIM.armors.filter(a=>a.slot=='legs').map(option).join('');
+}
+function addRow(target,array){
+  const sel=prompt('Type id to add:\n'+array.map(x=>x.id).join(', '));
+  const obj=array.find(x=>x.id===sel);if(!obj)return;
+  q(target).querySelector('tbody').insertAdjacentHTML('beforeend',makeRow(obj));
+}
+q('#addSkill').onclick=_=>addRow('#tbl_skills',FEIM.skills);
+q('#addSpell').onclick=_=>addRow('#tbl_spells',FEIM.spells);
+q('#addItem').onclick=_=>addRow('#tbl_inv',FEIM.weapons.concat(FEIM.armors));
+
+/* --------- ACTION QUICK SLOTS ---------- */
+let skillIdx=0,spellIdx=0;
+function slotHTML(o,i,cat){return `<div class="action-slot"><button data-cat="${cat}" data-idx="${i}">▶︎</button>${o.name}</div>`;}
+function buildActionSlots(){
+  renderSlots();
+  q('#actionSkills').insertAdjacentHTML('beforebegin','<button id="prevSkill" class="btn">◀</button> <button id="nextSkill" class="btn">▶</button>');
+  q('#actionSpells').insertAdjacentHTML('beforebegin','<button id="prevSpell" class="btn">◀</button> <button id="nextSpell" class="btn">▶</button>');
+  q('#prevSkill').onclick=_=>{skillIdx=(skillIdx-4+FEIM.skills.length)%FEIM.skills.length;renderSlots();}
+  q('#nextSkill').onclick=_=>{skillIdx=(skillIdx+4)%FEIM.skills.length;renderSlots();}
+  q('#prevSpell').onclick=_=>{spellIdx=(spellIdx-4+FEIM.spells.length)%FEIM.spells.length;renderSlots();}
+  q('#nextSpell').onclick=_=>{spellIdx=(spellIdx+4)%FEIM.spells.length;renderSlots();}
+}
+function renderSlots(){
+  q('#actionSkills').innerHTML=FEIM.skills.slice(skillIdx,skillIdx+4).map((o,i)=>slotHTML(o,i,'skill')).join('');
+  q('#actionSpells').innerHTML=FEIM.spells.slice(spellIdx,spellIdx+4).map((o,i)=>slotHTML(o,i,'spell')).join('');
+  qq('.action-slot button').forEach(btn=>btn.onclick=useAction);
+}
+function useAction(e){
+  const cat=e.target.dataset.cat;
+  const baseIdx=(cat=='skill'?skillIdx:spellIdx);
+  const list=(cat=='skill'?FEIM.skills:FEIM.spells);
+  const obj=list[baseIdx+parseInt(e.target.dataset.idx)];
+  const time=obj.time||2;
+  const res=obj.cost.resource;
+  const amt=obj.cost.amount;
+  const slTime=q('input[data-key="time"]');
+  if(parseFloat(slTime.value)<time){alert('Not enough TIME');return;}
+  const slRes=q('input[data-key="'+(res=='stamina'?'stamina':'mana')+'"]');
+  if(parseFloat(slRes.value)<amt){alert('Not enough '+res.toUpperCase());return;}
+  slTime.value=parseFloat(slTime.value)-time;
+  slRes.value=parseFloat(slRes.value)-amt;
+  slTime.dispatchEvent(new Event('input'));
+  slRes.dispatchEvent(new Event('input'));
+}
+
+/* --------- END ROUND ---------- */
+q('#endRound').onclick=_=>{
+  const slTime=q('input[data-key="time"]'); slTime.value=slTime.max;
+  const slSTA=q('input[data-key="stamina"]');slSTA.value=Math.min(slSTA.max,parseFloat(slSTA.value)+getStat('end'));
+  const slMP=q('input[data-key="mana"]');slMP.value=Math.min(slMP.max,parseFloat(slMP.value)+Math.floor(getStat('wis')*0.5));
+  [slTime,slSTA,slMP].forEach(sl=>sl.dispatchEvent(new Event('input')));
+};
+
+/* --------- EXPORT / IMPORT --------- */
 function exportJSON(){
-  const out={};
-  Object.keys(localStorage).forEach(k=>{if(k.startsWith('feim_')) out[k]=localStorage[k];});
-  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='feim_sheet.json';a.click();
+  const obj={};
+  Object.keys(localStorage).forEach(k=>{if(k.startsWith('feim_'))obj[k]=localStorage[k];});
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='feim_sheet.json';a.click();
 }
 function importJSON(file){
   const r=new FileReader();
-  r.onload=()=>{
-    try{const obj=JSON.parse(r.result);Object.keys(obj).forEach(k=>localStorage[k]=obj[k]);location.reload();}catch(e){alert('Invalid file');}
+  r.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      Object.entries(data).forEach(([k,v])=>{if(k.startsWith('feim_'))localStorage[k]=v;});
+      location.reload();
+    }catch(err){alert('Invalid JSON');}
   };
   r.readAsText(file);
 }
-function persistInit(){
-  document.querySelectorAll(".persist").forEach(el=>{
-    const k="feim_"+el.dataset.key;
-    if(localStorage.getItem(k)!==null) el.value=localStorage.getItem(k);
-    if(el.type==="range") document.getElementById(el.dataset.key+"_val").textContent=el.value;
-    el.addEventListener("input",()=>{
-      localStorage.setItem(k,el.value);
-      if(el.type==="range") document.getElementById(el.dataset.key+"_val").textContent=el.value;
-    });
-  });
-}
-// ---------- generate rows ----------
-function genRows(tbodyId,prefix,count){
-  const tb=document.getElementById(tbodyId);
-  for(let i=0;i<count;i++){
-    const tr=tb.insertRow();
-    const act=tr.insertCell();
-    const btn=document.createElement('button');
-    btn.textContent='▶';
-    btn.className='actionBtn';
-    btn.dataset.prefix=prefix;
-    btn.dataset.row=i;
-    act.appendChild(btn);
-    const rm=document.createElement('button');
-    rm.textContent='✖';
-    rm.className='removeBtn';
-    rm.dataset.row=i;
-    act.appendChild(rm);
-    ["name","time","cost","eff"].forEach((field,idx)=>{
-      const td=tr.insertCell();
-      if(idx===3) td.className="effect";
-      else if(field==="time") td.className="time";
-      else if(field==="cost") td.className="cost";
-      td.appendChild(idx===3?makeArea(`${prefix}_${i}_${field}`):makeInput(`${prefix}_${i}_${field}`));
-    });
-  }
-}
-function genInvRows(){
-  const tb=document.getElementById("inv_tbody");
-  for(let i=0;i<24;i++){
-    const tr=tb.insertRow();
-    tr.insertCell().appendChild(makeInput(`inv_${i}_name`));
-    tr.insertCell().appendChild(makeInput(`inv_${i}_type`));
-    const tdDesc=tr.insertCell();tdDesc.className="effect";
-    tdDesc.appendChild(makeArea(`inv_${i}_desc`));
-  }
-}
+q('#exportBtn').onclick=exportJSON;
+q('#importBtn').onclick=_=>q('#importFile').click();
+q('#importFile').onchange=e=>importJSON(e.target.files[0]);
 
-function selectDialog(arr){
-  return new Promise(res=>{
-    const ov=document.createElement('div');
-    ov.style.position='fixed';
-    ov.style.inset='0';
-    ov.style.background='rgba(0,0,0,0.7)';
-    ov.style.display='flex';
-    ov.style.alignItems='center';
-    ov.style.justifyContent='center';
-    const box=document.createElement('div');
-    box.style.background='var(--panel)';
-    box.style.padding='1rem';
-    const sel=document.createElement('select');
-    arr.forEach(o=>{const op=document.createElement('option');op.value=o.id;op.textContent=o.name;sel.appendChild(op);});
-    const ok=document.createElement('button');
-    ok.textContent='OK';
-    ok.className='btn';
-    box.appendChild(sel);box.appendChild(ok);ov.appendChild(box);document.body.appendChild(ov);
-    ok.addEventListener('click',()=>{const v=sel.value;ov.remove();res(v);});
-  });
-}
-
-function addButtons(){
-  document.querySelector('.add-skill').addEventListener('click',async()=>{
-    const id=await selectDialog(window.FEIM_DATA.skills);
-    fillRow('skill',id);
-  });
-  document.querySelector('.add-spell').addEventListener('click',async()=>{
-    const id=await selectDialog(window.FEIM_DATA.spells);
-    fillRow('magic',id);
-  });
-  document.querySelector('.add-item').addEventListener('click',async()=>{
-    const list=(window.FEIM_DATA.weapons||[]).concat(window.FEIM_DATA.armors||[]);
-    const id=await selectDialog(list);
-    fillRow('inv',id);
-  });
-}
-
-function fillRow(prefix,id){
-  const data=[].concat(window.FEIM_DATA.skills,window.FEIM_DATA.spells,window.FEIM_DATA.weapons,window.FEIM_DATA.armors).find(x=>x.id===id);
-  if(!data) return;
-  const tbId=prefix==='skill'? 'skills_tbody' : prefix==='magic'? 'magic_tbody':'inv_tbody';
-  const row=[...document.querySelectorAll(`#${tbId} tr`)].find(tr=>{
-    const inp=tr.querySelector(`input[data-key^="${prefix}"][data-key$="_name"]`);
-    return inp && !inp.value;
-  });
-  if(!row) return;
-  const idx=row.querySelector('button.actionBtn')?row.querySelector('button.actionBtn').dataset.row:0;
-  row.querySelector(`input[data-key="${prefix}_${idx}_name"]`).value=data.name;
-  if(prefix!=='inv'){
-    row.querySelector(`input[data-key="${prefix}_${idx}_time"]`).value=data.time;
-    row.querySelector(`input[data-key="${prefix}_${idx}_cost"]`).value=`${data.cost.amount} ${data.cost.resource.slice(0,3).toUpperCase()}`;
-    row.querySelector(`input[data-key="${prefix}_${idx}_eff"]`).value=formatDescr(data);
-    row.querySelector('button.actionBtn').dataset.item=id;
-  }else{
-    row.querySelector(`input[data-key="inv_${idx}_type"]`).value=data.type||'';
-    row.querySelector(`input[data-key="inv_${idx}_desc"]`).value=data.notes||data.penalty||'';
-  }
-  row.querySelectorAll('input').forEach(el=>el.dispatchEvent(new Event('input')));
-  updateActionSlots();
-}
-
-
-// ---------- slider buttons ----------
-function sliderButtons(){
-  document.querySelectorAll("button.dec,button.inc").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const id=btn.dataset.slider;
-      const slider=document.querySelector(`input[data-key="${id}"]`);
-      const step=parseFloat(slider.dataset.step||1);
-      slider.value=parseFloat(slider.value)+(btn.classList.contains("inc")?step:-step);
-      slider.dispatchEvent(new Event("input"));
-    });
-  });
-}
-function endRound(){
-  const timeSl=document.querySelector('[data-key="time"]');
-  sliderUpdate('time',parseFloat(timeSl.max));
-  sliderUpdate('stamina',Math.min(parseFloat(document.querySelector('[data-key="stamina"]').max),parseFloat(document.querySelector('[data-key="stamina"]').value)+getStat('end')));
-  sliderUpdate('mana',Math.min(parseFloat(document.querySelector('[data-key="mana"]').max),parseFloat(document.querySelector('[data-key="mana"]').value)+Math.floor(getStat('wis')*0.5)));
-}
-function sliderUpdate(key,val){
-  const sl=document.querySelector(`input[data-key="${key}"]`);
-  if(!sl) return;
-  const num=Math.min(parseFloat(sl.max),Math.max(parseFloat(sl.min||0),val));
-  sl.value=num;
-  sl.dispatchEvent(new Event('input'));
-}
-let skillOffset=0, spellOffset=0;
-function getIds(prefix){
-  return [...document.querySelectorAll(`#${prefix}_tbody tr`)].map(tr=>tr.querySelector('.actionBtn').dataset.item).filter(Boolean);
-}
-function updateActionSlots(){
-  const sIds=getIds('skills');
-  const mIds=getIds('magic');
-  const sSpan=document.getElementById('skillSlots');
-  const mSpan=document.getElementById('spellSlots');
-  sSpan.innerHTML='';
-  mSpan.innerHTML='';
-  for(let i=0;i<4;i++){
-    const sid=sIds[(skillOffset+i)%sIds.length];
-    if(sid){const b=document.createElement('button');b.className='actionBtn';b.dataset.item=sid;b.textContent=(window.FEIM_DATA.skills.find(x=>x.id===sid)||{}).name||sid;sSpan.appendChild(b);} 
-  }
-  for(let i=0;i<4;i++){
-    const mid=mIds[(spellOffset+i)%mIds.length];
-    if(mid){const b=document.createElement('button');b.className='actionBtn';b.dataset.item=mid;b.textContent=(window.FEIM_DATA.spells.find(x=>x.id===mid)||{}).name||mid;mSpan.appendChild(b);} 
-  }
-  actionButtons();
-}
-function actionButtons(){
-  document.querySelectorAll('.actionBtn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const id=btn.dataset.item;
-      if(!id) return;
-      const data=(window.FEIM_DATA.skills||[]).concat(window.FEIM_DATA.spells||[]).find(x=>x.id===id);
-      if(!data) return;
-      const t=parseFloat(data.time)||0;
-      const res=data.cost?data.cost.resource:null;
-      const amt=data.cost?data.cost.amount:0;
-      if(parseFloat(document.querySelector('[data-key="time"]').value)<t){alert('Not enough TIME');return;}
-      if(res && parseFloat(document.querySelector(`[data-key="${res}"]`).value)<amt){alert('Not enough '+res);return;}
-      sliderUpdate('time',parseFloat(document.querySelector('[data-key="time"]').value)-t);
-      if(res) sliderUpdate(res,parseFloat(document.querySelector(`[data-key="${res}"]`).value)-amt);
-   });
-  });
-  document.querySelectorAll('.removeBtn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const row=btn.closest('tr');
-      row.querySelectorAll('input,textarea').forEach(el=>{el.value='';el.dispatchEvent(new Event('input'));});
-      btn.previousElementSibling.dataset.item='';
-      updateActionSlots();
-    });
-  });
-}
-function getStat(key){
-  const el = document.querySelector(`[data-key="${key}"]`);
-  return el ? parseFloat(el.value) || 0 : 0;
-}
-
-/* ----------  STAT VALIDATION + SLIDER CAPS  ---------- */
-const statKeys = ['str','dex','mag','con','end','wis'];
-
-/* calcola punti totali assegnati */
-function statSum(){
-  return statKeys.reduce((s,k)=>s + getStat(k), 0);
-}
-/* punti massimi in base al livello: 10 +(lvl-1) */
-// 16 punti a Lv 1, +2 ogni livello (Lv 10 → 34)
-function maxStatPoints(){
-  const lvl = Math.max(1, getStat('level') || 1);
-  return 13 + lvl*3;        // 14 @Lv1, 17 @Lv2, …, 41 @Lv10
-}
-
-
-
-/* blocca incremento se sfora */
-function validateStatInput(e){
-  const maxPts = maxStatPoints();
-  if (statSum() > maxPts) {
-    e.target.value = e.target.dataset.prev || 0;   // annulla modifica
-    return;
-  }
-  e.target.dataset.prev = e.target.value;          // memorizza ultimo valido
-  saveStat(e.target);                              // salva persistence
-  updateResourceCaps();                            // ricalcola HP/STA/MP
-  updatePointDisplay();
-  validateSingleCap(e.target);   // limita la singola stat
-  updateMods();
-
-}
-
-/* salva valore nello storage (usato da validate) */
-function saveStat(el){
-  localStorage["feim_"+el.dataset.key] = el.value;
-}
-
-/* -------------------  SLIDER  CAPS ------------------- */
-function updateResourceCaps(){
-  const con = getStat('con');
-  const end = getStat('end');
-  const wis = getStat('wis');
-
-  const hpMax      = con * 5;
-  const staminaMax = 6 + end;
-  const manaMax    = 6 + wis;
-
-  setCapAndValue('hp',      hpMax);
-  setCapAndValue('stamina', staminaMax);
-  setCapAndValue('mana',    manaMax);
-}
-/* -------- MOD CALC -------- */
-function statToMod(v){
-  if(v<=1) return "-3";
-  if(v<=3) return "-2";
-  if(v===4) return "-1";
-  if(v===5) return "+0";         // con 5 hai +0 come richiesto
-  if(v<=7) return "+1";         // 6‑7 → +1
-  if(v===8) return "+2";
-  if(v===9) return "+3";
-  return "+4";                  // 10
-}
-function updateMods(){
-  statKeys.forEach(k=>{
-    document.getElementById('mod_'+k).textContent = `(${statToMod(getStat(k))})`;
-  });
-}
-
-/* --------- Stat‑point tracker ---------- */
-function updatePointDisplay(){
-  const left = maxStatPoints() - statSum();
-  document.getElementById('pts_left').textContent =
-  `(${left} stat point${left!==1?'s':''} left)`;
-
-}
-updatePointDisplay();
-statKeys.forEach(k=>validateSingleCap(document.querySelector(`[data-key="${k}"]`)));
-
-
-/* imposta max e, se necessario, ridimensiona il valore;
-   se è a zero (prima apertura) lo porta al nuovo max       */
-function setCapAndValue(key,max){
-  const sl  = document.querySelector(`input[data-key="${key}"]`);
-  const lab = document.getElementById(key+'_val');
-  if(!sl) return;
-  sl.max = max;
-  if(parseFloat(sl.value)===0 || parseFloat(sl.value)>max){
-    sl.value = max;
-    localStorage["feim_"+key] = max;
-  }
-  lab.textContent = sl.value;
-}
-/* cap di singola stat: 7 al livello 1, +1 ogni 2 livelli (8 al 3, 9 al 5…) */
-function maxSingleStat(){
-  const lvl = Math.max(1, getStat('level') || 1);
-  return 7 + Math.floor((lvl-1)/2);   // Lv1→7, Lv2→7, Lv3→8, Lv4→8, Lv5→9…
-}
-function validateSingleCap(el){
-  const cap = maxSingleStat();
-  if (parseFloat(el.value) > cap){
-    el.value = cap;
-  }
-}
-
-/* ----------  EVENT BINDING ---------- */
-/* memorizza il value corrente come “prev” per tutti gli stat inputs */
-statKeys.forEach(k=>{
-  const el = document.querySelector(`[data-key="${k}"]`);
-  if(el){
-    el.dataset.prev = el.value || 0;
-    el.addEventListener('input', validateStatInput);
-  }
-});
-/* level change ricalcola i limiti */
-const levelInput = document.querySelector('[data-key="level"]');
-if(levelInput){
-  levelInput.addEventListener('input', ()=>{
-    saveStat(levelInput);
-    updateResourceCaps();       // tanto CON/END/WIS non cambiano ma può cambiare limite punti
-	updatePointDisplay();
-  });
-}
-/* — stop double‑tap zoom only on ± buttons (Chrome/Android) — */
-document.addEventListener('dblclick',function(e){
-  if(e.target.closest('button.dec,button.inc,.actionBtn,.btn')) e.preventDefault();
-},{passive:false});
-document.addEventListener('touchstart',function(e){
-  if(e.target.closest('button.dec,button.inc,.actionBtn,.btn')) e.preventDefault();
-},{passive:false});
-
-
-/* prima esecuzione */
-updateResourceCaps();
-updateMods();
-
-/* ----------------------------------------------------- */
-
-(async function(){
-  window.FEIM_DATA = await fetch('game_data_feim_v1.json').then(r=>r.json());
-  genRows("skills_tbody","skill",10);
-  genRows("magic_tbody","magic",10);
-  genInvRows();
-  persistInit();
-  updateResourceCaps();
-  updateMods();
-  document.getElementById('exportBtn').addEventListener('click',exportJSON);
-  document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
-  document.getElementById('importFile').addEventListener('change',e=>{if(e.target.files[0]) importJSON(e.target.files[0]);});
-  sliderButtons();
-  addButtons();
-  actionButtons();
-  updateActionSlots();
-  document.getElementById('prevSkill').addEventListener('click',()=>{skillOffset=(skillOffset-4+getIds('skills').length)%getIds('skills').length;updateActionSlots();});
-  document.getElementById('nextSkill').addEventListener('click',()=>{skillOffset=(skillOffset+4)%getIds('skills').length;updateActionSlots();});
-  document.getElementById('prevSpell').addEventListener('click',()=>{spellOffset=(spellOffset-4+getIds('magic').length)%getIds('magic').length;updateActionSlots();});
-  document.getElementById('nextSpell').addEventListener('click',()=>{spellOffset=(spellOffset+4)%getIds('magic').length;updateActionSlots();});
-  document.getElementById('endRound').addEventListener('click',endRound);
-})();
+/* --------- FIRST LAUNCH SETUP --------- */
+persistInit();updateCaps();updatePointDisplay();updateMods();sliderButtons();
 </script>
 </body>
 </html>
