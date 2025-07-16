@@ -96,8 +96,15 @@ li{margin:.3rem 0}
     <label>HP <input id="gd_hp" type="number" min="1" value="1"></label>
     <label>Stamina <input id="gd_stamina" type="number" min="0" value="0"></label>
     <label>Mana <input id="gd_mana" type="number" min="0" value="0"></label>
+    <label>STR <input id="gd_str" type="number" min="0" value="1"></label>
+    <label>DEX <input id="gd_dex" type="number" min="0" value="1"></label>
+    <label>CON <input id="gd_con" type="number" min="0" value="1"></label>
+    <label>END <input id="gd_end" type="number" min="0" value="1"></label>
+    <label>MAG <input id="gd_mag" type="number" min="0" value="0"></label>
+    <label>WIS <input id="gd_wis" type="number" min="0" value="0"></label>
     <label>Base Atk <input id="gd_baseAtk" type="text"></label>
     <label>Loot <input id="gd_loot" type="text"></label>
+    <label>Skills <input id="gd_skills" type="text" placeholder="id1,id2"></label>
   </div>
 
   <button id="saveBtn" class="btn">💾 Salva / Aggiorna</button>
@@ -202,15 +209,22 @@ function loadEntry(cat,id){
   q('#gd_hp').value      = obj.hp||0;
   q('#gd_stamina').value = obj.stamina||0;
   q('#gd_mana').value    = obj.mana||0;
+  q('#gd_str').value     = obj.str||0;
+  q('#gd_dex').value     = obj.dex||0;
+  q('#gd_con').value     = obj.con||0;
+  q('#gd_end').value     = obj.end||0;
+  q('#gd_mag').value     = obj.mag||0;
+  q('#gd_wis').value     = obj.wis||0;
   q('#gd_baseAtk').value = obj.baseAtk||'';
   q('#gd_loot').value    = obj.loot||'';
+  q('#gd_skills').value  = (obj.skills||[]).join(',');
 
   q('#delBtn').style.display='inline-block';
 }
 
 function clearFields(){
   currentObj = null;
-  ['name','desc','gd_damage','gd_cooldown','gd_element','gd_rarity','gd_effect','gd_stack','gd_hp','gd_stamina','gd_mana','gd_baseAtk','gd_loot']
+  ['name','desc','gd_damage','gd_cooldown','gd_element','gd_rarity','gd_effect','gd_stack','gd_hp','gd_stamina','gd_mana','gd_str','gd_dex','gd_con','gd_end','gd_mag','gd_wis','gd_baseAtk','gd_loot','gd_skills']
     .forEach(id=>{const el=q('#'+id);el.value = el.type==='number' ? 0 : '';});
   q('#delBtn').style.display='none';
 }
@@ -265,13 +279,36 @@ function renderEncounter(){
 
       <button class="finish" data-i="${i}">End Turn</button><br>
 
-      ${(m.skills||[]).map(s=>`<button class="act" data-s="${s}" data-i="${i}">${s}</button>`).join(' ')}
+      ${(m.skills||[]).map(s=>`<button class="act" data-s="${s}" data-i="${i}">${skillName(s)}</button>`).join(' ')}
     </div>`).join('');
 
   // handlers
   qq('.del').forEach(b=>b.onclick = ()=>{encounter.monsters.splice(+b.dataset.i,1);renderEncounter();persistEncounter();});
   qq('.bar').forEach(sl=>sl.oninput = ()=>{const i=+sl.dataset.i;const k=sl.dataset.k;encounter.monsters[i][k]=+sl.value;sl.nextElementSibling.textContent=sl.value;persistEncounter();});
   qq('.finish').forEach(b=>b.onclick = ()=>finishTurn(+b.dataset.i));
+  qq('.act').forEach(b=>b.onclick = ()=>useSkill(+b.dataset.i,b.dataset.s));
+}
+
+function skillName(id){
+  const s = (gameData.skills||[]).find(o=>o.id===id) || (gameData.spells||[]).find(o=>o.id===id);
+  return s ? s.name : id;
+}
+
+function useSkill(i,id){
+  const m = encounter.monsters[i];
+  if(!m) return;
+  const obj = (gameData.skills||[]).find(o=>o.id===id) || (gameData.spells||[]).find(o=>o.id===id);
+  if(!obj) return;
+  const resKey = obj.cost.resource==='stamina' ? 'stamina' : 'mana';
+  const time   = obj.time || 2;
+  if(m.time < time || m[resKey] < obj.cost.amount){
+    alert('Not enough resources');
+    return;
+  }
+  m.time -= time;
+  m[resKey] -= obj.cost.amount;
+  renderEncounter();
+  persistEncounter();
 }
 
 function finishTurn(i){
@@ -310,8 +347,15 @@ function hookUI(){
       obj.hp       = +q('#gd_hp').value||0;
       obj.stamina  = +q('#gd_stamina').value||0;
       obj.mana     = +q('#gd_mana').value||0;
+      obj.str      = +q('#gd_str').value||0;
+      obj.dex      = +q('#gd_dex').value||0;
+      obj.con      = +q('#gd_con').value||0;
+      obj.end      = +q('#gd_end').value||0;
+      obj.mag      = +q('#gd_mag').value||0;
+      obj.wis      = +q('#gd_wis').value||0;
       obj.baseAtk  = q('#gd_baseAtk').value;
       obj.loot     = q('#gd_loot').value;
+      obj.skills   = q('#gd_skills').value.split(',').map(s=>s.trim()).filter(Boolean);
     }
 
     saveGameData(obj);
