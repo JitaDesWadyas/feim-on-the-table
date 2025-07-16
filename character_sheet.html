@@ -179,8 +179,8 @@ function addRow(tableSel,obj){
  const html=`<tr class=row1><td>${obj.name}</td><td class=cost>${costString(obj)}</td><td><button class="slot-btn rem">🗑</button></td></tr>
              <tr class=row2><td colspan=3 class=descr>${desc(obj)}</td></tr>`;
  tb.insertAdjacentHTML('beforeend',html);
- const remBtn=tb.querySelectorAll('.rem');const btn=remBtn[remBtn.length-1];
- btn.onclick=_=>{
+const btn = tb.lastElementChild.previousElementSibling.querySelector('.rem');
+btn.onclick = function(){
    const tr=btn.closest('tr'),nxt=tr.nextElementSibling;nxt.remove();tr.remove();
    if(obj.category=='skill') mySkills=mySkills.filter(x=>x.id!==obj.id);
    else if(obj.category=='spell') mySpells=mySpells.filter(x=>x.id!==obj.id);
