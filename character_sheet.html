@@ -206,7 +206,8 @@ function addRow(tableSel, obj){
   tb.insertAdjacentHTML('beforeend', html);
 
   /* pulsante rimozione (elimina entrambe le righe) */
-  tb.querySelector('.rem:last-of-type').onclick = function(){
+  const remBtn = tb.querySelector('tr.row1:last-of-type .rem');   // prende il bottone dell’ultima riga appena creata
+remBtn.onclick = function(){
     const tr = this.closest('tr');
     const nxt = tr.nextElementSibling;
     if(nxt) nxt.remove();
