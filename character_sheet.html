@@ -92,6 +92,19 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
   color:#ccc;
 }
 
+/* ——— BUTTON “USE” STYLE ——— */
+.use-btn {
+  margin-top: .5rem;
+  display: inline-block;
+  padding: .4rem .6rem;
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: .85rem;
+}
+
 </style>
 </head>
 <body>
@@ -296,17 +309,6 @@ function refreshEquipSelects(){
 }
 
 /* ---------- actions ---------- */
-let skillIdx=0,spellIdx=0;
-function slotHTML(o,i,cat){const cost=(o.time||2)+'s / '+o.cost.amount+(o.cost.resource=='stamina'?' STA':' MP');return`<div class="action-slot"><button class="slot-btn" data-cat="${cat}" data-idx="${i}">▶︎</button>${o.name}<span style="flex:1"></span><small>${cost}</small></div>`;}
-
-function rebuildActions(){skillIdx=0;spellIdx=0;}
-function useAction(e){
- const cat=e.target.dataset.cat,list=cat=='skill'?mySkills:mySpells;
- const idx=(cat=='skill'?skillIdx:spellIdx)+(+e.target.dataset.idx);const obj=list[idx];if(!obj)return;
- const resKey=obj.cost.resource=='stamina'?'stamina':'mana';const slRes=q(`input[data-key="${resKey}"]`),slTime=q('input[data-key="time"]');
- if(+slTime.value<obj.time||+slRes.value<obj.cost.amount){alert('Not enough resources');return;}
- setVal(slTime,+slTime.value-obj.time);setVal(slRes,+slRes.value-obj.cost.amount);
-}
 
 /* ---------- stats / caps ---------- */
 const statKeys=['str','dex','mag','con','end','wis'];
@@ -377,17 +379,19 @@ function initPage(){
  ['#addSkill','#addSpell','#addItem'].forEach((b,i)=>q(b).onclick=_=>openPicker(['tbl_skills','tbl_spells','tbl_inv'][i]));
  }
 // --- helper per costi e descrizioni ---
-function costStr(o){
-  return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
+// ——— helper: mostra costo e descrizione di o ———
+function costStr(o) {
+  return (o.time || 2) + 's / ' + o.cost.amount + ' ' +
+         (o.cost.resource === 'stamina' ? 'STA' : 'MP');
 }
-function descStr(o){
+function descStr(o) {
   return o.effect?.dice
-       ? `${o.effect.dice} ${o.effect.kind||''}`
+       ? `${o.effect.dice} ${o.effect.kind || ''}`
        : o.effect?.kind || '';
 }
 
-// --- crea singolo box di action ---
-function createItem(o){
+// ——— crea box interattivo per SKILL/SPELL ———
+function createItem(o) {
   const div = document.createElement('div');
   div.className = 'action-item';
   div.innerHTML = `
@@ -395,54 +399,84 @@ function createItem(o){
       <span>${o.name}</span>
       <small>${costStr(o)}</small>
     </div>
-    <div class="details">${descStr(o)}</div>`;
+    <div class="details">
+      ${descStr(o)}
+      <button class="use-btn" data-id="${o.id}">Use</button>
+    </div>`;
+  // apri/chiudi dettagli
   div.querySelector('.title').onclick = () => {
     const d = div.querySelector('.details');
     d.style.display = d.style.display === 'block' ? 'none' : 'block';
   };
+  // hook sul bottone Use
+  div.querySelector('.use-btn').onclick = () => useAction(o.id);
   return div;
 }
 
-// --- inizializza tutte e quattro le sezioni ---
-function initActions(){
+// ——— funzione globale che consuma risorse ———
+function useAction(id) {
+  // trova obj in skills o spells
+  let obj = (FEIM.skills || []).find(s => s.id === id)
+         || (FEIM.spells || []).find(s => s.id === id);
+  if (!obj) return;
+
+  // prendi slider
+  const st = document.querySelector('input[data-key="stamina"]');
+  const mp = document.querySelector('input[data-key="mana"]');
+  const tm = document.querySelector('input[data-key="time"]');
+  // scegli risorsa giusta
+  const res = obj.cost.resource === 'mana' ? mp : st;
+
+  // check
+  if (+res.value < obj.cost.amount || +tm.value < obj.time) {
+    alert('Not enough resources');
+    return;
+  }
+  // aggiorna valori
+  res.value = +res.value - obj.cost.amount;
+  tm.value  = +tm.value  - obj.time;
+  // aggiorna UI
+  updateDisplay();
+}
+
+// ——— crea e popola le 4 sezioni Actions ———
+function initActions() {
   const skills = FEIM.skills || [];
   const spells = FEIM.spells || [];
-  const baseIds  = ['move','basic-strike','jump'];
-  const basicIds = ['dodge','parry','grapple','shove'];
-  const advSkills = skills.filter(s=>!baseIds.includes(s.id)&&!basicIds.includes(s.id));
+  // ID delle azioni base
+  const baseIds  = ['move', 'basic-strike', 'jump'];
+  const basicIds = ['dodge', 'parry', 'grapple', 'shove'];
+  // cerca only i «equipaggiati»
+  // mySkills e mySpells sono già popolati in initPage()
+  // (persistiti in localStorage da addRow / picker)
+  const advList = mySkills;    // advanced equipaggiate
+  const spList  = mySpells;    // spells equipaggiate
 
   // Base Actions
-  baseIds.forEach(id=>{
-    const o = skills.find(s=>s.id===id);
-    if(o) document.getElementById('baseActions').appendChild(createItem(o));
+  const baseC = document.getElementById('baseActions');
+  baseC.innerHTML = '';
+  baseIds.forEach(id => {
+    const o = skills.find(s => s.id === id);
+    if (o) baseC.appendChild(createItem(o));
   });
+
   // Basic Skills
-  basicIds.forEach(id=>{
-    const o = skills.find(s=>s.id===id);
-    if(o) document.getElementById('basicSkills').appendChild(createItem(o));
+  const basicC = document.getElementById('basicSkills');
+  basicC.innerHTML = '';
+  basicIds.forEach(id => {
+    const o = skills.find(s => s.id === id);
+    if (o) basicC.appendChild(createItem(o));
   });
 
-  // paginazione Advanced Skills
-  let aIdx = 0, spIdx = 0, pageSize = 6;
-  function renderAdv(){
-    const c = document.getElementById('advSkills');
-    c.innerHTML = '';
-    advSkills.slice(aIdx, aIdx+pageSize).forEach(o=> c.appendChild(createItem(o)));
-  }
-  // paginazione Spells
-  function renderSpells(){
-    const c = document.getElementById('spellList');
-    c.innerHTML = '';
-    spells.slice(spIdx, spIdx+pageSize).forEach(o=> c.appendChild(createItem(o)));
-  }
+  // Advanced Skills equipaggiate
+  const advC = document.getElementById('advSkills');
+  advC.innerHTML = '';
+  advList.forEach(o => advC.appendChild(createItem(o)));
 
-  document.getElementById('advPrev').onclick = ()=>{ aIdx = Math.max(0, aIdx-pageSize); renderAdv(); };
-  document.getElementById('advNext').onclick = ()=>{ aIdx = Math.min(advSkills.length-pageSize, aIdx+pageSize); renderAdv(); };
-  document.getElementById('spellPrev').onclick = ()=>{ spIdx = Math.max(0, spIdx-pageSize); renderSpells(); };
-  document.getElementById('spellNext').onclick = ()=>{ spIdx = Math.min(spells.length-pageSize, spIdx+pageSize); renderSpells(); };
-
-  renderAdv();
-  renderSpells();
+  // Spells equipaggiate
+  const spC = document.getElementById('spellList');
+  spC.innerHTML = '';
+  spList.forEach(o => spC.appendChild(createItem(o)));
 }
 
 </script>
