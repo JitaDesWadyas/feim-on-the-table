@@ -479,6 +479,11 @@ function initActions() {
   spList.forEach(o => spC.appendChild(createItem(o)));
 }
 
+// alias per compatibilità con il vecchio codice
+function rebuildActions() {
+  initActions();
+}
+
 </script>
 </body>
 </html>
