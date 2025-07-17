@@ -199,47 +199,71 @@ function createItem(o){
   };
   return div;
 }
-function renderMonsterActions(m,index){
-  const allSkills=gameData.skills,allSpells=gameData.spells;
-  const baseIds=['move','basic-strike','jump'];
-  const basicIds=['dodge','parry','grapple','shove'];
-  const adv=m.skills.filter(id=>!baseIds.includes(id)&&!basicIds.includes(id));
-  const spells=m.skills.filter(id=>allSpells.find(s=>s.id===id));
-  baseIds.forEach(id=>{
-    const o=allSkills.find(s=>s.id===id);
-    if(o)document.getElementById(`monster-baseActions-${index}`).appendChild(createItem(o));
+function renderMonsterActions(m, index){
+  const allSkills  = gameData.skills;
+  const allSpells  = gameData.spells;
+  const baseIds    = ['move','basic-strike','jump'];
+  const basicIds   = ['dodge','parry','grapple','shove'];
+  const adv        = m.skills.filter(id => !baseIds.includes(id) && !basicIds.includes(id));
+  const spells     = m.skills.filter(id => allSpells.some(s => s.id === id));
+
+  // Base Actions
+  baseIds.forEach(id => {
+    const o = allSkills.find(s => s.id === id);
+    if (o) document.getElementById(`monster-baseActions-${index}`).appendChild(createItem(o));
   });
-  basicIds.forEach(id=>{
-    const o=allSkills.find(s=>s.id===id);
-    if(o)document.getElementById(`monster-basicSkills-${index}`).appendChild(createItem(o));
+
+  // Basic Skills
+  basicIds.forEach(id => {
+    const o = allSkills.find(s => s.id === id);
+    if (o) document.getElementById(`monster-basicSkills-${index}`).appendChild(createItem(o));
   });
-  let aIdx=0;
-  function renderAdv(){
-    const c=document.getElementById(`monster-advSkills-${index}`);
-    c.innerHTML='';
-    adv.slice(aIdx,aIdx+6).forEach(id=>{
-      const o=allSkills.find(s=>s.id===id);
-      if(o)c.appendChild(createItem(o));
-    });
-  }
-  const advBtns=document.querySelectorAll(`#monster-advSkills-${index} ~ summary .btn-nav`);
-  advBtns[0].onclick=()=>{aIdx=Math.max(0,aIdx-6);renderAdv();};
-  advBtns[1].onclick=()=>{aIdx=Math.min(adv.length-6,aIdx+6);renderAdv();};
-  renderAdv();
-  let spIdx=0;
-  function renderSp(){
-    const c=document.getElementById(`monster-spellList-${index}`);
-    c.innerHTML='';
-    spells.slice(spIdx,spIdx+6).forEach(id=>{
-      const o=allSpells.find(s=>s.id===id);
-      if(o)c.appendChild(createItem(o));
-    });
-  }
-  const spBtns=document.querySelectorAll(`#monster-spellList-${index} ~ summary .btn-nav`);
-  spBtns[0].onclick=()=>{spIdx=Math.max(0,spIdx-6);renderSp();};
-  spBtns[1].onclick=()=>{spIdx=Math.min(spells.length-6,spIdx+6);renderSp();};
-  renderSp();
+
+  // Advanced Skills con paginazione
+  (()=>{
+    let aIdx = 0;
+    const detail = document.getElementById(`monster-advSkills-${index}`).closest('details');
+    const btnPrev = detail.querySelector('summary .btn-nav[data-dir="-6"]');
+    const btnNext = detail.querySelector('summary .btn-nav[data-dir="+6"]');
+    const container = detail.querySelector(`#monster-advSkills-${index}`);
+
+    function renderAdv(){
+      container.innerHTML = '';
+      adv.slice(aIdx, aIdx+6).forEach(id => {
+        const o = allSkills.find(s => s.id === id);
+        if (o) container.appendChild(createItem(o));
+      });
+    }
+
+    if (btnPrev) btnPrev.onclick = () => { aIdx = Math.max(0, aIdx - 6); renderAdv(); };
+    if (btnNext) btnNext.onclick = () => { aIdx = Math.min(adv.length - 6, aIdx + 6); renderAdv(); };
+
+    renderAdv();
+  })();
+
+  // Spells con paginazione
+  (()=>{
+    let spIdx = 0;
+    const detail = document.getElementById(`monster-spellList-${index}`).closest('details');
+    const btnPrev = detail.querySelector('summary .btn-nav[data-dir="-6"]');
+    const btnNext = detail.querySelector('summary .btn-nav[data-dir="+6"]');
+    const container = detail.querySelector(`#monster-spellList-${index}`);
+
+    function renderSp(){
+      container.innerHTML = '';
+      spells.slice(spIdx, spIdx+6).forEach(id => {
+        const o = allSpells.find(s => s.id === id);
+        if (o) container.appendChild(createItem(o));
+      });
+    }
+
+    if (btnPrev) btnPrev.onclick = () => { spIdx = Math.max(0, spIdx - 6); renderSp(); };
+    if (btnNext) btnNext.onclick = () => { spIdx = Math.min(spells.length - 6, spIdx + 6); renderSp(); };
+
+    renderSp();
+  })();
 }
+
 async function init(){
   const ls=localStorage.getItem('gamedata');
   if(ls) gameData=JSON.parse(ls);
