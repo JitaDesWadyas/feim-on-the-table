@@ -14,25 +14,88 @@
 }
 body{font-family:sans-serif;background:var(--bg);color:var(--fg);max-width:680px;margin:auto;padding:1rem}
 h1,h2{color:var(--amber);border-bottom:1px solid #555;padding-bottom:.2rem;margin-top:1.5rem}
-input,button,select,textarea{background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.6rem}
-input[type=number],input[type=text],textarea,select{width:100%;box-sizing:border-box;margin-top:.3rem}
-button{cursor:pointer}
-.rem{background:none;border:none;color:var(--amber);font-size:1rem}
-.row2 .descr{font-size:.85rem;color:#ccc}
-.slot-btn{background:#333;border:1px solid var(--border);color:var(--amber);touch-action:none}
-
-/* Actions section styling */
-.action-list{padding:.6rem;display:flex;flex-direction:column;gap:.5rem}
-.action-item{padding:.5rem;border:1px solid var(--border);border-radius:4px}
-.action-item > .title{display:flex;justify-content:space-between;align-items:center}
-.action-item > .details{display:none;padding-top:.4rem;font-size:.85rem;color:#ccc}
-.btn-nav{background:none;border:none;color:var(--amber);font-size:1.2rem;cursor:pointer;padding:0 .5rem}
+label{font-weight:bold;margin-top:1rem;display:block}
+input,textarea,select{background:var(--panel);color:var(--fg);border:1px solid var(--border);padding:.6rem}
+input[type=text],input[type=number],textarea{width:100%;box-sizing:border-box;margin-top:.3rem}
+input[type=number]{max-width:90px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mod{font-size:.85rem;margin-left:4px;color:#aaa;font-weight:normal}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.9rem}
+th,td{border:1px solid var(--border);padding:.4rem}
+th{background:#333}
+.row1{font-weight:600}
+.cost{text-align:right;width:34%}
+.descr{font-size:.85rem;color:#ccc}
+.slider-wrap{display:flex;align-items:center;gap:.5rem;margin-top:1rem}
+button,.slot-btn{background:#333;border:1px solid var(--border);color:var(--amber);touch-action:none}
+.slider-wrap button{width:38px;height:38px;font-size:1.2rem}
+.slot-btn{width:32px;height:32px;margin-right:.4rem;font-size:1rem;padding:0}
+.slider-wrap span{min-width:48px;text-align:right}
+input[type=range]{flex:1;height:34px;appearance:none;background:transparent}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:30px;height:30px;background:var(--amber);border-radius:50%;border:none}
+input[type=range]::-webkit-slider-runnable-track{height:8px;background:#555;border-radius:4px}
+input[type=range]::-moz-range-thumb{width:30px;height:30px;background:var(--amber);border:none;border-radius:50%}
+input[type=range]::-moz-range-track{height:8px;background:#555;border-radius:4px}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;padding:.4rem .7rem;border-radius:4px;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
 @media (max-width:480px){
   body{padding:.6rem}
+  nav a{font-size:.9rem}
+  table{font-size:.8rem}
 }
+.btn{padding:.45rem .7rem;border-radius:4px;margin-top:.4rem;font-size:.9rem}
+footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
+#picker{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;flex-direction:column;align-items:center;padding:1rem;z-index:1000}
+#picker input{width:100%;max-width:360px;margin-bottom:.6rem}
+#picker ul{max-height:60vh;overflow:auto;width:100%;max-width:360px;padding:0;margin:0;list-style:none}
+#picker li{padding:.4rem .6rem;border:1px solid var(--border);margin-bottom:.4rem;cursor:pointer}
+@media(max-width:480px){body{padding:.6rem}table{font-size:.8rem}}
+.lvl-row label{flex:1 1 32%;min-width:90px}
+@media(max-width:480px){
+  .lvl-row{flex-wrap:wrap}
+  .lvl-row label{flex:1 1 100%}   /* ciascuno va a capo, stessa larghezza */
+}
+/* --- Actions styling --- */
+.action-list {
+  padding:.6rem;
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+.action-item {
+  padding:.5rem;
+  border:1px solid var(--border);
+  border-radius:4px;
+}
+.action-item > .title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+}
+.action-item > .details {
+  display:none;
+  padding-top:.4rem;
+  font-size:.85rem;
+  color:#ccc;
+}
+
 </style>
 </head>
 <body>
+
 <nav>
   <a href="index.html">Home</a>
   <a href="progression.html">Progression</a>
@@ -45,38 +108,35 @@ button{cursor:pointer}
 
 <h1>FEIM Character Sheet</h1>
 <p style="text-align:right">
-  <button id="exportBtn" class="btn">Export JSON</button>
-  <input id="importFile" type="file" accept=".json" style="display:none">
-  <button id="importBtn" class="btn">Import JSON</button>
+ <button id="exportBtn" class="btn">Export JSON</button>
+ <input id="importFile" type="file" accept=".json" style="display:none">
+ <button id="importBtn" class="btn">Import JSON</button>
 </p>
+
+<label>Name</label><input data-key="name" class="persist" type="text">
+<label>Title</label><input data-key="title" class="persist" type="text">
+
+<div class="lvl-row" style="display:flex;gap:8px">
+ <label style="flex:1">Level <span id="pts_left" style="font-size:.9rem"></span><input data-key="level" class="persist" type="number" min="1" max="10" value="1"></label>
+ <label style="flex:1">XP<input data-key="xp" class="persist" type="number" min="0" value="0"></label>
+ <label style="flex:1">Coins<input data-key="coins" class="persist" type="number" min="0" value="0"></label>
+</div>
 
 <h2>Statistics</h2>
 <div class="stats">
-  <label>STR <span id="mod_str" class="mod">(0)</span>
-    <input data-key="str" class="persist" type="number" min="1" max="10" value="1">
-  </label>
-  <label>DEX <span id="mod_dex" class="mod">(0)</span>
-    <input data-key="dex" class="persist" type="number" min="1" max="10" value="1">
-  </label>
-  <label>MAG <span id="mod_mag" class="mod">(0)</span>
-    <input data-key="mag" class="persist" type="number" min="0" max="10" value="0">
-  </label>
-  <label>CON <span id="mod_con" class="mod">(0)</span>
-    <input data-key="con" class="persist" type="number" min="1" max="10" value="1">
-  </label>
-  <label>END <span id="mod_end" class="mod">(0)</span>
-    <input data-key="end" class="persist" type="number" min="1" max="10" value="1">
-  </label>
-  <label>WIS <span id="mod_wis" class="mod">(0)</span>
-    <input data-key="wis" class="persist" type="number" min="0" max="10" value="0">
-  </label>
+ <label>STR <span id="mod_str" class="mod">(0)</span><input data-key="str" class="persist" type="number" min="1" max="10" value="1"></label>
+ <label>DEX <span id="mod_dex" class="mod">(0)</span><input data-key="dex" class="persist" type="number" min="1" max="10" value="1"></label>
+ <label>MAG <span id="mod_mag" class="mod">(0)</span><input data-key="mag" class="persist" type="number" min="1" max="10" value="1"></label>
+ <label>CON <span id="mod_con" class="mod">(0)</span><input data-key="con" class="persist" type="number" min="1" max="10" value="1"></label>
+ <label>END <span id="mod_end" class="mod">(0)</span><input data-key="end" class="persist" type="number" min="1" max="10" value="1"></label>
+ <label>WIS <span id="mod_wis" class="mod">(0)</span><input data-key="wis" class="persist" type="number" min="1" max="10" value="1"></label>
 </div>
 
 <h2>Equipment</h2>
 <select id="equip_weapon" class="btn"></select>
-<select id="equip_head" class="btn"></select>
-<select id="equip_chest" class="btn"></select>
-<select id="equip_legs" class="btn"></select>
+<select id="equip_head"   class="btn"></select>
+<select id="equip_chest"  class="btn"></select>
+<select id="equip_legs"   class="btn"></select>
 
 <h2>Skills</h2>
 <table id="tbl_skills"><tbody></tbody></table>
@@ -94,68 +154,50 @@ button{cursor:pointer}
 <textarea data-key="diary" class="persist" rows="5"></textarea>
 
 <h2>In‑Game</h2>
-<div class="slider-wrap">
-  <button data-slider="hp" class="dec">−</button>
-  <input data-key="hp" class="bar" type="range" min="0" max="10" value="10">
-  <span>10</span>
-  <button data-slider="hp" class="inc">+</button>
-</div>
-<div class="slider-wrap">
-  <button data-slider="stamina" class="dec">−</button>
-  <input data-key="stamina" class="bar" type="range" min="0" max="10" value="10">
-  <span>10</span>
-  <button data-slider="stamina" class="inc">+</button>
-</div>
-<div class="slider-wrap">
-  <button data-slider="mana" class="dec">−</button>
-  <input data-key="mana" class="bar" type="range" min="0" max="10" value="0">
-  <span>0</span>
-  <button data-slider="mana" class="inc">+</button>
-</div>
-<div class="slider-wrap">
-  <button data-slider="time" class="dec">−</button>
-  <input data-key="time" class="bar" type="range" min="0" max="10" value="10">
-  <span>10</span>
-  <button data-slider="time" class="inc">+</button>
-</div>
+<div class="slider-wrap"><button data-slider="hp" class="dec">−</button> HP <input data-key="hp" data-step="0.5" class="persist slider" type="range" min="0" max="50" step="0.5"><span id="hp_val"></span> <button data-slider="hp" class="inc">+</button></div>
+<div class="slider-wrap"><button data-slider="stamina" class="dec">−</button> ST <input data-key="stamina" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="stamina_val"></span> <button data-slider="stamina" class="inc">+</button></div>
+<div class="slider-wrap"><button data-slider="mana" class="dec">−</button> MP <input data-key="mana" data-step="0.5" class="persist slider" type="range" min="0" max="30" step="0.5"><span id="mana_val"></span> <button data-slider="mana" class="inc">+</button></div>
+<div class="slider-wrap"><button data-slider="time" class="dec">−</button> TIME <input data-key="time" data-step="0.5" class="persist slider" type="range" min="0" max="3" step="0.5"><span id="time_val"></span> <button data-slider="time" class="inc">+</button></div>
 <button id="endRound" class="btn">End Round</button>
 
-  <h2>Actions</h2>
-  <details open>
-    <summary>Base Actions</summary>
-    <div id="baseActions" class="action-list"></div>
-  </details>
+<h2>Actions</h2>
 
-  <details open>
-    <summary>Basic Skills</summary>
-    <div id="basicSkills" class="action-list"></div>
-  </details>
+<details open>
+  <summary>Base Actions</summary>
+  <div id="baseActions" class="action-list"></div>
+</details>
 
-  <details>
-    <summary>
-      Advanced Skills
-      <button id="advPrev" class="btn-nav">◀</button>
-      <button id="advNext" class="btn-nav">▶</button>
-    </summary>
-    <div id="advSkills" class="action-list"></div>
-  </details>
+<details open>
+  <summary>Basic Skills</summary>
+  <div id="basicSkills" class="action-list"></div>
+</details>
 
-  <details>
-    <summary>
-      Spells
-      <button id="spellPrev" class="btn-nav">◀</button>
-      <button id="spellNext" class="btn-nav">▶</button>
-    </summary>
-    <div id="spellList" class="action-list"></div>
-  </details>
+<details>
+  <summary>
+    Advanced Skills
+    <button id="advPrev" class="btn">◀</button>
+    <button id="advNext" class="btn">▶</button>
+  </summary>
+  <div id="advSkills" class="action-list"></div>
+</details>
+
+<details>
+  <summary>
+    Spells
+    <button id="spellPrev" class="btn">◀</button>
+    <button id="spellNext" class="btn">▶</button>
+  </summary>
+  <div id="spellList" class="action-list"></div>
+</details>
+
 
 <footer>© 2025 JitaDesWadyas</footer>
 
 <!-- Picker -->
 <div id="picker">
-  <input id="pickerSearch" placeholder="Type to filter">
-  <ul id="pickerList"></ul>
-  <button id="pickerCancel" class="btn">Cancel</button>
+ <input id="pickerSearch" placeholder="Type to filter">
+ <ul id="pickerList"></ul>
+ <button id="pickerCancel" class="btn">Cancel</button>
 </div>
 
 <script>
@@ -163,221 +205,158 @@ const q=s=>document.querySelector(s), qq=s=>document.querySelectorAll(s);
 let FEIM={}, mySkills=[], mySpells=[], myInv=[];
 
 /* ---------- JSON load ---------- */
-fetch('gamedata.json').then(r=>r.json()).then(d=>{FEIM=d;initPage(); initActions();});
+fetch('gamedata.json').then(r=>r.json()).then(d=>{
+  FEIM = d;
+  initPage();
+  initActions();
+});
+
 
 /* ---------- persistence primitives ---------- */
 function persistInit(){
-  qq('.persist').forEach(el=>{
-    const key=el.getAttribute('data-key');
-    if(!key) return;
-    const val=localStorage['feim_'+key];
-    if(val!==undefined) el.value=val;
-    el.oninput=() => {
-      localStorage['feim_'+key]=el.value;
-      updateDisplay(); updateMods();
-    };
-  });
+ qq('.persist').forEach(el=>{
+  const k='feim_'+el.dataset.key;
+  if(localStorage[k]!=null) el.value=localStorage[k];
+  if(el.type==='range'){const lab=q('#'+el.dataset.key+'_val');if(lab) lab.textContent=el.value;}
+  el.addEventListener('input',()=>{localStorage[k]=el.value;if(el.type==='range'){const lab=q('#'+el.dataset.key+'_val');if(lab) lab.textContent=el.value;}});
+ });
+ /* load arrays */
+ mySkills = JSON.parse(localStorage['feim_skill_ids']||'[]').map(id=>FEIM.skills.find(s=>s.id===id)).filter(Boolean);
+ mySpells = JSON.parse(localStorage['feim_spell_ids']||'[]').map(id=>FEIM.spells.find(s=>s.id===id)).filter(Boolean);
+ myInv    = JSON.parse(localStorage['feim_inv_ids']  ||'[]').map(id=>getAnyItemById(id)).filter(Boolean);
+ rebuildTablesFromArrays();
 }
 
-/* ---------- display & mods ---------- */
-function updateDisplay(){
-  qq('.bar').forEach(sl=>{
-    const v=+sl.value;
-    sl.nextElementSibling.textContent=v;
-  });
+/* ---------- utils ---------- */
+function saveArrays(){
+ localStorage['feim_skill_ids']=JSON.stringify(mySkills.map(s=>s.id));
+ localStorage['feim_spell_ids']=JSON.stringify(mySpells.map(s=>s.id));
+ localStorage['feim_inv_ids']  =JSON.stringify(myInv.map(i=>i.id));
 }
-function updateMods(){
-  ['str','dex','mag','con','end','wis'].forEach(stat=>{
-    const el=q('[data-key="'+stat+'"]');
-    const mod=Math.floor((+el.value-1)/2);
-    q('#mod_'+stat).textContent='('+mod+')';
-  });
+function getAnyItemById(id){return FEIM.weapons.find(x=>x.id===id)||FEIM.armors.find(x=>x.id===id)||FEIM.items.find(x=>x.id===id);}
+function costString(o){
+ if(o.category=='skill'||o.category=='spell')return(o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
+ if(o.def) return o.def+' DEF'; if(o.damage) return o.damage.dice; return '-';
 }
-
-/* ---------- slider buttons ---------- */
-function sliderButtons(){
-  qq('.dec').forEach(b=>b.onclick=_=>{
-    const k=b.dataset.slider, sl=q('input[data-key="'+k+'"]');
-    sl.value=Math.max(0,+sl.value-1);
-    updateDisplay();
-  });
-  qq('.inc').forEach(b=>b.onclick=_=>{
-    const k=b.dataset.slider, sl=q('input[data-key="'+k+'"]');
-    sl.value=Math.min(+sl.max,+sl.value-0+1);
-    updateDisplay();
-  });
-}
-
-/* ---------- stats / caps ---------- */
-function updateCaps(){
-  // HP cap = CON×2, STA cap=END×2, TIME cap=DEX×2
-  const caps = {
-    hp: +q('[data-key="con"]').value * 2,
-    stamina: +q('[data-key="end"]').value * 2,
-    mana: +q('[data-key="wis"]').value * 0.5,
-    time: +q('[data-key="dex"]').value * 2
-  };
-  Object.keys(caps).forEach(k=>{
-    const sl=q('input[data-key="'+k+'"]');
-    sl.max=caps[k];
-    if(+sl.value>caps[k]) sl.value=caps[k];
-  });
+function desc(o){
+ if(o.effect) return o.effect.kind=='weapon-damage'?'Weapon dmg×'+o.effect.multiplier:o.effect.kind;
+ return o.notes||o.penalty||'';
 }
 
 /* ---------- picker ---------- */
 function openPicker(target){
-  const box=q('#picker'), list=q('#pickerList'), inp=q('#pickerSearch');
-  const data=target==='tbl_skills'?FEIM.skills
-               :target==='tbl_spells'?FEIM.spells
-               :[...FEIM.weapons,...FEIM.armors,...FEIM.items];
-  box.style.display='flex'; inp.value='';
-  render(target,'');
-  inp.oninput=e=>render(target,e.target.value.toLowerCase());
-  list.onclick=e=>{
-    const li=e.target.closest('li'); if(!li) return;
-    const obj=data.find(x=>x.id===li.dataset.id);
-    if(obj){ addRow(target,obj); close(); }
-  };
-  q('#pickerCancel').onclick=close;
-  document.onkeydown=ev=>ev.key==='Escape'&&close();
-  function render(t,f){
-    list.innerHTML=data
-      .filter(o=>o.name.toLowerCase().includes(f))
-      .map(o=>`<li data-id="${o.id}">${o.name}</li>`).join('');
-  }
-  function close(){ box.style.display='none'; inp.oninput=null; list.onclick=null; q('#pickerCancel').onclick=null; document.onkeydown=null; }
+ const box=q('#picker'),list=q('#pickerList'),inp=q('#pickerSearch');
+ const data=target==='tbl_skills'?FEIM.skills:target==='tbl_spells'?FEIM.spells:[...FEIM.weapons,...FEIM.armors,...FEIM.items];
+ box.style.display='flex';inp.value='';render('');
+ inp.oninput=e=>render(e.target.value.toLowerCase());
+ list.onclick=e=>{
+   const li=e.target.closest('li');if(!li)return;
+   const obj=data.find(x=>x.id===li.dataset.id);if(obj){addRow(target,obj);close();}
+ };
+ q('#pickerCancel').onclick=close;document.onkeydown=ev=>ev.key==='Escape'&&close();
+ function render(f){list.innerHTML=data.filter(o=>o.name.toLowerCase().includes(f)).map(o=>`<li data-id="${o.id}">${o.name}</li>`).join('');}
+ function close(){box.style.display='none';inp.oninput=list.onclick=q('#pickerCancel').onclick=document.onkeydown=null;}
 }
 
 /* ---------- add/remove row ---------- */
 function addRow(tableSel,obj){
-  const sel='#'+tableSel, tb=q(sel+' tbody');
-  const html=`<tr class="row1"><td>${obj.name}</td><td class="cost">${costString(obj)}</td><td><button class="rem" data-id="${obj.id}" data-cat="${obj.category}">🗑</button></td></tr>
-              <tr class="row2"><td colspan="3" class="descr">${desc(obj)}</td></tr>`;
-  tb.insertAdjacentHTML('beforeend',html);
-  if(obj.category=='skill' && !mySkills.find(x=>x.id===obj.id)) mySkills.push(obj);
-  else if(obj.category=='spell' && !mySpells.find(x=>x.id===obj.id)) mySpells.push(obj);
-  else if(!myInv.find(x=>x.id===obj.id)) myInv.push(obj);
-  saveArrays(); rebuildTablesFromArrays(); refreshEquipSelects(); updateCaps(); updateDisplay(); updateMods(); rebuildSlots();
+ const sel=tableSel.startsWith('#')?tableSel:'#'+tableSel;
+ const tb=q(sel+' tbody');if(!tb)return;
+ const html=`<tr class=row1><td>${obj.name}</td><td class=cost>${costString(obj)}</td><td><button class="slot-btn rem" data-id="${obj.id}" data-cat="${obj.category}">🗑</button></td></tr>
+             <tr class=row2><td colspan=3 class=descr>${desc(obj)}</td></tr>`;
+ tb.insertAdjacentHTML('beforeend',html);
+const btn = tb.lastElementChild.previousElementSibling.querySelector('.rem');
+btn.onclick = function(){
+   const tr=btn.closest('tr'),nxt=tr.nextElementSibling;nxt.remove();tr.remove();
+   if(obj.category=='skill') mySkills=mySkills.filter(x=>x.id!==obj.id);
+   else if(obj.category=='spell') mySpells=mySpells.filter(x=>x.id!==obj.id);
+   else myInv=myInv.filter(x=>x.id!==obj.id);
+   saveArrays();rebuildActions();refreshEquipSelects();
+ };
+ if(obj.category=='skill' && !mySkills.find(x=>x.id===obj.id)) mySkills.push(obj);
+ else if(obj.category=='spell' && !mySpells.find(x=>x.id===obj.id)) mySpells.push(obj);
+ else if(!myInv.find(x=>x.id===obj.id)) myInv.push(obj);
+ saveArrays();rebuildActions();refreshEquipSelects();
 }
-
-/* ---------- tables from arrays ---------- */
 function rebuildTablesFromArrays(){
-  ['#tbl_skills','#tbl_spells','#tbl_inv'].forEach(sel=>q(sel+' tbody').innerHTML='');
-  mySkills.forEach(o=>addRow('tbl_skills',o));
-  mySpells.forEach(o=>addRow('tbl_spells',o));
-  myInv   .forEach(o=>addRow('tbl_inv',o));
+ ['#tbl_skills','#tbl_spells','#tbl_inv'].forEach(sel=>q(sel+' tbody').innerHTML='');
+ mySkills.forEach(o=>addRow('tbl_skills',o));
+ mySpells.forEach(o=>addRow('tbl_spells',o));
+ myInv.forEach(o=>addRow('tbl_inv',o));
 }
 
 /* ---------- equip selects ---------- */
 function refreshEquipSelects(){
-  const invIds=new Set(myInv.map(i=>i.id));
-  const opt=o=>`<option value="${o.id}">${o.name}</option>`;
-  q('#equip_weapon').innerHTML='<option value="">Weapon</option>'+FEIM.weapons.filter(w=>invIds.has(w.id)).map(opt).join('');
-  q('#equip_head').innerHTML  ='<option value="">Head</option>'  +FEIM.armors.filter(a=>a.slot=='head'  && invIds.has(a.id)).map(opt).join('');
-  q('#equip_chest').innerHTML ='<option value="">Chest</option>' +FEIM.armors.filter(a=>a.slot=='chest' && invIds.has(a.id)).map(opt).join('');
-  q('#equip_legs').innerHTML  ='<option value="">Legs</option>'  +FEIM.armors.filter(a=>a.slot=='legs'  && invIds.has(a.id)).map(opt).join('');
+ const invIds=new Set(myInv.map(i=>i.id));
+ function opt(o){return `<option value="${o.id}">${o.name}</option>`;}
+ q('#equip_weapon').innerHTML='<option value="">Weapon</option>'+FEIM.weapons.filter(w=>invIds.has(w.id)).map(opt).join('');
+ q('#equip_head').innerHTML  ='<option value="">Head</option>'+FEIM.armors.filter(a=>a.slot=='head' && invIds.has(a.id)).map(opt).join('');
+ q('#equip_chest').innerHTML ='<option value="">Chest</option>'+FEIM.armors.filter(a=>a.slot=='chest'&&invIds.has(a.id)).map(opt).join('');
+ q('#equip_legs').innerHTML  ='<option value="">Legs</option>'+FEIM.armors.filter(a=>a.slot=='legs' && invIds.has(a.id)).map(opt).join('');
 }
 
-/* ---------- cost & desc utils ---------- */
-function costString(o){
-  if(o.category=='skill'||o.category=='spell') return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
-  if(o.def) return o.def+' DEF';
-  if(o.damage) return o.damage.dice;
-  return '-';
+/* ---------- actions ---------- */
+let skillIdx=0,spellIdx=0;
+function slotHTML(o,i,cat){const cost=(o.time||2)+'s / '+o.cost.amount+(o.cost.resource=='stamina'?' STA':' MP');return`<div class="action-slot"><button class="slot-btn" data-cat="${cat}" data-idx="${i}">▶︎</button>${o.name}<span style="flex:1"></span><small>${cost}</small></div>`;}
+function renderSlots(){
+ q('#actionSkills').innerHTML=mySkills.length?mySkills.slice(skillIdx,skillIdx+4).map((o,i)=>slotHTML(o,i,'skill')).join(''):'<em>No skills selected</em>';
+ q('#actionSpells').innerHTML=mySpells.length?mySpells.slice(spellIdx,spellIdx+4).map((o,i)=>slotHTML(o,i,'spell')).join(''):'<em>No spells selected</em>';
+ qq('.slot-btn').forEach(b=>b.onclick=useAction);
 }
-function desc(o){
-  if(o.effect) return o.effect.kind=='weapon-damage'?'Weapon dmg×'+o.effect.multiplier:o.effect.kind;
-  return o.notes||o.penalty||'';
-}
-
-/* ---------- persistence arrays ---------- */
-function saveArrays(){
-  localStorage['feim_skill_ids']=JSON.stringify(mySkills.map(s=>s.id));
-  localStorage['feim_spell_ids']=JSON.stringify(mySpells.map(s=>s.id));
-  localStorage['feim_inv_ids']  =JSON.stringify(myInv.map(i=>i.id));
-}
-
-/* ---------- slot-based actions ---------- */
-let skillIdx=0, spellIdx=0;
-function rebuildSlots(){
-  // original slot rendering (if needed)
-}
-
-/* ---------- use action ---------- */
+function rebuildActions(){skillIdx=0;spellIdx=0;renderSlots();}
 function useAction(e){
-  const cat=e.target.dataset.cat, list=cat=='skill'?mySkills:mySpells;
-  const idx=(cat=='skill'?skillIdx:spellIdx)+(+e.target.dataset.idx);
-  const obj=list[idx]; if(!obj) return;
-  const resKey=obj.cost.resource=='mana'?'mana':'stamina';
-  const slRes=q('input[data-key="'+resKey+'"]'), slTime=q('input[data-key="time"]');
-  if(+slRes.value<obj.cost.amount||+slTime.value<obj.time){ alert('Not enough resources'); return; }
-  slRes.value=+slRes.value-obj.cost.amount;
-  slTime.value=+slTime.value-obj.time;
-  updateDisplay();
+ const cat=e.target.dataset.cat,list=cat=='skill'?mySkills:mySpells;
+ const idx=(cat=='skill'?skillIdx:spellIdx)+(+e.target.dataset.idx);const obj=list[idx];if(!obj)return;
+ const resKey=obj.cost.resource=='stamina'?'stamina':'mana';const slRes=q(`input[data-key="${resKey}"]`),slTime=q('input[data-key="time"]');
+ if(+slTime.value<obj.time||+slRes.value<obj.cost.amount){alert('Not enough resources');return;}
+ setVal(slTime,+slTime.value-obj.time);setVal(slRes,+slRes.value-obj.cost.amount);
 }
+function navSkill(d){skillIdx=(skillIdx+d+mySkills.length)%mySkills.length;renderSlots();}
+function navSpell(d){spellIdx=(spellIdx+d+mySpells.length)%mySpells.length;renderSlots();}
 
-/* ---------- actions init ---------- */
-function initPage(){
-  persistInit(); updateCaps(); updateDisplay(); updateMods(); sliderButtons(); refreshEquipSelects(); rebuildSlots();
-  ['#addSkill','#addSpell','#addItem'].forEach((b,i)=>q(b).onclick=_=>openPicker(['tbl_skills','tbl_spells','tbl_inv'][i]));
-}
+/* ---------- stats / caps ---------- */
+const statKeys=['str','dex','mag','con','end','wis'];
+function getStat(k){return +q(`[data-key="${k}"]`).value||0;}
+function statSum(){return statKeys.reduce((s,k)=>s+getStat(k),0);}
+function maxStatPoints(){return 13+getStat('level')*3;}
+function maxSingleStat(){return 7+Math.floor((getStat('level')-1)/2);}
+function statToMod(v){return v<=1?-3:v<=2?-2:v<=3?-1:v<=5?0:v==6?1:v==7?2:v==8?3:v==9?4:5;}
+function updateMods(){statKeys.forEach(k=>q('#mod_'+k).textContent=`(${statToMod(getStat(k))>=0?'+':''}${statToMod(getStat(k))})`);}
+function updateDisplay(){q('#pts_left').textContent=`(${maxStatPoints()-statSum()} pts left)`;}
+function capSlider(id,max){const sl=q(`input[data-key="${id}"]`);if(sl){sl.max=max;if(+sl.value>max||+sl.value===0)setVal(sl,max);}}
+function updateCaps(){capSlider('hp',getStat('con')*5);capSlider('stamina',6+getStat('end'));capSlider('mana',6+getStat('wis'));}
+statKeys.forEach(k=>{const el=q(`[data-key="${k}"]`);el.addEventListener('input',()=>{if(statSum()>maxStatPoints()||+el.value>maxSingleStat())el.value=el.dataset.prev;el.dataset.prev=el.value;updateDisplay();updateMods();updateCaps();});el.dataset.prev=el.value;});
+q('[data-key="level"]').addEventListener('input',()=>{updateDisplay();updateCaps();updateMods();});
 
-/* ---------- Actions rendering ---------- */
-function costStr(o){
-  return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
-}
-function descStr(o){
-  return o.effect && o.effect.dice ? o.effect.dice + ' ' + (o.effect.kind || '')
-       : o.effect && o.effect.kind ? o.effect.kind
-       : '';
-}
+/* ---------- sliders / buttons ---------- */
+function setVal(sl,v){sl.value=v;sl.dispatchEvent(new Event('input'));}
+function sliderButtons(){qq('.dec,.inc').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();const sl=q(`input[data-key="${btn.dataset.slider}"]`);const step=+sl.dataset.step||1;setVal(sl,Math.max(sl.min,Math.min(sl.max,+sl.value+(btn.classList.contains('inc')?step:-step))));},{passive:false}));}
 
-function createItem(o){
-  const div = document.createElement('div');
-  div.className = 'action-item';
-  div.innerHTML = `<div class="title"><span>${o.name}</span><small>${costStr(o)}</small></div>` +
-                  `<div class="details">${descStr(o)}</div>`;
-  div.querySelector('.title').onclick = () => {
-    const d = div.querySelector('.details');
-    d.style.display = d.style.display === 'none' ? 'block' : 'none';
-  };
-  return div;
-}
+/* ---------- end round ---------- */
+q('#endRound').onclick = _ => {
+  // ripristina TIME al massimo (3 s)
+  setVal(q('[data-key="time"]'), 3);
 
-function initActions(){
-  const baseIds = ['move','basic-strike','jump'];
-  const basicIds= ['dodge','parry','grapple','shove'];
-  const allSkills = FEIM.skills || [];
-  const advSkills = allSkills.filter(s => !baseIds.includes(s.id) && !basicIds.includes(s.id));
-  const allSpells = FEIM.spells || [];
+  // recupero Stamina: +END
+  const sta = q('[data-key="stamina"]');
+  setVal(sta, Math.min(+sta.max, +sta.value + getStat('end')));
 
-  baseIds.forEach(id => {
-    const o = allSkills.find(s => s.id === id);
-    if(o) document.getElementById('baseActions').appendChild(createItem(o));
-  });
-  basicIds.forEach(id => {
-    const o = allSkills.find(s => s.id === id);
-    if(o) document.getElementById('basicSkills').appendChild(createItem(o));
-  });
+  // recupero Mana: +0.5 per punto WIS (anche con WIS=1)
+  const mpInc = getStat('wis') * 0.5;
+  const mp = q('[data-key="mana"]');
+  setVal(mp, Math.min(+mp.max, +mp.value + mpInc));
+};
 
-  let aIdx=0, spIdx=0, pageSize=6;
-  function renderAdv(){
-    const container = document.getElementById('advSkills'); container.innerHTML = '';
-    advSkills.slice(aIdx, aIdx+pageSize).forEach(o => container.appendChild(createItem(o)));
-  }
-  function renderSpells(){
-    const container = document.getElementById('spellList'); container.innerHTML = '';
-    allSpells.slice(spIdx, spIdx+pageSize).forEach(o => container.appendChild(createItem(o)));
-  }
-  document.getElementById('advPrev').onclick = () => { aIdx = Math.max(0, aIdx - pageSize); renderAdv(); };
-  document.getElementById('advNext').onclick = () => { aIdx = Math.min(advSkills.length - pageSize, aIdx + pageSize); renderAdv(); };
-  document.getElementById('spellPrev').onclick = () => { spIdx = Math.max(0, spIdx - pageSize); renderSpells(); };
-  document.getElementById('spellNext').onclick = () => { spIdx = Math.min(allSpells.length - pageSize, spIdx + pageSize); renderSpells(); };
-  renderAdv(); renderSpells();
-}
+ 
+/* ---------- export/import ---------- */
+q('#exportBtn').onclick=_=>{const o={};Object.keys(localStorage).forEach(k=>k.startsWith('feim_')&&(o[k]=localStorage[k]));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));a.download='feim_sheet.json';a.click();};
+q('#importBtn').onclick=_=>q('#importFile').click();
+q('#importFile').onchange=e=>{const r=new FileReader();r.onload=o=>{try{const d=JSON.parse(o.target.result);Object.entries(d).forEach(([k,v])=>k.startsWith('feim_')&&(localStorage[k]=v));location.reload();}catch(err){alert('Bad JSON');}};r.readAsText(e.target.files[0]);};
 
 /* ---------- misc ---------- */
 document.addEventListener('dblclick',e=>{if(e.target.closest('button'))e.preventDefault();},{passive:false});
+
+ /* delega unica per la rimozione righe */
 document.addEventListener('click', e=>{
   if(!e.target.classList.contains('rem')) return;
   const btn = e.target;
@@ -385,16 +364,94 @@ document.addEventListener('click', e=>{
   const nxt = tr.nextElementSibling;
   if(nxt) nxt.remove();
   tr.remove();
+
   const id  = btn.dataset.id;
   const cat = btn.dataset.cat;
   if(cat==='skill')   mySkills = mySkills.filter(o=>o.id!==id);
   else if(cat==='spell') mySpells = mySpells.filter(o=>o.id!==id);
   else                  myInv    = myInv.filter(o=>o.id!==id);
+
   saveArrays();
-  rebuildTablesFromArrays();
+  rebuildActions();
   refreshEquipSelects();
-  updateCaps(); updateDisplay(); updateMods();
 });
+
+
+/* ---------- init ---------- */
+function initPage(){
+ persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects();renderSlots();
+ ['#addSkill','#addSpell','#addItem'].forEach((b,i)=>q(b).onclick=_=>openPicker(['tbl_skills','tbl_spells','tbl_inv'][i]));
+ q('#actionSkills').insertAdjacentHTML('beforebegin','<button class="btn" onclick="navSkill(-4)">◀</button> <button class="btn" onclick="navSkill(4)">▶</button>');
+ q('#actionSpells').insertAdjacentHTML('beforebegin','<button class="btn" onclick="navSpell(-4)">◀</button> <button class="btn" onclick="navSpell(4)">▶</button>');
+}
+// --- helper per costi e descrizioni ---
+function costStr(o){
+  return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
+}
+function descStr(o){
+  return o.effect?.dice
+       ? `${o.effect.dice} ${o.effect.kind||''}`
+       : o.effect?.kind || '';
+}
+
+// --- crea singolo box di action ---
+function createItem(o){
+  const div = document.createElement('div');
+  div.className = 'action-item';
+  div.innerHTML = `
+    <div class="title">
+      <span>${o.name}</span>
+      <small>${costStr(o)}</small>
+    </div>
+    <div class="details">${descStr(o)}</div>`;
+  div.querySelector('.title').onclick = () => {
+    const d = div.querySelector('.details');
+    d.style.display = d.style.display === 'block' ? 'none' : 'block';
+  };
+  return div;
+}
+
+// --- inizializza tutte e quattro le sezioni ---
+function initActions(){
+  const skills = FEIM.skills || [];
+  const spells = FEIM.spells || [];
+  const baseIds  = ['move','basic-strike','jump'];
+  const basicIds = ['dodge','parry','grapple','shove'];
+  const advSkills = skills.filter(s=>!baseIds.includes(s.id)&&!basicIds.includes(s.id));
+
+  // Base Actions
+  baseIds.forEach(id=>{
+    const o = skills.find(s=>s.id===id);
+    if(o) document.getElementById('baseActions').appendChild(createItem(o));
+  });
+  // Basic Skills
+  basicIds.forEach(id=>{
+    const o = skills.find(s=>s.id===id);
+    if(o) document.getElementById('basicSkills').appendChild(createItem(o));
+  });
+
+  // paginazione Advanced Skills
+  let aIdx = 0, spIdx = 0, pageSize = 6;
+  function renderAdv(){
+    const c = document.getElementById('advSkills');
+    c.innerHTML = '';
+    advSkills.slice(aIdx, aIdx+pageSize).forEach(o=> c.appendChild(createItem(o)));
+  }
+  // paginazione Spells
+  function renderSpells(){
+    const c = document.getElementById('spellList');
+    c.innerHTML = '';
+    spells.slice(spIdx, spIdx+pageSize).forEach(o=> c.appendChild(createItem(o)));
+  }
+
+  document.getElementById('advPrev').onclick = ()=>{ aIdx = Math.max(0, aIdx-pageSize); renderAdv(); };
+  document.getElementById('advNext').onclick = ()=>{ aIdx = Math.min(advSkills.length-pageSize, aIdx+pageSize); renderAdv(); };
+  document.getElementById('spellPrev').onclick = ()=>{ spIdx = Math.max(0, spIdx-pageSize); renderSpells(); };
+  document.getElementById('spellNext').onclick = ()=>{ spIdx = Math.min(spells.length-pageSize, spIdx+pageSize); renderSpells(); };
+
+  renderAdv();
+  renderSpells();
+}
 
 </script>
 </body>
