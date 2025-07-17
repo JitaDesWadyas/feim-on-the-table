@@ -176,6 +176,7 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 <footer>© 2025 JitaDesWadyas</footer>
 <script>
 const q=s=>document.querySelector(s),qq=s=>document.querySelectorAll(s);
+function setVal(el,v){el.value=v;el.dispatchEvent(new Event('input'));}
 let gameData={},currentObj=null,encounter={monsters:[]};
 function costStr(o){
   return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
@@ -531,6 +532,15 @@ function loadEncounter(){
 function persistEncounter(){
   sessionStorage.setItem('encounter',JSON.stringify(encounter));
 }
+function finishTurn(i){
+  const m=encounter.monsters[i];
+  if(!m) return;
+  m.time=m.maxTime;
+  if(m.maxStamina>0) m.stamina=Math.min(m.maxStamina,m.stamina+(m.end||0));
+  if(m.maxMana>0) m.mana=Math.min(m.maxMana,m.mana+(m.wis||0)*0.5);
+  renderEncounter();
+  persistEncounter();
+}
 function spawnMonster(id){
   const src=(gameData.monsters||[]).find(m=>m.id===id);
   if(!src) return;
@@ -555,6 +565,7 @@ function renderEncounter(){
       <div class="slider-wrap">ST <input type="range" class="bar" data-i="${i}" data-k="stamina" min="0" max="${m.maxStamina}" value="${m.stamina}"><span>${m.stamina}</span></div>
       <div class="slider-wrap">MP <input type="range" class="bar" data-i="${i}" data-k="mana" min="0" max="${m.maxMana}" value="${m.mana}"><span>${m.mana}</span></div>
       <div class="slider-wrap">TIME <input type="range" class="bar" data-i="${i}" data-k="time" min="0" max="${m.maxTime}" value="${m.time}"><span>${m.time}</span></div>
+      <button class="finish btn" data-i="${i}">End Turn</button>
       <details open>
         <summary>Base Actions</summary>
         <div class="action-list" id="monster-baseActions-${i}"></div>
@@ -585,6 +596,7 @@ function renderEncounter(){
     sl.nextElementSibling.textContent=sl.value;
     persistEncounter();
   });
+  qq('.finish').forEach(b=>b.onclick=_=>finishTurn(+b.dataset.i));
   encounter.monsters.forEach((m,idx)=>{
     renderMonsterActions(m,idx);
   });
