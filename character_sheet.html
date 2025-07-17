@@ -259,7 +259,33 @@ function desc(o){
 /* ---------- picker ---------- */
 function openPicker(target){
  const box=q('#picker'),list=q('#pickerList'),inp=q('#pickerSearch');
- const data=target==='tbl_skills'?FEIM.skills:target==='tbl_spells'?FEIM.spells:[...FEIM.weapons,...FEIM.armors,...FEIM.items];
+ // prendi la lista grezza in base al picker
+let dataRaw;
+if (target === 'tbl_skills')      dataRaw = FEIM.skills;
+else if (target === 'tbl_spells') dataRaw = FEIM.spells;
+else                              dataRaw = [...FEIM.weapons, ...FEIM.armors, ...FEIM.items];
+
+// escludi sempre Base Actions e Basic Skills
+const baseIds  = ['move','basic-strike','jump'];
+const basicIds = ['dodge','parry','grapple','shove'];
+
+// filtra ulteriormente per non mostrare nulla che sia già in una sezione
+let data;
+if (target === 'tbl_skills') {
+  // nascondi azioni base, skill base e skill già equipaggiate
+  data = dataRaw
+    .filter(o => !baseIds.includes(o.id) && !basicIds.includes(o.id))
+    .filter(o => !mySkills.some(s => s.id === o.id));
+}
+else if (target === 'tbl_spells') {
+  // nascondi magie già equipaggiate
+  data = dataRaw.filter(o => !mySpells.some(s => s.id === o.id));
+}
+else {
+  // nascondi oggetti già in inventario
+  data = dataRaw.filter(o => !myInv.some(i => i.id === o.id));
+}
+
  box.style.display='flex';inp.value='';render('');
  inp.oninput=e=>render(e.target.value.toLowerCase());
  list.onclick=e=>{
