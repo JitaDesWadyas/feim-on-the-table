@@ -298,12 +298,8 @@ function refreshEquipSelects(){
 /* ---------- actions ---------- */
 let skillIdx=0,spellIdx=0;
 function slotHTML(o,i,cat){const cost=(o.time||2)+'s / '+o.cost.amount+(o.cost.resource=='stamina'?' STA':' MP');return`<div class="action-slot"><button class="slot-btn" data-cat="${cat}" data-idx="${i}">▶︎</button>${o.name}<span style="flex:1"></span><small>${cost}</small></div>`;}
-function renderSlots(){
- q('#actionSkills').innerHTML=mySkills.length?mySkills.slice(skillIdx,skillIdx+4).map((o,i)=>slotHTML(o,i,'skill')).join(''):'<em>No skills selected</em>';
- q('#actionSpells').innerHTML=mySpells.length?mySpells.slice(spellIdx,spellIdx+4).map((o,i)=>slotHTML(o,i,'spell')).join(''):'<em>No spells selected</em>';
- qq('.slot-btn').forEach(b=>b.onclick=useAction);
-}
-function rebuildActions(){skillIdx=0;spellIdx=0;renderSlots();}
+
+function rebuildActions(){skillIdx=0;spellIdx=0;}
 function useAction(e){
  const cat=e.target.dataset.cat,list=cat=='skill'?mySkills:mySpells;
  const idx=(cat=='skill'?skillIdx:spellIdx)+(+e.target.dataset.idx);const obj=list[idx];if(!obj)return;
@@ -311,8 +307,6 @@ function useAction(e){
  if(+slTime.value<obj.time||+slRes.value<obj.cost.amount){alert('Not enough resources');return;}
  setVal(slTime,+slTime.value-obj.time);setVal(slRes,+slRes.value-obj.cost.amount);
 }
-function navSkill(d){skillIdx=(skillIdx+d+mySkills.length)%mySkills.length;renderSlots();}
-function navSpell(d){spellIdx=(spellIdx+d+mySpells.length)%mySpells.length;renderSlots();}
 
 /* ---------- stats / caps ---------- */
 const statKeys=['str','dex','mag','con','end','wis'];
@@ -379,11 +373,9 @@ document.addEventListener('click', e=>{
 
 /* ---------- init ---------- */
 function initPage(){
- persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects();renderSlots();
+ persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects()initActions();
  ['#addSkill','#addSpell','#addItem'].forEach((b,i)=>q(b).onclick=_=>openPicker(['tbl_skills','tbl_spells','tbl_inv'][i]));
- q('#actionSkills').insertAdjacentHTML('beforebegin','<button class="btn" onclick="navSkill(-4)">◀</button> <button class="btn" onclick="navSkill(4)">▶</button>');
- q('#actionSpells').insertAdjacentHTML('beforebegin','<button class="btn" onclick="navSpell(-4)">◀</button> <button class="btn" onclick="navSpell(4)">▶</button>');
-}
+ }
 // --- helper per costi e descrizioni ---
 function costStr(o){
   return (o.time||2)+'s / '+o.cost.amount+' '+(o.cost.resource=='stamina'?'STA':'MP');
