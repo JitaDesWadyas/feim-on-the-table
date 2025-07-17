@@ -12,14 +12,7 @@
   --panel:#2a2a2a;
   --border:#444;
 }
-body{
-  font-family:sans-serif;
-  background:var(--bg);
-  color:var(--fg);
-  max-width:680px;
-  margin:auto;
-  padding:1rem;
-}
+body{font-family:sans-serif;background:var(--bg);color:var(--fg);max-width:680px;margin:auto;padding:1rem}
 h1,h2{
   color:var(--amber);
   border-bottom:1px solid #555;
@@ -51,7 +44,7 @@ nav a{
 nav a:hover{text-decoration:underline}
 .slider-wrap{display:flex;align-items:center;gap:.5rem;margin-top:1rem}
 .slider-wrap span{min-width:48px;text-align:right}
-button.btn{padding:.45rem .7rem;border-radius:4px;margin-top:.4rem;font-size:.9rem}
+.btn{padding:.45rem .7rem;border-radius:4px;margin-top:.4rem;font-size:.9rem}
 .monster-card{background:var(--panel);padding:.5rem;margin:.5rem 0;border:1px solid var(--border)}
 .monster-card strong{display:block;margin-bottom:.3rem}
 .type-fields{margin-top:.6rem;display:none}
@@ -64,6 +57,7 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 .action-item{padding:.5rem;border:1px solid var(--border);border-radius:4px}
 .action-item>.title{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .action-item>.details{display:none;padding-top:.4rem;font-size:.85rem;color:#ccc}
+.use-btn{margin-top:.5rem;display:inline-block;padding:.4rem .6rem;background:var(--amber);color:var(--bg);border:none;border-radius:4px;cursor:pointer;font-size:.85rem}
 .editor-list{margin-top:.6rem}
 .editor-item{padding:.4rem;border:1px solid var(--border);margin-bottom:.4rem;cursor:pointer}
 .editor-item .title{font-weight:600}
@@ -189,43 +183,56 @@ function costStr(o){
 function descStr(o){
   return o.effect?.dice ? o.effect.dice+' '+(o.effect.kind||'') : o.effect?.kind||'';
 }
-function createItem(o){
+function createItem(o,i){
   const div=document.createElement('div');
   div.className='action-item';
-  div.innerHTML=`<div class="title"><span>${o.name}</span><small>${costStr(o)}</small></div><div class="details">${descStr(o)}</div>`;
+  div.innerHTML=
+    `<div class="title"><span>${o.name}</span><small>${costStr(o)}</small></div>`+
+    `<div class="details">${descStr(o)} <button class="use-btn" data-id="${o.id}" data-i="${i}">Use</button></div>`;
   div.querySelector('.title').onclick=()=>{
     const d=div.querySelector('.details');
     d.style.display=d.style.display==='block'?'none':'block';
   };
+  div.querySelector('.use-btn').onclick=_=>useMonsterAction(i,o.id);
   return div;
 }
 
-function renderGdForm(){
-  qq('.type-fields').forEach(d=>d.style.display='none');
-  const t=q('#typeSel').value;
-  const f=q('#'+t+'Fields');
-  if(f) f.style.display='block';
-  q('#gd_id').value='';
-  q('#delBtn').style.display='none';
+function useMonsterAction(i,id){
+  const obj=gameData.skills.find(s=>s.id===id)||gameData.spells.find(s=>s.id===id);
+  if(!obj) return;
+  const resKey=obj.cost.resource==='mana'?'mana':'stamina';
+  const slRes=q(`input[data-k="${resKey}"][data-i="${i}"]`);
+  const slTime=q(`input[data-k="time"][data-i="${i}"]`);
+  const cost=+obj.cost.amount, time=+obj.time;
+  if(+slRes.value<cost||+slTime.value<time){
+    alert('Risorse insufficienti');
+    return;
+  }
+  slRes.value=+slRes.value-cost;
+  slTime.value=+slTime.value-time;
+  slRes.nextElementSibling.textContent=slRes.value;
+  slTime.nextElementSibling.textContent=slTime.value;
+  persistEncounter();
 }
+
 function renderMonsterActions(m, index){
   const allSkills  = gameData.skills;
   const allSpells  = gameData.spells;
   const baseIds    = ['move','basic-strike','jump'];
   const basicIds   = ['dodge','parry','grapple','shove'];
-  const adv        = m.skills.filter(id => !baseIds.includes(id) && !basicIds.includes(id));
-  const spells     = m.skills.filter(id => allSpells.some(s => s.id === id));
+  const spells     = m.skills.filter(id=>allSpells.some(s=>s.id===id));
+  const adv        = m.skills.filter(id=>!baseIds.includes(id)&&!basicIds.includes(id)&&!spells.includes(id));
 
   // Base Actions
   baseIds.forEach(id => {
     const o = allSkills.find(s => s.id === id);
-    if (o) document.getElementById(`monster-baseActions-${index}`).appendChild(createItem(o));
+    if (o) document.getElementById(`monster-baseActions-${index}`).appendChild(createItem(o,index));
   });
 
   // Basic Skills
   basicIds.forEach(id => {
     const o = allSkills.find(s => s.id === id);
-    if (o) document.getElementById(`monster-basicSkills-${index}`).appendChild(createItem(o));
+    if (o) document.getElementById(`monster-basicSkills-${index}`).appendChild(createItem(o,index));
   });
 
   // Advanced Skills con paginazione
@@ -240,7 +247,7 @@ function renderMonsterActions(m, index){
       container.innerHTML = '';
       adv.slice(aIdx, aIdx+6).forEach(id => {
         const o = allSkills.find(s => s.id === id);
-        if (o) container.appendChild(createItem(o));
+        if (o) container.appendChild(createItem(o,index));
       });
     }
 
@@ -262,7 +269,7 @@ function renderMonsterActions(m, index){
       container.innerHTML = '';
       spells.slice(spIdx, spIdx+6).forEach(id => {
         const o = allSpells.find(s => s.id === id);
-        if (o) container.appendChild(createItem(o));
+        if (o) container.appendChild(createItem(o,index));
       });
     }
 
@@ -273,38 +280,6 @@ function renderMonsterActions(m, index){
   })();
 }
 
-function attachUseButtons(m,i){
-  const container=document.getElementById('use-actions-'+i);
-  if(!container) return;
-  const baseIds=['move','basic-strike','jump'];
-  const basicIds=['dodge','parry','grapple','shove'];
-  const ids=[...baseIds,...basicIds,...(m.skills||[])];
-  ids.forEach(id=>{
-    const o=gameData.skills.find(s=>s.id===id)||gameData.spells.find(s=>s.id===id);
-    if(!o) return;
-    const btn=document.createElement('button');
-    btn.textContent=o.name;
-    btn.dataset.res=o.cost.resource;
-    btn.dataset.cost=o.cost.amount;
-    btn.dataset.time=o.time;
-    btn.onclick=()=>{
-      const resKey=btn.dataset.res==='mana'?'mana':'stamina';
-      const slRes=q(`input[data-k="${resKey}"][data-i="${i}"]`);
-      const slTime=q(`input[data-k="time"][data-i="${i}"]`);
-      const cost=+btn.dataset.cost;
-      const time=+btn.dataset.time;
-      if(+slRes.value<cost||+slTime.value<time){
-        alert('Risorse insufficienti');
-        return;
-      }
-      slRes.value=+slRes.value-cost;
-      slTime.value=+slTime.value-time;
-      slRes.nextElementSibling.textContent=slRes.value;
-      slTime.nextElementSibling.textContent=slTime.value;
-    };
-    container.appendChild(btn);
-  });
-}
 
 async function init(){
   const ls=localStorage.getItem('gamedata');
@@ -341,8 +316,15 @@ function hookUI(){
     };
     r.readAsText(e.target.files[0]);
   };
-  q('#typeSel').onchange=renderGdForm;
-  renderGdForm();
+  q('#typeSel').onchange = () => {
+    qq('.type-fields').forEach(d=>d.style.display='none');
+    const t=q('#typeSel').value;
+    q(`#${t}Fields`).style.display='block';
+    renderGdList();
+    q('#delBtn').style.display='none';
+    q('#gd_id').value='';
+  };
+  q('#typeSel').dispatchEvent(new Event('change'));
   q('#saveBtn').onclick=_=>{
     const type=q('#typeSel').value;
     const obj=currentObj||{};
@@ -420,11 +402,15 @@ function hookUI(){
     renderGdList(f);
   };
 }
-function renderGdList(f=''){
-  const type=document.getElementById('typeSel').value;
-  const arr=gameData[type+'s']||[];
-  if(!f) f=document.getElementById('gdFilter').value.toLowerCase();
-  document.getElementById('gdataList').innerHTML=arr.filter(o=>o.name.toLowerCase().includes(f)).map(o=>`<div class="editor-item" data-id="${o.id}" data-cat="${type}"><div class="title">${o.name}</div></div>`).join('');
+function renderGdList(){
+  const type = q('#typeSel').value;
+  const filter = q('#gdFilter').value.toLowerCase();
+  const arr = gameData[type+'s']||[];
+  q('#gdataList').innerHTML = arr
+    .filter(o=>o.name.toLowerCase().includes(filter))
+    .map(o=>`<div class="editor-item" data-id="${o.id}" data-cat="${type}">
+                <div class="title">${o.name}</div>
+              </div>`).join('');
 }
 function fillMonsterSelect(f=""){
   const sel=document.getElementById("monsterSelect");
@@ -585,7 +571,6 @@ function renderEncounter(){
         <summary>Spells <button class="btn-nav" data-dir="-6">◀</button><button class="btn-nav" data-dir="+6">▶</button></summary>
         <div class="action-list" id="monster-spellList-${i}"></div>
       </details>
-      <div class="use-actions" id="use-actions-${i}"></div>
     </div>`;
   }).join('');
   q('#encounterArea').innerHTML=html;
@@ -602,7 +587,6 @@ function renderEncounter(){
   });
   encounter.monsters.forEach((m,idx)=>{
     renderMonsterActions(m,idx);
-    attachUseButtons(m,idx);
   });
 }
 window.addEventListener('load',init);
