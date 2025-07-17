@@ -373,7 +373,7 @@ document.addEventListener('click', e=>{
 
 /* ---------- init ---------- */
 function initPage(){
- persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects()initActions();
+ persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects();initActions();
  ['#addSkill','#addSpell','#addItem'].forEach((b,i)=>q(b).onclick=_=>openPicker(['tbl_skills','tbl_spells','tbl_inv'][i]));
  }
 // --- helper per costi e descrizioni ---
