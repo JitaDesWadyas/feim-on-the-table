@@ -199,6 +199,15 @@ function createItem(o){
   };
   return div;
 }
+
+function renderGdForm(){
+  qq('.type-fields').forEach(d=>d.style.display='none');
+  const t=q('#typeSel').value;
+  const f=q('#'+t+'Fields');
+  if(f) f.style.display='block';
+  q('#gd_id').value='';
+  q('#delBtn').style.display='none';
+}
 function renderMonsterActions(m, index){
   const allSkills  = gameData.skills;
   const allSpells  = gameData.spells;
@@ -264,6 +273,39 @@ function renderMonsterActions(m, index){
   })();
 }
 
+function attachUseButtons(m,i){
+  const container=document.getElementById('use-actions-'+i);
+  if(!container) return;
+  const baseIds=['move','basic-strike','jump'];
+  const basicIds=['dodge','parry','grapple','shove'];
+  const ids=[...baseIds,...basicIds,...(m.skills||[])];
+  ids.forEach(id=>{
+    const o=gameData.skills.find(s=>s.id===id)||gameData.spells.find(s=>s.id===id);
+    if(!o) return;
+    const btn=document.createElement('button');
+    btn.textContent=o.name;
+    btn.dataset.res=o.cost.resource;
+    btn.dataset.cost=o.cost.amount;
+    btn.dataset.time=o.time;
+    btn.onclick=()=>{
+      const resKey=btn.dataset.res==='mana'?'mana':'stamina';
+      const slRes=q(`input[data-k="${resKey}"][data-i="${i}"]`);
+      const slTime=q(`input[data-k="time"][data-i="${i}"]`);
+      const cost=+btn.dataset.cost;
+      const time=+btn.dataset.time;
+      if(+slRes.value<cost||+slTime.value<time){
+        alert('Risorse insufficienti');
+        return;
+      }
+      slRes.value=+slRes.value-cost;
+      slTime.value=+slTime.value-time;
+      slRes.nextElementSibling.textContent=slRes.value;
+      slTime.nextElementSibling.textContent=slTime.value;
+    };
+    container.appendChild(btn);
+  });
+}
+
 async function init(){
   const ls=localStorage.getItem('gamedata');
   if(ls) gameData=JSON.parse(ls);
@@ -299,12 +341,8 @@ function hookUI(){
     };
     r.readAsText(e.target.files[0]);
   };
-  q('#typeSel').onchange=()=>{
-    qq('.type-fields').forEach(d=>d.style.display='none');
-    q('#'+q('#typeSel').value+'Fields').style.display='block';
-    q('#delBtn').style.display='none';
-    q('#gd_id').value='';
-  };
+  q('#typeSel').onchange=renderGdForm;
+  renderGdForm();
   q('#saveBtn').onclick=_=>{
     const type=q('#typeSel').value;
     const obj=currentObj||{};
@@ -547,6 +585,7 @@ function renderEncounter(){
         <summary>Spells <button class="btn-nav" data-dir="-6">◀</button><button class="btn-nav" data-dir="+6">▶</button></summary>
         <div class="action-list" id="monster-spellList-${i}"></div>
       </details>
+      <div class="use-actions" id="use-actions-${i}"></div>
     </div>`;
   }).join('');
   q('#encounterArea').innerHTML=html;
@@ -561,7 +600,10 @@ function renderEncounter(){
     sl.nextElementSibling.textContent=sl.value;
     persistEncounter();
   });
-  encounter.monsters.forEach((m,idx)=>renderMonsterActions(m,idx));
+  encounter.monsters.forEach((m,idx)=>{
+    renderMonsterActions(m,idx);
+    attachUseButtons(m,idx);
+  });
 }
 window.addEventListener('load',init);
 </script>
