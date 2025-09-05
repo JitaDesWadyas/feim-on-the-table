@@ -72,37 +72,113 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
   padding:.6rem;
   display:flex;
   flex-direction:column;
-  gap:.5rem;
+  gap:.6rem;
 }
 .action-item {
-  padding:.5rem;
+  padding:.6rem;
   border:1px solid var(--border);
-  border-radius:4px;
+  border-radius:6px;
+  background:rgba(42,42,42,0.5);
+  transition:background-color 0.2s ease;
+}
+.action-item:hover {
+  background:rgba(42,42,42,0.8);
 }
 .action-item > .title {
   display:flex;
   justify-content:space-between;
   align-items:center;
   cursor:pointer;
+  font-weight:600;
+  padding:.2rem 0;
+  user-select:none;
 }
 .action-item > .details {
   display:none;
-  padding-top:.4rem;
-  font-size:.85rem;
+  padding-top:.6rem;
+  font-size:.9rem;
   color:#ccc;
+  border-top:1px solid var(--border);
+  margin-top:.4rem;
 }
 
 /* ——— BUTTON “USE” STYLE ——— */
 .use-btn {
   margin-top: .5rem;
-  display: inline-block;
-  padding: .4rem .6rem;
+  display: inline-flex;
+  padding: .6rem .8rem;
   background: var(--amber);
   color: var(--bg);
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: .85rem;
+  font-size: .9rem;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+  .lvl-row{
+    flex-direction:column;
+    gap:.5rem;
+  }
+  .lvl-row label{
+    flex:1 1 100%;
+    min-width:auto;
+  }
+  .action-item{
+    padding:.6rem;
+  }
+  .action-item .title{
+    font-size:.95rem;
+  }
+  .btn{
+    width:100%;
+    margin:.3rem 0;
+  }
+  .slider-wrap{
+    flex-direction:column;
+    gap:.3rem;
+    align-items:stretch;
+  }
+  .slider-wrap button{
+    width:100%;
+    max-width:120px;
+    margin:0 auto;
+  }
+  .slider-wrap span{
+    text-align:center;
+    min-width:auto;
+    font-size:1.1rem;
+    font-weight:600;
+    order:1;
+  }
+  input[type=range]{
+    height:40px;
+    order:2;
+  }
+  h1{
+    font-size:1.8rem;
+  }
+  h2{
+    font-size:1.4rem;
+  }
+  table{
+    font-size:.85rem;
+  }
+  td, th{
+    padding:.3rem;
+  }
+  select, input[type="text"], input[type="number"], textarea{
+    font-size:16px; /* Prevents zoom on iOS */
+  }
 }
 
 </style>
