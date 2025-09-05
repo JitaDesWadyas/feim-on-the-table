@@ -1,0 +1,14 @@
+{
+  "name": "feim-on-the-table",
+  "version": "1.0.0",
+  "description": "The board game of FEIM!",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'Nothing to build: static HTML/CSS/JS project'"
+  },
+  "author": "JitaDesWadyas",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.1"
+  }
+}
