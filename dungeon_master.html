@@ -162,6 +162,134 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
     font-size:1.4rem;
   }
 }
+
+/* === Dungeon Master Enhanced Pagination Layout === */
+.dm-skills-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 0.3rem 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.dm-skills-summary:hover {
+  background: rgba(255, 184, 77, 0.1);
+  border-color: var(--amber);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dm-summary-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: var(--amber);
+  font-size: 0.9rem;
+}
+
+.dm-pagination-btn {
+  background: rgba(255, 184, 77, 0.2);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  position: relative;
+}
+
+.dm-pagination-btn:hover {
+  background: var(--amber);
+  color: var(--bg);
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(255, 184, 77, 0.4);
+}
+
+.dm-pagination-btn:active {
+  transform: scale(0.95);
+}
+
+.dm-pagination-prev {
+  margin-right: 0.8rem;
+}
+
+.dm-pagination-next {
+  margin-left: 0.8rem;
+}
+
+/* Enhanced action items for dungeon master */
+.monster-card .action-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.6rem;
+  padding: 0.8rem;
+  background: rgba(42, 42, 42, 0.3);
+  border-radius: 0 0 6px 6px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.monster-card .action-item {
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--panel);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.monster-card .action-item:hover {
+  border-color: var(--amber);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile responsiveness for DM pagination */
+@media (max-width: 768px) {
+  .dm-skills-summary {
+    padding: 0.5rem 0.6rem;
+  }
+  
+  .dm-pagination-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .dm-summary-title {
+    font-size: 0.8rem;
+  }
+  
+  .monster-card .action-list {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -676,11 +804,19 @@ function renderEncounter(){
         <div class="action-list" id="monster-basicSkills-${i}"></div>
       </details>
       <details>
-        <summary>Advanced Skills <button class="btn-nav" data-dir="-6">◀</button><button class="btn-nav" data-dir="+6">▶</button></summary>
+        <summary class="dm-skills-summary">
+          <button class="dm-pagination-btn dm-pagination-prev btn-nav" data-dir="-6">◀</button>
+          <span class="dm-summary-title">Advanced Skills</span>
+          <button class="dm-pagination-btn dm-pagination-next btn-nav" data-dir="+6">▶</button>
+        </summary>
         <div class="action-list" id="monster-advSkills-${i}"></div>
       </details>
       <details>
-        <summary>Spells <button class="btn-nav" data-dir="-6">◀</button><button class="btn-nav" data-dir="+6">▶</button></summary>
+        <summary class="dm-skills-summary">
+          <button class="dm-pagination-btn dm-pagination-prev btn-nav" data-dir="-6">◀</button>
+          <span class="dm-summary-title">Spells</span>
+          <button class="dm-pagination-btn dm-pagination-next btn-nav" data-dir="+6">▶</button>
+        </summary>
         <div class="action-list" id="monster-spellList-${i}"></div>
       </details>
     </div>`;

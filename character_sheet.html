@@ -181,6 +181,134 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
   }
 }
 
+/* === Enhanced Pagination Layout === */
+.skills-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 0.5rem 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.skills-summary:hover {
+  background: rgba(255, 184, 77, 0.1);
+  border-color: var(--amber);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.summary-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: var(--amber);
+  font-size: 1rem;
+}
+
+.pagination-btn {
+  background: rgba(255, 184, 77, 0.2);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  position: relative;
+}
+
+.pagination-btn:hover {
+  background: var(--amber);
+  color: var(--bg);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(255, 184, 77, 0.4);
+}
+
+.pagination-btn:active {
+  transform: scale(0.95);
+}
+
+.pagination-prev {
+  margin-right: 1rem;
+}
+
+.pagination-next {
+  margin-left: 1rem;
+}
+
+/* Enhanced action list with horizontal flow */
+.action-list {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.8rem;
+  background: rgba(42, 42, 42, 0.5);
+  border-radius: 0 0 6px 6px;
+  border: 1px solid var(--border);
+  border-top: none;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.action-item {
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.action-item:hover {
+  border-color: var(--amber);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile responsiveness for pagination */
+@media (max-width: 768px) {
+  .skills-summary {
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .pagination-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+  
+  .summary-title {
+    font-size: 0.9rem;
+  }
+  
+  .action-list {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -262,19 +390,19 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
 </details>
 
 <details>
-  <summary>
-    Advanced Skills
-    <button id="advPrev" class="btn">◀</button>
-    <button id="advNext" class="btn">▶</button>
+  <summary class="skills-summary">
+    <button id="advPrev" class="pagination-btn pagination-prev">◀</button>
+    <span class="summary-title">Advanced Skills</span>
+    <button id="advNext" class="pagination-btn pagination-next">▶</button>
   </summary>
   <div id="advSkills" class="action-list"></div>
 </details>
 
 <details>
-  <summary>
-    Spells
-    <button id="spellPrev" class="btn">◀</button>
-    <button id="spellNext" class="btn">▶</button>
+  <summary class="skills-summary">
+    <button id="spellPrev" class="pagination-btn pagination-prev">◀</button>
+    <span class="summary-title">Spells</span>
+    <button id="spellNext" class="pagination-btn pagination-next">▶</button>
   </summary>
   <div id="spellList" class="action-list"></div>
 </details>
