@@ -477,7 +477,7 @@ document.addEventListener('click', e=>{
 
 /* ---------- init ---------- */
 function initPage(){
- persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects();initActions();
+ persistInit();updateCaps();updateDisplay();updateMods();sliderButtons();refreshEquipSelects();initActions();setupPagination();
  ['#addSkill','#addSpell','#addItem'].forEach((b,i)=>q(b).onclick=_=>openPicker(['tbl_skills','tbl_spells','tbl_inv'][i]));
  }
 // --- helper per costi e descrizioni ---
@@ -570,20 +570,93 @@ function initActions() {
     if (o) basicC.appendChild(createItem(o));
   });
 
-  // Advanced Skills equipaggiate
-  const advC = document.getElementById('advSkills');
-  advC.innerHTML = '';
-  advList.forEach(o => advC.appendChild(createItem(o)));
+  // Advanced Skills equipaggiate (with pagination)
+  renderAdvSkillsPage();
 
-  // Spells equipaggiate
-  const spC = document.getElementById('spellList');
-  spC.innerHTML = '';
-  spList.forEach(o => spC.appendChild(createItem(o)));
+  // Spells equipaggiate (with pagination)
+  renderSpellsPage();
 }
 
 // alias per compatibilità con il vecchio codice
 function rebuildActions() {
   initActions();
+}
+
+/* ---------- pagination for advanced skills and spells ---------- */
+let advSkillsPage = 0;
+let spellsPage = 0;
+const ITEMS_PER_PAGE = 6;
+
+function renderAdvSkillsPage() {
+  const advC = document.getElementById('advSkills');
+  if (!advC) return;
+  
+  advC.innerHTML = '';
+  const start = advSkillsPage * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+  const pageItems = mySkills.slice(start, end);
+  
+  pageItems.forEach(o => advC.appendChild(createItem(o)));
+}
+
+function renderSpellsPage() {
+  const spC = document.getElementById('spellList');
+  if (!spC) return;
+  
+  spC.innerHTML = '';
+  const start = spellsPage * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+  const pageItems = mySpells.slice(start, end);
+  
+  pageItems.forEach(o => spC.appendChild(createItem(o)));
+}
+
+function setupPagination() {
+  // Advanced Skills pagination
+  const advPrev = document.getElementById('advPrev');
+  const advNext = document.getElementById('advNext');
+  
+  if (advPrev) {
+    advPrev.onclick = () => {
+      if (advSkillsPage > 0) {
+        advSkillsPage--;
+        renderAdvSkillsPage();
+      }
+    };
+  }
+  
+  if (advNext) {
+    advNext.onclick = () => {
+      const maxPage = Math.ceil(mySkills.length / ITEMS_PER_PAGE) - 1;
+      if (advSkillsPage < maxPage) {
+        advSkillsPage++;
+        renderAdvSkillsPage();
+      }
+    };
+  }
+  
+  // Spells pagination
+  const spellPrev = document.getElementById('spellPrev');
+  const spellNext = document.getElementById('spellNext');
+  
+  if (spellPrev) {
+    spellPrev.onclick = () => {
+      if (spellsPage > 0) {
+        spellsPage--;
+        renderSpellsPage();
+      }
+    };
+  }
+  
+  if (spellNext) {
+    spellNext.onclick = () => {
+      const maxPage = Math.ceil(mySpells.length / ITEMS_PER_PAGE) - 1;
+      if (spellsPage < maxPage) {
+        spellsPage++;
+        renderSpellsPage();
+      }
+    };
+  }
 }
 
 </script>
