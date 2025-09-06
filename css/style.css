@@ -279,21 +279,44 @@ nav:not(.feim-nav) a {
   
   table{font-size:.8rem}
   .slider-wrap{
-    flex-direction:column;
-    gap:.3rem;
-    align-items:stretch;
+    gap:.4rem;
+    margin-top:.8rem;
+    padding:.4rem;
+    background:rgba(42,42,42,0.3);
+    border-radius:6px;
   }
   .slider-wrap button{
-    width:100%;
-    max-width:120px;
-    margin:0 auto;
+    width:48px;
+    height:48px;
+    font-size:1.4rem;
+    border-radius:6px;
+    flex-shrink:0;
   }
   .slider-wrap span{
+    min-width:60px;
     text-align:center;
-    min-width:auto;
+    font-size:1.1rem;
+    font-weight:600;
+    flex-shrink:0;
   }
   input[type=range]{
-    height:40px;
+    height:48px;
+    flex:1;
+    min-width:0;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    width:36px;
+    height:36px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:36px;
+    height:36px;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:12px;
+  }
+  input[type=range]::-moz-range-track{
+    height:12px;
   }
   .stats{
     grid-template-columns:repeat(2,1fr);

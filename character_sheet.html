@@ -145,25 +145,30 @@ footer{text-align:center;margin-top:2rem;color:#777;font-size:.8rem}
     margin:.3rem 0;
   }
   .slider-wrap{
-    flex-direction:column;
-    gap:.3rem;
-    align-items:stretch;
+    gap:.4rem;
+    margin-top:.8rem;
+    padding:.4rem;
+    background:rgba(42,42,42,0.3);
+    border-radius:6px;
   }
   .slider-wrap button{
-    width:100%;
-    max-width:120px;
-    margin:0 auto;
+    width:48px;
+    height:48px;
+    font-size:1.4rem;
+    border-radius:6px;
+    flex-shrink:0;
   }
   .slider-wrap span{
+    min-width:60px;
     text-align:center;
-    min-width:auto;
     font-size:1.1rem;
     font-weight:600;
-    order:1;
+    flex-shrink:0;
   }
   input[type=range]{
-    height:40px;
-    order:2;
+    height:48px;
+    flex:1;
+    min-width:0;
   }
   h1{
     font-size:1.8rem;
