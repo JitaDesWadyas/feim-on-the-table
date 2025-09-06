@@ -104,6 +104,11 @@ a:hover{text-decoration:underline}
   padding: 0;
 }
 
+/* Hide close button on desktop */
+.nav-close {
+  display: none;
+}
+
 .nav-list li {
   margin: 0;
 }
@@ -159,44 +164,105 @@ nav:not(.feim-nav) a {
   /* Mobile navigation */
   .nav-toggle {
     display: flex;
+    position: relative;
+    z-index: 1001;
   }
   
-  .nav-list {
-    position: absolute;
-    top: 100%;
+  /* Mobile backdrop overlay */
+  .nav-backdrop {
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    flex-direction: column;
-    gap: 0;
-    padding: .5rem;
-    margin-top: .5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    max-height: 0;
-    overflow: hidden;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
     opacity: 0;
-    transform: translateY(-10px);
+    visibility: hidden;
     transition: all 0.3s ease;
   }
   
-  .nav-list.open {
-    max-height: 400px;
+  .nav-backdrop.open {
     opacity: 1;
-    transform: translateY(0);
+    visibility: visible;
+  }
+  
+  .nav-list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg);
+    border: none;
+    border-radius: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 4rem 2rem 2rem;
+    margin: 0;
+    box-shadow: none;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-100%);
+    transition: all 0.3s ease;
+    overflow-y: auto;
+  }
+  
+  .nav-list.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+  
+  /* Close button in dropdown */
+  .nav-close {
+    display: flex;
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: var(--amber);
+    cursor: pointer;
+    background: #333;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 1001;
+  }
+  
+  .nav-close:hover {
+    background: var(--amber);
+    color: var(--bg);
+    transform: scale(1.1);
   }
   
   .nav-list a {
-    padding: .8rem;
+    padding: 1rem;
     margin: 0;
-    border-radius: 4px;
+    border-radius: 8px;
     width: 100%;
     min-height: auto;
+    font-size: 1.1rem;
+    border: 1px solid transparent;
+  }
+  
+  .nav-list a:hover {
+    border-color: var(--amber);
+    background: #333;
+  }
+  
+  .nav-list a.active {
+    background: var(--amber);
+    color: var(--bg);
   }
   
   .nav-list li + li {
-    margin-top: .3rem;
+    margin-top: .5rem;
   }
   
   /* Legacy nav mobile styles */

@@ -25,9 +25,21 @@
     menuBtn.setAttribute('aria-label', 'Toggle navigation menu');
     menuBtn.innerHTML = '<span></span><span></span><span></span>';
     
+    // Mobile backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    
     // Navigation list
     const navList = document.createElement('ul');
     navList.className = 'nav-list';
+    
+    // Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'nav-close';
+    closeBtn.setAttribute('aria-label', 'Close navigation menu');
+    closeBtn.innerHTML = '×';
+    
+    navList.appendChild(closeBtn);
     
     NAV_ITEMS.forEach(item => {
       const li = document.createElement('li');
@@ -46,6 +58,7 @@
     });
     
     nav.appendChild(menuBtn);
+    nav.appendChild(backdrop);
     nav.appendChild(navList);
     
     return nav;
@@ -56,21 +69,31 @@
     const nav = document.querySelector('.feim-nav');
     const navList = nav.querySelector('.nav-list');
     const menuBtn = nav.querySelector('.nav-toggle');
+    const backdrop = nav.querySelector('.nav-backdrop');
     
     navList.classList.toggle('open');
     menuBtn.classList.toggle('open');
+    backdrop.classList.toggle('open');
     
     // Handle accessibility
     const isOpen = navList.classList.contains('open');
     menuBtn.setAttribute('aria-expanded', isOpen);
+    
+    // Prevent body scroll when menu is open
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   }
 
   // Close menu when clicking outside
   function handleOutsideClick(event) {
     const nav = document.querySelector('.feim-nav');
     const navList = nav.querySelector('.nav-list');
+    const backdrop = nav.querySelector('.nav-backdrop');
     
-    if (!nav.contains(event.target) && navList.classList.contains('open')) {
+    if (backdrop.contains(event.target) && navList.classList.contains('open')) {
       toggleMenu();
     }
   }
@@ -95,7 +118,9 @@
 
     // Attach event listeners
     const menuBtn = navigation.querySelector('.nav-toggle');
+    const closeBtn = navigation.querySelector('.nav-close');
     menuBtn.addEventListener('click', toggleMenu);
+    closeBtn.addEventListener('click', toggleMenu);
     
     // Close menu on outside click
     document.addEventListener('click', handleOutsideClick);
