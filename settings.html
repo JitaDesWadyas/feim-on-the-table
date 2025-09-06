@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Settings – FEIM</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="css/style.css">
 <style>
 :root{
   --amber:#ffb84d;
@@ -24,26 +25,10 @@ h1{
 }
 a{color:var(--amber);text-decoration:none;font-weight:600}
 a:hover{text-decoration:underline}
-nav{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem}
-nav a{background:#333;padding:.4rem .7rem;border-radius:4px}
 button{background:#333;border:1px solid var(--border);color:var(--amber);padding:.5rem .8rem;font-size:.9rem;border-radius:4px}
-@media (max-width:480px){
-  body{padding:.6rem}
-  nav a{font-size:.9rem}
-}
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html">Home</a>
-  <a href="progression.html">Progression</a>
-  <a href="combat_rules.html">Combat</a>
-  <a href="general_rules.html">Rules</a>
-  <a href="lists.html">Lists</a>
-  <a href="character_sheet.html">Sheet</a>
-  <a href="dungeon_master.html">Dungeon Master</a>
-  <a href="settings.html">Settings</a>
-</nav>
 <h1>Settings</h1>
 <p>Use this page to reset all saved data for FEIM.</p>
 <p><button id="resetBtn">Reset Saved Data</button></p>
@@ -60,5 +45,6 @@ document.getElementById('resetBtn').onclick=function(){
   }
 };
 </script>
+<script src="js/navigation.js"></script>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en">
+<head><meta charset="UTF-8"/><title>FEIM – Home</title><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+:root{
+  --amber:#ffb84d;
+  --bg:#1a1a1a;
+  --fg:#f5f3ef;
+  --panel:#2a2a2a;
+  --border:#444;
+}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  max-width:720px;
+  margin:auto;
+  padding:1rem;
+  -webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2{
+  color:var(--amber);
+  border-bottom:1px solid #555;
+  padding-bottom:.2rem;
+  margin-top:1.5rem;
+}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;
+  padding:.6rem .8rem;
+  border-radius:6px;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+@media (max-width:480px){
+  body{padding:.8rem}
+  nav{gap:.6rem}
+  nav a{
+    font-size:.85rem;
+    padding:.5rem .6rem;
+    flex:1;
+    min-width:calc(50% - .3rem);
+  }
+  table{font-size:.8rem}
+  h1{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
+  <a href="dungeon_master.html">Dungeon Master</a>
+  <a href="settings.html">Settings</a>
+</nav>
+
+<h1>FEIM: On the Table</h1>
+
+<p><strong>FEIM: On the Table</strong> is a <em>fantasy</em> tabletop RPG that merges real‑time tension with classic stat‑driven play. Every round equals three in‑world seconds; actions burn <strong>TIME</strong> and your resource bars (<strong>Stamina</strong>, <strong>Mana</strong>). No fixed classes — your hero grows by the things they actually <em>do</em>: swing swords, sling spells, survive brutal fights.</p>
+
+<ul>
+<li><strong>Timing matters:</strong> act, then the turn jumps to whoever holds the most TIME left.</li>
+<li><strong>Active defense:</strong> Dodge, Parry, Block — or take the hit.</li>
+<li><strong>Free progression:</strong> six core stats, learn any skill or spell you find.</li>
+</ul>
+
+<p>Use the navigation bar to jump to progression charts, combat rules, full item/monster lists and the mobile‑friendly character sheet.</p>
+
+<footer style="text-align:center;margin-top:2rem;color:#888;font-size:.8rem">© 2025 JitaDesWadyas</footer>
+</body></html>

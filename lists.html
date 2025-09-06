@@ -1,5 +1,6 @@
 <!DOCTYPE html><html lang="en">
 <head><meta charset="UTF-8"/><title>Lists – FEIM</title><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="stylesheet" href="css/style.css">
 <style>
 :root{
   --amber:#ffb84d;
@@ -20,14 +21,18 @@ h1,h2{
 }
 a{color:var(--amber);text-decoration:none;font-weight:600}
 a:hover{text-decoration:underline}
-nav{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.8rem;
-  margin-bottom:1rem;
-}
-nav a{
-  background:#333;padding:.4rem .7rem;border-radius:4px;
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+/* new ui */
+.btn{background:#333;border:1px solid var(--border);color:var(--amber);padding:.5rem .8rem;font-size:.9rem;border-radius:4px}
+.row1{font-weight:600}
+.cost{width:38%;text-align:right}
+.descr{font-size:.85rem;color:#ccc}
+.actionBtn{font-size:1rem;width:32px;height:32px;padding:0;margin-right:4px}
+</style>
+</head>
+<body>
 }
 table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
 th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
@@ -46,16 +51,6 @@ th{background:#333}
 </style>
 </head>
 <body>
-
-<nav>
-  <a href="index.html">Home</a>
-  <a href="progression.html">Progression</a>
-  <a href="combat_rules.html">Combat</a>
-  <a href="general_rules.html">Rules</a>
-  <a href="lists.html">Lists</a>
-  <a href="character_sheet.html">Sheet</a>
-  <a href="settings.html">Settings</a>
-</nav>
 
 <h1>Reference Lists</h1>
 
@@ -126,4 +121,5 @@ function formatDescr(it){
   return e.dice||'';
 }
 </script>
+<script src="js/navigation.js"></script>
 </body></html>

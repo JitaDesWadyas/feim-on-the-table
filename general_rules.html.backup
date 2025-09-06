@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><title>General Rules – FEIM</title><meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<style>
+:root{
+  --amber:#ffb84d;
+  --bg:#1a1a1a;
+  --fg:#f5f3ef;
+  --panel:#2a2a2a;
+  --border:#444;
+}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);color:var(--fg);max-width:720px;margin:auto;padding:1rem;
+}
+h1,h2{
+  color:var(--amber);
+  border-bottom:1px solid #555;
+  padding-bottom:.2rem;
+  margin-top:1.5rem;
+}
+a{color:var(--amber);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.8rem;
+  margin-bottom:1rem;
+}
+nav a{
+  background:#333;padding:.4rem .7rem;border-radius:4px;
+}
+table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:0.95rem}
+th,td{border:1px solid var(--border);padding:.4rem;text-align:left}
+th{background:#333}
+@media (max-width:480px){
+  body{padding:.6rem}
+  nav a{font-size:.9rem}
+  table{font-size:.8rem}
+}
+</style>
+
+</head>
+<body>
+
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="progression.html">Progression</a>
+  <a href="combat_rules.html">Combat</a>
+  <a href="general_rules.html">Rules</a>
+  <a href="lists.html">Lists</a>
+  <a href="character_sheet.html">Sheet</a>
+  <a href="settings.html">Settings</a>
+</nav>
+
+
+<h1>General Rules</h1>
+
+<h2>Equipment Slots</h2>
+<ul>
+<li><strong>Weapon</strong></li>
+<li><strong>Helmet</strong></li>
+<li><strong>Chestplate</strong></li>
+<li><strong>Leggings</strong></li>
+</ul>
+
+<h2>Armor &amp; Damage Reduction</h2>
+<ul>
+<li>Armor doesn’t make you harder to hit; it <strong>reduces</strong> physical damage (DR).</li>
+<li>Attack targets a body part; only the armor on that part applies.</li>
+<li>Total DR (sum) is used for generic hits without location.</li>
+<li>Magic damage usually ignores DR.</li>
+</ul>
+
+<h2>Movement Actions</h2>
+<table>
+<thead><tr><th>Action</th><th>TIME</th><th>STA</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Walk 1 tile</td><td>0.5 s</td><td>0</td><td>Normal pace</td></tr>
+<tr><td>Run 1 tile</td><td>0.5 s</td><td>1</td><td>Quick but tiring</td></tr>
+<tr><td>Dash 2 tiles</td><td>1.0 s</td><td>2</td><td>Straight line</td></tr>
+<tr><td>Sidestep Dodge</td><td>0.5 s</td><td>1</td><td>Evades attacks</td></tr>
+<tr><td>Roll</td><td>1.0 s</td><td>2</td><td>Invulnerable window</td></tr>
+</tbody>
+</table>
+
+<footer style="text-align:center;margin-top:2rem;color:#777;font-size:.8rem">© 2025 JitaDesWadyas</footer>
+</body></html>
